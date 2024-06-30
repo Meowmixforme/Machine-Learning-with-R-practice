@@ -1,0 +1,226 @@
+---
+title: "Exploratory Data Analysis"
+output: html_notebook
+---
+
+
+
+```{r}
+library(ggplot2)
+library(tibble)
+library(dplyr)
+```
+
+```{r}
+diamonds
+```
+
+```{r}
+glimpse(diamonds)
+```
+
+```{r}
+summary(diamonds)
+```
+
+```{r}
+str(diamonds)
+```
+
+```{r}
+dim(diamonds)
+```
+
+```{r}
+skimr::skim(diamonds)
+```
+
+```{r}
+View(diamonds)
+```
+
+```{r}
+head(diamonds)
+```
+
+```{r}
+tail(diamonds)
+```
+
+# Visualise distributions
+## Categorical Variables
+```{r}
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut))
+```
+
+```{r}
+diamonds %>%
+  count(cut)
+```
+
+```{r}
+table(diamonds$cut)
+```
+
+```{r}
+unique(diamonds$cut)
+```
+
+```{r}
+levels(diamonds$clarity)
+```
+
+```{r}
+table(diamonds$cut, diamonds$clarity)
+```
+
+```{r}
+diamonds %>%
+  count(cut, clarity) %>%
+arrange(desc(n))
+```
+
+```{r}
+ggplot(diamonds, aes(x = cut, fill = clarity)) +
+  geom_bar(position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+ggplot(diamonds, aes(x = cut, fill = clarity)) +
+  geom_bar(position = "dodge") +
+  coord_flip()
+```
+
+```{r}
+ggplot(diamonds, aes(x = cut, fill = clarity)) +
+  geom_bar(position = "fill") +
+  ylab("Proportion")
+```
+
+```{r}
+prop.table(table(diamonds$cut, diamonds$clarity))
+```
+
+```{r}
+ggplot(diamonds, aes(x = cut)) +
+  geom_bar() +
+  facet_wrap(~ clarity)
+```
+
+```{r}
+round(prop.table(table(diamonds$cut, diamonds$clarity))*100, 2)
+```
+
+## Continous variable
+```{r}
+ggplot(data = diamonds) +
+  geom_histogram(mapping = aes(x = carat), binwidth = 0.5)
+```
+
+```{r}
+diamonds %>%
+  count(cut_width(carat, 0.5))
+```
+
+```{r}
+smaller <- diamonds %>%
+  filter(carat < 3)
+
+ggplot(data = smaller, mapping = aes(x = carat)) +
+  geom_histogram(binwidth = 0.1)
+```
+
+```{r}
+ggplot(data = smaller, mapping = aes(x = carat, color = cut)) +
+  geom_freqpoly(binwidth = 0.1)
+```
+
+```{r}
+ggplot(data = smaller, mapping = aes(x = carat)) +
+  geom_histogram(binwidth = 0.01)
+```
+
+```{r}
+ggplot(diamonds) +
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5)
+```
+
+```{r}
+ggplot(diamonds) +
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
+  coord_cartesian(ylim = c(0, 50))
+```
+
+```{r}
+diamonds %>%
+  filter(y < 3 | y > 20) %>%
+  select(price, x, y, z) %>%
+  arrange(y)
+```
+# Missing values
+```{r}
+diamonds2 <- diamonds %>%
+  filter(between(y, 3, 20))
+ggplot(diamonds2) +
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5)
+```
+## Removing outliers
+```{r}
+diamonds %>%
+  mutate(y = ifelse(y < 3 | y > 20, NA, y)) %>%
+ggplot(aes(x = x, y = y)) +
+  geom_point()
+```
+```{r}
+diamonds %>%
+ggplot(aes(x = x, y = y)) +
+  geom_point()
+```
+# Covariation
+## Categorical vs Continuous
+```{r}
+ggplot(diamonds, aes(x = price)) +
+  geom_freqpoly(aes(color = cut), binwidth = 500)
+```
+
+```{r}
+ggplot(diamonds) +
+  geom_bar(aes(x = cut))
+```
+### Density plot
+```{r}
+ggplot(diamonds, aes(x = price, y = ..density..)) +
+  geom_freqpoly(aes(color = cut), bandwidth = 500)
+```
+### Boxplot
+```{r}
+ggplot(diamonds, aes(x = cut, y = price)) +
+  geom_boxplot() +
+  coord_flip()
+
+```
+
+```{r}
+ggplot(diamonds) +
+  geom_count(aes(x = cut, y = color))
+```
+
+```{r}
+diamonds %>%
+  count(color, cut) %>%
+  ggplot(aes(x = color, y = cut)) +
+  geom_tile(aes(fill = n))
+```
+
+## Continous vs Continous
+```{r}
+ggplot(diamonds) +
+  geom_point(aes(x = carat, y = price, alpha = 1/100))
+```
+
+```{r}
+ggplot(data = smaller) +
+  geom_bin2d(aes(x = carat, y = price))
+```
