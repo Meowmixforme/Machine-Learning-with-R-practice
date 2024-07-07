@@ -1,0 +1,91 @@
+---
+title: "Logistic Regression"
+output: html_notebook
+---
+
+
+
+```{r}
+library(tidyr)
+library(ggplot2)
+library(corrr)
+library(rsample)
+library(recipes)
+library(parsnip)
+library(yardstick)
+```
+
+```{r}
+data <- titanic::titanic_train
+data_split <- initial_split(data)
+train <- training(data_split)
+test <- testing(data_split)
+
+skimr::skim(train)
+```
+
+```{r}
+data_rec <- recipe(Survived ~ ., train) %>%
+  step_mutate(Survived = ifelse(Survived == 0, "Died", "Survived")) %>%
+  step_string2factor(Survived) %>%
+  step_rm(PassengerId, Name, Ticket, Cabin) %>%
+  step_impute_mean(Age) %>%
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_zv(all_predictors()) %>%
+  step_center(all_predictors(), -all_nominal()) %>%
+  step_scale(all_predictors(), -all_nominal())
+```
+
+```{r}
+data_prep <- data_rec %>%
+  prep()
+```
+
+```{r}
+fitted_model <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification") %>%
+  fit(Survived ~ ., data = bake(data_prep, train))
+```
+
+```{r}
+preditctions <- fitted_model %>%
+  predict(new_data = bake(data_prep, test)) %>%
+  bind_cols(
+    bake(data_prep, test) %>%
+      select(Survived)
+  )
+```
+
+```{r}
+preditctions %>%
+  conf_mat(Survived, .pred_class)
+```
+
+```{r}
+preditcions %>%
+  metrics(Survived, .pred_class) %>%
+  select(-.estimator) %>%
+  filter(.metric == "accuracy")
+```
+
+```{r}
+preditcions %>%
+  precision(Survived, .pred_class) %>%
+  bind_rows(
+    preditcions %>%
+      recall(Survived, .pred_class)
+  ) %>%
+  select(-.estimator) %>%
+  mutate(.estimate = round(.estimate*100, 2))
+```
+
+```{r}
+preditctions %>%
+  f_meas(Survived, .pred_class)
+```
+
+
+```{r}
+?yardstick::roc_auc
+```
