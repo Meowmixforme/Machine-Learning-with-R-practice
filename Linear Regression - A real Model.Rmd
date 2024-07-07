@@ -1,0 +1,156 @@
+---
+title: "Linear Regression: A Real Model"
+output: html_notebook
+---
+
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(corrr)
+library(rsample)
+library(recipes)
+library(parsnip)
+```
+
+```{r}
+diamonds
+```
+# Select all columns that are non-factors (numeric) and correlate
+```{r}
+diamonds %>%
+  select(where(~ !is.factor(.x))) %>%
+  corrr::correlate() %>%
+corrr::fashion()
+```
+# Network Plot
+```{r}
+diamonds %>%
+  select(where(~ !is.factor(.x))) %>%
+  corrr::correlate() %>%
+corrr::network_plot()
+```
+# Filtered variables with correlation greater than 50% 
+```{r}
+high_corr_varables <- diamonds %>%
+  select(where(~ !is.factor(.x))) %>%
+  correlate() %>%
+  corrr::focus(price) %>%
+  arrange(desc(price)) %>%
+  filter(price > 0.5) %>%
+  pull(term)
+```
+# If new column is added that has +50% correlation and notebook is run it will be added to high_corr_variables
+```{r}
+data <- diamonds %>%
+  select(high_corr_varables, price)
+data
+```
+# Above without correlation
+```{r}
+data <- diamonds
+data
+```
+
+
+# Split the data
+```{r}
+data_split <- initial_split(data, strata = price)
+data_train <- training(data_split)
+data_test <- testing(data_split)
+```
+# Build model
+```{r}
+model <- lm(price ~ ., data = data_train)
+```
+
+# Non-Correlated results (more accurate in this case = more variables)
+```{r}
+summary(model)
+```
+
+
+# Correlated results
+```{r}
+summary(model)
+```
+# non-correlated Tidy format (categorical values have higher correlation than numeric values)
+```{r}
+broom::tidy(model) %>%
+  arrange(p.value)
+```
+
+
+# correlated Tidy format
+```{r}
+broom::tidy(model)
+```
+
+# The Tidymodels Approach
+# Split data
+```{r}
+data_split <- initial_split(data, strata = price)
+data_train <- training(data_split)
+data_test <- testing(data_split)
+```
+
+# Data Preprocessing (normalisation)
+```{r}
+data_rec <- data_train %>%
+  recipe(price ~ ., data_train) %>%
+  step_dummy(all_nominal()) %>%
+  step_normalize(all_numeric(), -all_outcomes()) %>%
+  prep()
+
+juiced <- juice(data_rec)
+```
+# Build model
+```{r}
+lm_model <- parsnip::linear_reg() %>%
+  set_engine("lm") %>%
+  set_mode("regression")
+```
+# Fit model
+```{r}
+lm_fit <- fit(lm_model, price ~ ., juiced)
+lm_fit
+```
+# glance
+```{r}
+glance(lm_fit)
+```
+# Tidy
+```{r}
+tidy(lm_fit)
+```
+# Apply preprocessing on testing data
+```{r}
+results_train <- lm_fit %>%
+  predict(new_data = juiced) %>%
+  mutate(truth = data_train$price)
+results_test <- lm_fit %>%
+  predict(new_data = bake(data_rec, data_test)) %>%
+  mutate(truth = data_test$price)
+
+results <- results_train %>%
+  mutate(type = "train") %>%
+  bind_rows(
+    results_test %>%
+      mutate(type = "test")
+  )
+```
+# Compare train and test accuracy
+```{r}
+results %>%
+  group_by(type) %>%
+  yardstick::rmse(truth, .pred)
+```
+# Visualise results
+```{r}
+ggplot(results, aes(truth, .pred)) +
+  geom_point() +
+  geom_abline(color = "red", size = 2) +
+  coord_fixed()
+```
+
