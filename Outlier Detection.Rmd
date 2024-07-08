@@ -1,0 +1,95 @@
+---
+title: "Outlier Detection"
+output: html_notebook
+---
+
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(knitr)
+```
+
+
+```{r}
+data(iris)
+```
+
+```{r}
+g <- ggplot(iris, aes(Species, Petal.Length))
+g <- g + geom_boxplot()
+g <- g + labs(title="Boxplot for Iris Dataset", xlab = "Species", ylab = "Petal Length [cm]")
+g
+```
+# Calculate outliers for Z-Score IQR method
+```{r}
+outlier_limits <- iris %>%
+  group_by(Species) %>%
+  summarise(Q1 = quantile(Petal.Length, probs = 0.25), 
+            Q3 = quantile(Petal.Length, probs = 0.75),
+            IQR = Q3 - Q1,
+            upper_inner_limit = Q3 + 1.5 * IQR,
+            lower_inner_limit = Q1 - 1.5 * IQR
+            )
+tbl_df(outlier_limits)
+```
+
+```{r}
+iris <- left_join(iris, outlier_limits, by = "Species") %>%
+  select(-Q1, -Q3, -IQR)
+```
+
+```{r}
+iris %>%
+  head %>%
+  kable
+
+iris <- iris %>%
+  mutate(PetalLengthOutlier = ifelse(Petal.Length > lower_inner_limit & Petal.Length < upper_inner_limit, "no outlier", "outlier"))
+
+iris %>%
+  filter(PetalLengthOutlier == "outlier") %>%
+  kable()
+```
+
+# Method 2 dbscan
+```{r}
+library(dbscan)
+```
+
+```{r}
+data(iris)
+iris_mat <- as.matrix(iris[, -5])
+
+kNNdistplot(x = iris_mat, k = 5)
+eps <- 0.4
+
+```
+
+```{r}
+db <- dbscan(x = iris_mat, eps = eps, minPts = 5)
+```
+
+```{r}
+hullplot(x = iris_mat, cl = db$cluster)
+```
+
+```{r}
+(db$cluster == 0) %>%
+  sum()
+```
+
+```{r}
+iris$cluster <- as.factor(db$cluster)
+```
+
+```{r}
+iris_mod <- iris %>%
+  gather(key = "variable", value = "value", 1:4)
+g <- ggplot(iris_mod, aes(x=Species, y = value, col = cluster))
+g <- g + facet_grid(. ~ variable)
+g <- g + geom_jitter()
+g
+```
