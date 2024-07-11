@@ -1,0 +1,90 @@
+---
+title: "Stringr and Regular Expressions"
+output: html_notebook
+---
+
+
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
+```
+
+```{r}
+library(stringr)
+```
+
+```{r}
+string <- c('R for Data Handling, Data Science, and Machine Learning 2020',
+            'Python for Machine Learning',
+            'Juia for Statistics')
+string
+```
+# Detect Patterns
+```{r}
+pattern <- "ata"
+str_detect(string = string, pattern = pattern)
+
+grepl(x = string, pattern = pattern)
+
+grep(x = string, pattern = pattern, value = T)
+```
+# Locate Patterns within string
+```{r}
+str_locate(string = string, pattern = pattern)
+str_locate_all(string = string, pattern = pattern)
+```
+# Replace Patterns 
+```{r}
+str_replace_all(string = string, pattern = "Data", replacement = "DATA")
+```
+# Split a String
+```{r}
+pattern <- " "
+  str_split(string = string[1], pattern = pattern, simplify = T)
+```
+# Extract Patterns
+```{r}
+pattern <- "Learning"
+str_extract_all(string = string[1], pattern = pattern, simplify = T)
+
+```
+# Regular Expressions
+
+# Character Classes
+
+```{r}
+# detect digits
+pattern <- "[[:digit:]]"
+str_detect(string = string, pattern = pattern)
+
+# detect non-digits
+pattern <- "\\D"
+str_detect(string = string, pattern = pattern)
+```
+```{r}
+pattern <- "[[:lower]]"
+str_detect(string = string, pattern = pattern)
+```
+
+```{r}
+pattern <- "^R"
+str_detect(string = string, pattern = pattern)
+```
+
+```{r}
+pattern <- "^.y"
+str_detect(string = string, pattern = pattern)
+```
+
+```{r}
+string <- c("1", "10", "100", "1000")
+pattern <- "\\d{3}"
+str_extract(string = string, pattern = pattern)
+```
+
+```{r}
+string <- c("100 course", "2 courses", "1 instructor")
+pattern <- "\\d*(?= course?)"
+str_detect(string = string, pattern = pattern)
+```
+
