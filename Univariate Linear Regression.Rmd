@@ -1,0 +1,92 @@
+---
+title: "Univariate Linear Regression"
+output: html_notebook
+---
+
+
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+```
+
+```{r}
+data("starwars")
+set.seed(123)
+glimpse(starwars)
+```
+
+```{r}
+plot_height_mass <- function(df){
+  g <- ggplot(df, aes(x = height, y = mass))
+  g <- g + geom_point()
+  g <- g + geom_smooth(method = "lm", se=F)
+  g
+}
+
+plot_height_mass(starwars)
+```
+# Outlier
+```{r}
+starwars %>%
+  filter(mass > 1000) %>%
+  select(name, height, mass)
+```
+
+```{r}
+starwars_filt <- starwars %>%
+  filter(mass < 1000)
+
+plot_height_mass(starwars_filt)
+```
+# Modelling
+```{r}
+model <- lm(data = starwars_filt,
+            formula = mass ~ height)
+```
+
+```{r}
+summary(model)
+```
+
+```{r}
+model_summary <- model %>%
+  summary()
+model_summary$r.squared
+```
+# Predictions
+```{r}
+starwars_filt$mass_predictions <- predict(object = model, newdata = starwars_filt)
+```
+
+```{r}
+g <- plot_height_mass((starwars_filt))
+g <- g + geom_point(data = starwars_filt,
+                    aes(x = height,
+                        y = mass_predictions),
+                    col = "red", alpha = .3)
+g
+                    
+```
+# How good a match to the data
+```{r}
+g <- ggplot(data = starwars_filt,
+                    aes(x = mass,
+                        y = mass_predictions,
+                        label = name)
+                    )
+g <- g + geom_point()
+g <- g + geom_text(size = 3)
+g <- g + geom_abline(slope = 1,
+                     intercept = 0,
+                     col = "blue")
+g <- g + labs(x = "Actual Mass [lb]",
+              y = "Predicted Mass [lb]",
+              title = "Mass Correlation")
+g
+```
+
