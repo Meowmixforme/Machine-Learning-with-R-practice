@@ -1,0 +1,92 @@
+---
+title: "Polynomial Regression"
+output: html_notebook
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Packages
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+```
+# Data creation
+```{r}
+sample_data <- tibble(x = seq(-20, 40, 0.5),
+                      y = 50 + 0.25 * (x-5)**3,
+                      y_noise = y + rnorm(n = length(y),
+                                          mean = 100,
+                                          sd = 500))
+```
+# Visualisation
+```{r}
+g <- ggplot(sample_data, aes(x = x,
+                             y = y_noise))
+g <- g + geom_point()
+
+g <- g + geom_line(aes(y = y), col= "red", size = 1)
+g
+```
+
+# Linear is a poor choice
+
+```{r}
+model_lin <- lm(data=sample_data,
+                formula = y_noise ~ x)
+```
+
+```{r}
+summary(model_lin)
+```
+# Quadratic Model
+```{r}
+model_quad <- lm(data = sample_data,
+                 formula = y_noise ~ x + I(x^2))
+
+summary(model_quad)
+```
+# Polynomial 3rd order
+```{r}
+model_poly <- lm(data = sample_data,
+                 formula = y_noise ~ x + I(x^2) + I(x^3))
+
+summary(model_poly)
+
+```
+# poly() function method
+```{r}
+model_poly <- lm(data = sample_data,
+                 formula = y_noise ~ poly(x, 3))
+```
+
+```{r}
+summary(model_poly)
+```
+
+```{r}
+model_fit_values <- fitted(model_poly)
+model_residuals <- residuals(model_poly)
+plot(model_fit_values, model_residuals)
+```
+# Predictions
+```{r}
+sample_data$y_pred <- predict(object = model_poly,
+                              newdata = sample_data)
+```
+
+```{r}
+g <- ggplot(sample_data, aes(x, y_pred))
+g <- g + geom_point(aes(y = y_noise))
+g <- g + geom_line(col = "green", size = 2)
+g <- g + geom_line(data = sample_data, aes(x, y), col = "red")
+g
+```
+# Model Performance
+```{r}
+model_summary <- summary(model_poly)
+model_summary$adj.r.squared
+```
+
