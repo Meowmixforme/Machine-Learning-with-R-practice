@@ -1,0 +1,114 @@
+---
+title: "Multivariate Regression"
+output: html_notebook
+---
+
+# Quality of wines
+
+# Packages
+```{r}
+library(dplyr)
+library(tibble)
+library(tidyr)
+library(ggplot2)
+library(corrplot)
+library(car)
+library(caret)
+```
+
+# Data Import
+
+```{r}
+file_path <- "./data/winequality-red.csv"
+if (!file.exists(file_path)) {
+  dir.create("./data")
+  url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+  download.file(url = url,
+                destfile = file_path)
+}
+
+df <- read.csv(file_path, sep = ";")
+```
+
+# Data summary
+```{r}
+summary(df)
+```
+# Visualising Correlations
+```{r}
+pairs(df[, 8:12])
+```
+# Creating my own visualisation
+```{r}
+df_scaled <- df %>%
+  scale() %>%
+  as_tibble()
+
+df_gather <- df_scaled %>%
+  gather(key = "variable", value = "value", 1:11) %>%
+  mutate(variable = as.factor(variable))
+
+g <- ggplot(df_gather, aes(x = quality, y = value))
+g <- g + facet_wrap(~ variable)
+g <- g + geom_point()
+g <- g + geom_smooth(se = F, method = "lm")
+g
+```
+# Correlation Matrix
+```{r}
+cor_vals <- cor(df) %>%
+  as.data.frame() %>%
+  dplyr::mutate(Var1 = rownames(.)) %>%
+  gather(key = "Var2", value = "Corr", 1:12)
+g <- ggplot(cor_vals, aes(x = Var1, y = Var2, fill = Corr))
+g <- g + geom_tile()
+g <- g + scale_fill_gradient2(low = "blue", high = "red", mid = "white",
+                              midpoint = 0, limit = c(-1,1), space = "Lab",
+                              name = "Pearson\nCorrelation")
+g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+g
+```
+#corrplot()
+```{r}
+cor_df <- cor(df)
+corrplot.mixed(cor_df)
+```
+# Modelling
+
+# Model Setup
+```{r}
+model <- lm(formula = "quality ~ .",
+            data = df)
+```
+
+```{r}
+summary(model)
+```
+# Predictions
+
+```{r}
+df$quality_pred <- predict(object = model, newdata = df)
+```
+
+```{r}
+g <- ggplot(df, aes(y = quality, x = quality_pred))
+g <- g + geom_point(alpha = .1)
+g <- g + geom_smooth(method = "lm", se = F)
+g <- g + geom_abline(slope = 1, intercept = 0)
+g <- g + ylab("Actual")
+g <- g + xlab("Prediction")
+g <- g + ggtitle("Prediction vs. Actual")
+g
+```
+# Model Performance
+
+```{r}
+model_summary <- summary(model)
+model_summary$adj.r.squared
+```
+# Error Independence
+```{r}
+res <- residuals(object = model)
+qqPlot(res)
+```
+
