@@ -1,0 +1,71 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(lava))
+```
+
+```{r}
+data("hubble")
+```
+
+```{r}
+hubble %>%
+  head()
+```
+
+```{r}
+g <- ggplot(hubble, aes(v, D))
+g <- g + geom_point()
+g <- g + geom_smooth(method = "lm", se = F)
+g
+```
+
+```{r}
+fit_lm <- lm(formula = D ~ v,
+             data = hubble)
+```
+
+```{r}
+fit_lm_summary <- summary(fit_lm)
+fit_lm_summary$adj.r.squared
+```
+# High correlation
+
+
+```{r}
+new_data <- data.frame(v = seq(0, 30000, 1000))
+```
+
+```{r}
+new_data$D_pred <- predict(object = fit_lm, newdata = new_data)
+```
+
+```{r}
+g <- ggplot(new_data, aes(v, D_pred))
+g <- g + geom_line(color = "blue", size = 2)
+g <- g + geom_point(data = hubble, aes(v, D))
+g <- g + theme_bw()
+g <- g + xlab ("Speed v [km/s]")
+g <- g + ylab ("Distance D [MPc]")
+g <- g + ggtitle("Hubble Super-Novae Type Ia Measurements and Predictions")
+g
+```
+
+$$H_0 = \frac{v}{D}$$
+
+```{r}
+hubble$H_0 <- hubble$v / hubble$D
+median(hubble$H_0)
+```
+
