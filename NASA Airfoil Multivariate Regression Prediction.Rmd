@@ -1,0 +1,83 @@
+---
+title: "NASA Airfoil Multivariate Regression Prediction"
+output: html_notebook
+---
+
+
+# Data Understanding
+```{r}
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(caret)
+```
+
+# Data Preparation
+```{r}
+file_path <- "./data/airfoil_noise.txt"
+if (!file.exists(file_path)) {
+  dir.create("./data")
+  url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/00291/airfoil_self_noise.dat"
+  download.file(url = url,
+                destfile = file_path)
+}
+
+
+```
+# Data Import
+```{r}
+airfoil_noise <- read.table(file = file_path)
+```
+
+```{r}
+colnames(airfoil_noise) <- c("frequency", "aoa", "chord_length", "free_stream_vel", "ss_displacement_thickness", "spl")
+```
+
+# Exploratory Data Analysis
+```{r}
+cor_airfoil <- cor(airfoil_noise)
+corrplot.mixed(cor_airfoil)
+```
+
+```{r}
+cor_airfoil[, 6] %>%
+  sort %>%
+  head(3)
+```
+# Model
+
+# Model Creation
+```{r}
+model_fit <- lm(formula = spl ~ .,
+                data = airfoil_noise)
+```
+# Model Performance
+```{r}
+airfoil_noise$spl_pred <- predict(object = model_fit, newdata = airfoil_noise)
+
+model_summary <- summary(model_fit)
+model_summary$adj.r.squared
+
+postResample(pred = airfoil_noise$spl_pred, obs = airfoil_noise$spl)
+```
+# Correlation Plot
+```{r}
+g <- ggplot(airfoil_noise, aes(x = spl, y = spl_pred))
+g <- g + geom_point()
+g <- g + geom_smooth(method = "lm", se = F)
+g <- g + labs(x = "Actual", y = "predicted", title = "Correlation Plot")
+g <- g + theme_bw()
+g
+```
+# Model 2
+# Model Creation
+```{r}
+model_fit_freq_displacement_chord <- lm(formula = spl ~ frequency + ss_displacement_thickness + chord_length, data = airfoil_noise)
+```
+# Model Performance
+```{r}
+airfoil_noise$spl_pred2 <- predict(object = model_fit_freq_displacement_chord, newdata = airfoil_noise)
+
+postResample(pred = airfoil_noise$spl_pred2, obs = airfoil_noise$spl)
+```
+# Model performance decreased
