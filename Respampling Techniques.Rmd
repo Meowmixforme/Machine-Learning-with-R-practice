@@ -1,0 +1,101 @@
+---
+title: "Respampling Techniques"
+output: html_notebook
+---
+
+
+
+```{r}
+library(dplyr)
+library(keras)
+library(caret)
+
+```
+
+```{r}
+file_path <- "./data/winequality-red.csv"
+if (!file.exists(file_path)) {
+  dir.create("./data")
+  url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+  download.file(url = url,
+                destfile = file_path)
+}
+
+df <- read.csv(file_path, sep = ";")
+```
+# Train / Validation/ Test Split
+```{r}
+train_ratio <- 0.6
+validation_ratio <- 0.2
+test_ratio <- 1 - train_ratio - validation_ratio
+```
+# Function for Train/ Validation / Test Split
+```{r}
+train_val_test_split <- function(df, train_ratio = 0.6, val_ratio = 0.2, test_ratio = 0.2) {
+  n_obs <- nrow(df)
+  sample_size_train <- floor(train_ratio * n_obs)
+  sample_size_valid <- floor(validation_ratio * n_obs)
+  sample_size_test <- floor(test_ratio * n_obs)
+
+  indices_train <- base::sample(x = 1:n_obs, size = sample_size_train) %>% sort
+  indicies_not_train <- base::setdiff(x = 1:n_obs, indices_train)
+  indicies_validation <- base::sample(x = indicies_not_train, size = sample_size_valid)
+  indicies_test <- base::setdiff(indicies_not_train, indicies_validation)
+
+  train <- df[indices_train, ]
+  val <- df[indicies_validation, ]
+  test <- df[indicies_test, ]
+  list(train, val, test)
+  
+}
+```
+
+
+# Simple Train / Validation split
+```{r}
+c(train, val, test) %<-% train_val_test_split(df = df, train_ratio = 0.6, val_ratio = 0.2, test_ratio = 0.2)
+
+model_train <- caret::train(data = train, quality ~., method = "lm")
+```
+# Training performance  
+```{r}
+train$quality_pred <- predict(object = model_train, newdata = train)
+caret::postResample(pred = train$quality_pred, obs = train$quality)
+```
+# Validation Performance
+```{r}
+val$quality_pred <- predict(object = model_train, newdata = val)
+caret::postResample(pred = val$quality_pred, obs = val$quality)
+```
+# Cross Validation
+
+## 10-fold Cross Validation
+
+```{r}
+c(train_val, dummy, test) %<-% train_val_test_split(df = df, train_ratio = 0.8, val_ratio = 0, test_ratio = 0.2)
+```
+
+```{r}
+train_control <- trainControl(method = "cv", number = 10)
+model_10_fold_cv <- caret::train(quality ~ ., data = train_val, trControl = train_control, method = "lm")
+model_10_fold_cv
+```
+# Check the performance
+```{r}
+test$quality_pred <- predict(object = model_10_fold_cv, newdata = test)
+caret::postResample(pred = test$quality_pred, obs = test$quality)
+```
+## Leave One Out CV
+
+```{r}
+train_control <- trainControl(method = "LOOCV")
+model_loocv <- caret::train(quality ~ ., data = train_val, trControl = train_control, method = "lm")
+model_loocv
+```
+# Test the performance
+```{r}
+test$quality_pred_loocv <- predict(object = model_loocv, newdata = test)
+caret::postResample(pred = test$quality_pred_loocv, obs = test$quality)
+
+```
+

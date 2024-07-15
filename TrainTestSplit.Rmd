@@ -69,4 +69,3 @@ c(train, val, test) %<-% train_val_test_split(df)
 ```{r}
 
 ```
-
