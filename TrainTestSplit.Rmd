@@ -1,0 +1,72 @@
+---
+title: "Train/Test/Split"
+output: html_notebook
+---
+
+
+
+```{r}
+library(dplyr)
+library(caret)
+library(keras)
+```
+
+```{r}
+df <- tibble(x = 1:1000)
+n_obs <- nrow(df)
+```
+
+# Train / Validation/ Test Split
+```{r}
+train_ratio <- 0.6
+validation_ratio <- 0.2
+test_ratio <- 1 - train_ratio - validation_ratio
+```
+
+```{r}
+set.seed(123)
+
+sample_size_train <- floor(train_ratio * n_obs)
+sample_size_valid <- floor(validation_ratio * n_obs)
+sample_size_test <- floor(test_ratio * n_obs)
+
+indices_train <- base::sample(x = 1:n_obs, size = sample_size_train) %>% sort
+indicies_not_train <- base::setdiff(x = 1:n_obs, indices_train)
+indicies_validation <- base::sample(x = indicies_not_train, size = sample_size_valid)
+indicies_test <- base::setdiff(indicies_not_train, indicies_validation)
+
+train <- df[indices_train, ]
+val <- df[indicies_validation, ]
+test <- df[indicies_test, ]
+```
+
+# Function for Train/ Validation / Test Split
+```{r}
+train_val_test_split <- function(df, train_ratio = .6, val_ratio = .2, test_ratio = .2) {
+  n_obs <- nrow(df)
+  sample_size_train <- floor(train_ratio * n_obs)
+  sample_size_valid <- floor(validation_ratio * n_obs)
+  sample_size_test <- floor(test_ratio * n_obs)
+
+  indices_train <- base::sample(x = 1:n_obs, size = sample_size_train) %>% sort
+  indicies_not_train <- base::setdiff(x = 1:n_obs, indices_train)
+  indicies_validation <- base::sample(x = indicies_not_train, size = sample_size_valid)
+  indicies_test <- base::setdiff(indicies_not_train, indicies_validation)
+
+  train <- df[indices_train, ]
+  val <- df[indicies_validation, ]
+  test <- df[indicies_test, ]
+  list(train, val, test)
+  
+}
+```
+
+```{r}
+c(train, val, test) %<-% train_val_test_split(df)
+```
+
+# Modelling
+```{r}
+
+```
+
