@@ -1,0 +1,90 @@
+---
+title: "Regularization"
+output: html_notebook
+---
+
+
+
+```{r}
+set.seed(123)
+suppressPackageStartupMessages(library(glmnet))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+```
+
+```{r}
+file_path <- "./data/automobile.csv"
+if (!file.exists(file_path)) {
+  dir.create("./data")
+  url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/autos/imports-85.data"
+  download.file(url = url,
+                destfile = file_path)
+}
+
+cars <- read.csv(file_path, sep = ",", header = F)
+colnames(cars) <- c("symboling", "normalized_losses", "make", "fuel_type", "aspiration", "num_of_doors", "body_style", "drive_wheels", "engine_location", "wheel_base", "length", "width", "height", "curb_weight", "engine_type", "num_of_cylinders", "engine_size", "fuel_system", "bore", "stroke", "compression_ratio", "horsepower", "peak_rpm", "city_mpg", "highway_mpg", "price")
+cars$price <- as.numeric(cars$price)
+cars$horsepower <- as.numeric(cars$horsepower)
+cars$peak_rpm <- as.numeric(cars$peak_rpm)
+cars$normalized_losses <- as.numeric(cars$normalized_losses)
+```
+# Data Filtering (focus on numerical columns)
+```{r}
+cars_filt <- cars %>%
+  dplyr::select(symboling, normalized_losses, wheel_base, length, width, height, curb_weight,engine_size, compression_ratio, horsepower, peak_rpm, city_mpg, highway_mpg, price)
+```
+
+```{r}
+summary(cars_filt)
+```
+# Train / Validation / Test Split
+```{r}
+train <- cars_filt
+```
+
+# Modelling
+
+## Lasso Regression
+```{r}
+train_x <- model.matrix(price ~ ., train)[, -14]
+train_y <- train$price
+
+lambdas <- 10^seq(3, -2, by = -.1)
+model_lasso <- glmnet::cv.glmnet(x = train_x, y = train_y, family = "gaussian", alpha = 1, lambda = lambdas,
+nfolds = 10)
+## Error: train_x has 164 vs train_y 205 (doesn't happen in the video)
+```
+```{r}
+plot(model_lasso, label = T, xvar = "lambda")
+```
+```{r}
+lambda_opt <- model_lasso$lambda.min
+lambda_opt
+```
+```{r}
+lasso_coef <- predict(model_lasso, s = lasso_opt, newx = val_x, type = "coefficients")
+lasso_coef
+```
+
+```{r}
+model_lasso_single <- glmnet(x = train_x, y = train_y, family = "gaussian", alpha = 1, lambda = lambdas)
+plot(model_lasso_single, label = T, xvar = "lambda")
+```
+
+## Ridge Regression
+```{r}
+model_ridge <- cv.glmnet(x = train_x, y = train_y, family = "gaussian", alpha = 0, lambda = lambdas, nfolds = 10)
+```
+
+```{r}
+plot(model_ridge, label = T, xvar = "lambdas")
+```
+```{r}
+lambda_opt <- model_ridge$lambda.min
+lambda_opt
+```
+```{r}
+ridge_coef <- predict(model_ridge, s = lambda_opt, newx = val_x, type = "coefficients")
+ridge_coef
+```
+
