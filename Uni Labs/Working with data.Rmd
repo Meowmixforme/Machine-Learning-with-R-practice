@@ -122,4 +122,99 @@ newdata <- select(starwars, -birth_year, -gender)
 
 # Selecting observations
 
+The select function allows you to limit your dataset to observations (rows) meeting a specific criterion. Multiple criterea can be combined with the & (AND) and | (OR) symbols.
+
+```{r}
+library(dplyr)
+```
+
+# select females
+
+```{r}
+newdata <- filter(starwars,
+                  gender == "feminine")
+```
+
+# select females that are from Alderaan
+
+```{r}
+newdata <- filter(starwars,
+                  gender == "feminine" &
+                    homeworld == "Alderaan")
+```
+
+# select individuals that are from Alderaan , Coruscant or Endor
+
+```{r}
+newdata <- filter(starwars,
+                    homeworld == "Alderaan" |
+                    homeworld == "Coruscant" |
+                    homeworld == "Endor")
+```
+
+# this can be written more succinctly as
+
+```{r}
+newdata <- filter(starwars,
+                    homeworld %in% c("Alderaan", "Coruscant", "Endor"))
+```
+
+# Creating/Recoding variables
+
+The mutate function allows you to create new variables or transform existing ones.
+
+```{r}
+library(dplyr)
+```
+
+# convert height in centimeters to inches, and mass in kilograms to pounds
+
+```{r}
+newdata <- mutate(starwars,
+                  height = height * 0.394,
+                  mass = mass * 2.205)
+```
+
+The ifelse function (part of base R) can be used for recoding data. The format is ifelse(test, return of TRUE, return if FALSE).
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+newdata <- mutate(starwars,
+                  heightcat = ifelse(height > 180,
+                                     "tall",
+                                     "short"))
+```
+
+# convert any eye colour that is not black, blue or brown, to other
+
+```{r}
+newdata <- mutate(starwars,
+                  eye_color = ifelse(eye_color %in% c("black", "blue", "brown"),
+                                     eye_color, "other"))
+```
+
+# set heights greater than 200 or less than 75 to missing
+
+```{r}
+newdata <- mutate(starwars, height = ifelse(height < 75 | height > 200, 
+                                            NA,
+                                            height))
+```
+
+# Summarizing data
+
+The summarize function can be used to reduce multiple values down to a single value (such as mean). It is often used in conjunction with the by_group function, to calculate statistics by group. In the code below, the na.rm=TRUE option is used to drop missing values before calculating the means.
+
+# calculate mean height and mass
+
+```{r}
+newdata <- summarise(starwars,
+                     mean_ht = mean(height, na.rm=TRUE),
+                     mean_mass = mean(mass, na.rm=TRUE))
+
+newdata
+```
 
