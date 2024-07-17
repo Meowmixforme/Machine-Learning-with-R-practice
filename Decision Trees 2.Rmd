@@ -1,0 +1,37 @@
+---
+title: "Decision Trees 2"
+output: html_notebook
+---
+
+
+
+```{r}
+## Data Import
+
+file_path <- "./data/spam.csv"
+if (!file.exists(file_path)) {
+  dir.create("./data")
+  url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/spambase/spambase.data"
+  download.file(url = url, 
+                destfile = file_path)
+}
+```
+
+```{r}
+spam <- read.csv(file_path, sep = ",", header = F)
+```
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(keras))
+suppressPackageStartupMessages(library(caret))
+suppressPackageStartupMessages(library(rpart))
+suppressPackageStartupMessages(library(rpart.plot))
+
+source("./functions/train_val_test.R")
+```
+
+```{r}
+
+```
+
