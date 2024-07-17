@@ -1,0 +1,220 @@
+---
+title: "Random Forest"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)  # for data manipulation
+library(randomForest)  # for random forest model creation
+library(RRF)  # Regularized Random Forests
+
+library(keras)  # for multiassignment operation
+library(caret)  # for model performance
+library(reshape2)
+source("./functions/train_val_test.R")
+
+```
+
+```{r}
+#https://github.com/DataScienceHamburg/R_Ultimate/blob/main/Rultimate_Project/data/CreditApproval.RDS
+set.seed(123)
+credit_approval <- readRDS("./data/CreditApproval.RDS")
+```
+
+```{r}
+credit_approval %>% summary()
+```
+
+```{r}
+credit_approval <- credit_approval %>% 
+  dplyr::mutate(Approved = ifelse(Approved == "+", 1, 0)) %>%
+  dplyr::mutate(Income = log(Income))
+
+credit_approval$Income[is.infinite(credit_approval$Income)] <- 0
+
+```
+
+```{r}
+credit_approval$Approved %>% table()
+```
+
+```{r}
+credit_approval$Approved <- as.factor(credit_approval$Approved)
+```
+
+## Train / Validation Split
+
+```{r}
+c(train, val, test) %<-% train_val_test_split(df = credit_approval, train_ratio = 0.8, val_ratio = 0.2, test_ratio = 0)
+```
+
+# Modeling
+
+```{r}
+model_rf <- randomForest(data = train, 
+                         Approved ~ ., 
+                         importance = T  # required to get Mean Decrease Accuracy and Mean Decrease Gini
+                         )
+model_rf
+```
+
+# Predictions
+
+```{r}
+val$Approved_pred <- predict(model_rf, val)
+```
+
+# Model Performance
+
+## Confusion Matrix
+
+```{r}
+conf_mat <- table(predicted = val$Approved_pred, actual = val$Approved)
+conf_mat
+```
+
+```{r}
+caret::confusionMatrix(conf_mat)
+```
+
+## Feature Importance
+
+```{r}
+plot_feature_importance <- function(model) {
+  feat_importance <- model %>% 
+    randomForest::importance()
+  feat_importance <- tibble(feature = rownames(feat_importance),
+                          MeanDecrAccuary = feat_importance[, 3],
+                          MeanDecrGini = feat_importance[, 4]) %>% 
+  gather(key = "method", value = "MeanDecrease", 2:3)
+  g <- ggplot(feat_importance, aes(x = feature,
+                                 y = MeanDecrease,
+                                 fill = method))
+  g <- g + geom_col(position = "dodge")
+  g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  g
+}
+```
+
+```{r}
+plot_feature_importance(model_rf)
+```
+
+```{r}
+randomForest::varImpPlot(model_rf)
+```
+
+# Model Parameter Tuning
+
+RandomForests have some hyperparameters that can be 
+
+```{r}
+ntree_range <- seq(10,200, 10)
+ntree_res <- tibble(range = ntree_range,
+                    accuracy = NA)
+for (ntree in ntree_range) {
+  # Create the model with hypertuning parameter
+  model_rf <- randomForest(data = train, Approved ~ ., ntree = ntree)
+
+  # create predictions on validation dataset
+  val$Approved_pred <- predict(model_rf, val)
+
+  # create confusion matrix
+  conf_mat <- table(predicted = val$Approved_pred, actual = val$Approved)
+
+  # derive metrics from confusion matrix
+  acc <- caret::confusionMatrix(conf_mat)$overall[1]
+  ntree_res$accuracy[which(ntree_range == ntree)] <- acc
+}
+
+g <- ggplot(ntree_res, aes(range, accuracy))
+g <- g + geom_line()
+g
+```
+
+```{r}
+mtry_range <- seq(2,10, 1)
+mtry_res <- tibble(range = mtry_range,
+                    accuracy = NA)
+for (mtry in mtry_range) {
+  # Create the model with hypertuning parameter
+  model_rf <- randomForest(data = train, 
+                           Approved ~ ., 
+                           ntree = 100, 
+                           mtry = mtry)
+
+  # create predictions on validation dataset
+  val$Approved_pred <- predict(model_rf, val)
+
+  # create confusion matrix
+  conf_mat <- table(predicted = val$Approved_pred, actual = val$Approved)
+
+  # derive metrics from confusion matrix
+  acc <- caret::confusionMatrix(conf_mat)$overall[1]
+  mtry_res$accuracy[which(mtry_range == mtry)] <- acc
+}
+
+g <- ggplot(mtry_res, aes(range, accuracy))
+g <- g + geom_line()
+g
+
+```
+
+# Excursion: Bias towards Features with many categories
+
+Random Forest has a problem with variables that have many features. To show this, we will add a completely useless variable with 20 different categories, create a model, and check feature importance.
+
+```{r}
+n_categories <- 20
+train$useless_var <- sample(x = 1:n_categories, 
+                            size = nrow(train), 
+                            replace = T) %>% 
+  as.factor
+
+table(train$useless_var)
+```
+
+Now we create a new model.
+
+```{r}
+model_rf_bias_categories <- randomForest(data = train, 
+                                         Approved ~ .,
+                                         importance = T  # parameter required to get both plots
+                                         )
+model_rf_bias_categories
+
+plot_feature_importance(model_rf_bias_categories)
+```
+
+Our useless variable has no predictive quality, the accuracy decreases, but it is assumed to be second most relevant parameter (according to Gini)!
+
+Play with it and run it, e.g. with 40 categories.
+
+```{r}
+feat_importance <- randomForest::importance(model_rf_bias_categories, type = 2)
+feat_importance
+```
+
+# Excursion: Handling of correlated variables
+
+```{r}
+model_rf_regularized <- RRF::RRF(data = train, 
+                                 Approved ~ .,
+                                 importance = T  # parameter required to get both plots
+                                         )
+feat_importance <- model_rf_regularized$importance
+feat_importance <- tibble(feature = rownames(feat_importance),
+                          MeanDecrAccuary = feat_importance[, 3],
+                          MeanDecrGini = feat_importance[, 4]) %>% 
+  gather(key = "method", value = "MeanDecrease", 2:3)
+
+g <- ggplot(feat_importance, aes(x = feature,
+                                 y = MeanDecrease,
+                                 fill = method))
+g <- g + geom_col(position = "dodge")
+g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+g
+```
+
+If you compare this plot to our "original" random forest, you will see that certain parameters have a lower impact. This is due to the fact, that their parameters are regularized.
