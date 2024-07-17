@@ -1,0 +1,64 @@
+---
+title: "GeoSpacial Plot"
+output: html_notebook
+---
+
+
+
+```{r}
+# Import Data
+deaths_pumps <- read.csv("./data/Cholera Pumps & Deaths.csv")
+```
+
+# Data Preparation 
+
+For our tutorial we need two packages:
+
+* _leaflet_ for geospatial plotting
+
+* _dplyr_ for data preparation
+
+```{r}
+library(leaflet)
+suppressPackageStartupMessages(library(dplyr))
+```
+ 
+```{r}
+deaths_pumps$geometry <- gsub("<Point><coordinates>", "", deaths_pumps$geometry)
+deaths_pumps$geometry <- gsub("</coordinates></Point>", "", deaths_pumps$geometry)
+coords <- deaths_pumps$geometry %>% strsplit(., ",") %>% unlist() %>% as.numeric()
+	
+deaths_pumps$long <- coords[coords < 2]
+deaths_pumps$lat <- coords[coords > 50]
+deaths <- deaths_pumps %>% filter (count > 0)
+pumps <- deaths_pumps %>% filter (count < 0)
+
+median_location <- data.frame(long = median(deaths$long), 
+		     lat = median(deaths$lat))
+```
+
+# Create Geospatial Plot
+
+Deaths are marked in red. With increasing death count radius increases. Pumps are marked in green.
+```{r}
+# Fixed as stamen.toner has moved
+lf <- leaflet() %>%
+  	addProviderTiles("Esri.WorldGrayCanvas") %>% 
+	setView(lng = median_location$long, lat = median_location$lat, zoom = 17) %>% 
+	addCircles(lng=deaths$long, 
+		   lat=deaths$lat, 
+		   radius = deaths$count*2, 
+		   stroke = F, 
+		   color = "red",
+		   fillOpacity = 0.8,
+		   popup= paste("Deaths: ", deaths$count)) %>% 
+	addCircles(lng=pumps$long,
+		   lat=pumps$lat, 
+		   radius = 2, 
+		   color = "green",
+		   fillOpacity = 1,
+		   popup= "Pump")
+
+lf  # Print the map
+
+```
