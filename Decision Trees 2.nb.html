@@ -1754,46 +1754,282 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgRGF0YSBJbXBvcnRcblxuZmlsZV9wYXRoIDwtIFwiLi9kYXRhL3NwYW0uY3N2XCJcbmlmICghZmlsZS5leGlzdHMoZmlsZV9wYXRoKSkge1xuICBkaXIuY3JlYXRlKFwiLi9kYXRhXCIpXG4gIHVybCA8LSBcImh0dHBzOi8vYXJjaGl2ZS5pY3MudWNpLmVkdS9tbC9tYWNoaW5lLWxlYXJuaW5nLWRhdGFiYXNlcy9zcGFtYmFzZS9zcGFtYmFzZS5kYXRhXCJcbiAgZG93bmxvYWQuZmlsZSh1cmwgPSB1cmwsIFxuICAgICAgICAgICAgICAgIGRlc3RmaWxlID0gZmlsZV9wYXRoKVxufVxuYGBgIn0= -->
-<pre class="r"><code>## Data Import
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyMgRGF0YSBJbXBvcnRcblxuZmlsZV9wYXRoIDwtIFxcLi9kYXRhL3NwYW0uY3N2XFxcbmlmICghZmlsZS5leGlzdHMoZmlsZV9wYXRoKSkge1xuICBkaXIuY3JlYXRlKFxcLi9kYXRhXFwpXG4gIHVybCA8LSBcXGh0dHBzOi8vYXJjaGl2ZS5pY3MudWNpLmVkdS9tbC9tYWNoaW5lLWxlYXJuaW5nLWRhdGFiYXNlcy9zcGFtYmFzZS9zcGFtYmFzZS5kYXRhXFxcbiAgZG93bmxvYWQuZmlsZSh1cmwgPSB1cmwsIFxuICAgICAgICAgICAgICAgIGRlc3RmaWxlID0gZmlsZV9wYXRoKVxufVxuYGBgXG5gYGAifQ== -->
+<pre class="r"><code>```r
+## Data Import
 
-file_path &lt;- &quot;./data/spam.csv&quot;
+file_path &lt;- \./data/spam.csv\
 if (!file.exists(file_path)) {
-  dir.create(&quot;./data&quot;)
-  url &lt;- &quot;https://archive.ics.uci.edu/ml/machine-learning-databases/spambase/spambase.data&quot;
+  dir.create(\./data\)
+  url &lt;- \https://archive.ics.uci.edu/ml/machine-learning-databases/spambase/spambase.data\
   download.file(url = url, 
                 destfile = file_path)
 }</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuc3BhbSA8LSByZWFkLmNzdihmaWxlX3BhdGgsIHNlcCA9IFxcXG5gYGAifQ== --&gt;
+
+```r
+```r
+spam &lt;- read.csv(file_path, sep = \</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BhbSA8LSByZWFkLmNzdihmaWxlX3BhdGgsIHNlcCA9IFwiLFwiLCBoZWFkZXIgPSBGKVxuYGBgIn0= -->
-<pre class="r"><code>spam &lt;- read.csv(file_path, sep = &quot;,&quot;, header = F)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoZHBseXIpKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoa2VyYXMpKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoY2FyZXQpKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkocnBhcnQpKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkocnBhcnQucGxvdCkpXG5cbnNvdXJjZShcIi4vZnVuY3Rpb25zL3RyYWluX3ZhbF90ZXN0LlJcIilcbmBgYCJ9 -->
-<pre class="r"><code>suppressPackageStartupMessages(library(dplyr))
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoZHBseXIpKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoa2VyYXMpKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoY2FyZXQpKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkocnBhcnQpKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkocnBhcnQucGxvdCkpXG5cbnNvdXJjZShcXC4vZnVuY3Rpb25zL3RyYWluX3ZhbF90ZXN0LlJcXClcbmBgYFxuYGBgIn0= -->
+<pre class="r"><code>```r
+suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(keras))
 suppressPackageStartupMessages(library(caret))
 suppressPackageStartupMessages(library(rpart))
 suppressPackageStartupMessages(library(rpart.plot))
 
-source(&quot;./functions/train_val_test.R&quot;)</code></pre>
+source(\./functions/train_val_test.R\)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+# Assign the column names
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29sX25hbWVzX3RvX3NldCA8LSBjKFwid29yZF9mcmVxX21ha2VcIixcIndvcmRfZnJlcV9hZGRyZXNzXCIsXCJ3b3JkX2ZyZXFfYWxsXCIsXCJ3b3JkX2ZyZXFfM2RcIixcIndvcmRfZnJlcV9vdXJcIixcIndvcmRfZnJlcV9vdmVyXCIsXCJ3b3JkX2ZyZXFfcmVtb3ZlXCIsXCJ3b3JkX2ZyZXFfaW50ZXJuZXRcIixcIndvcmRfZnJlcV9vcmRlclwiLFwid29yZF9mcmVxX21haWxcIixcIndvcmRfZnJlcV9yZWNlaXZlXCIsXCJ3b3JkX2ZyZXFfd2lsbFwiLFwid29yZF9mcmVxX3Blb3BsZVwiLFwid29yZF9mcmVxX3JlcG9ydFwiLFwid29yZF9mcmVxX2FkZHJlc3Nlc1wiLFwid29yZF9mcmVxX2ZyZWVcIixcIndvcmRfZnJlcV9idXNpbmVzc1wiLFwid29yZF9mcmVxX2VtYWlsXCIsXCJ3b3JkX2ZyZXFfeW91XCIsXCJ3b3JkX2ZyZXFfY3JlZGl0XCIsXCJ3b3JkX2ZyZXFfeW91clwiLFwid29yZF9mcmVxX2ZvbnRcIixcIndvcmRfZnJlcV8wMDBcIixcIndvcmRfZnJlcV9tb25leVwiLFwid29yZF9mcmVxX2hwXCIsXCJ3b3JkX2ZyZXFfaHBsXCIsXCJ3b3JkX2ZyZXFfZ2VvcmdlXCIsXCJ3b3JkX2ZyZXFfNjUwXCIsXCJ3b3JkX2ZyZXFfbGFiXCIsXCJ3b3JkX2ZyZXFfbGFic1wiLFwid29yZF9mcmVxX3RlbG5ldFwiLFwid29yZF9mcmVxXzg1N1wiLFwid29yZF9mcmVxX2RhdGFcIixcIndvcmRfZnJlcV80MTVcIixcIndvcmRfZnJlcV84NVwiLFwid29yZF9mcmVxX3RlY2hub2xvZ3lcIixcIndvcmRfZnJlcV8xOTk5XCIsXCJ3b3JkX2ZyZXFfcGFydHNcIixcIndvcmRfZnJlcV9wbVwiLFwid29yZF9mcmVxX2RpcmVjdFwiLFwid29yZF9mcmVxX2NzXCIsXCJ3b3JkX2ZyZXFfbWVldGluZ1wiLFwid29yZF9mcmVxX29yaWdpbmFsXCIsXCJ3b3JkX2ZyZXFfcHJvamVjdFwiLFwid29yZF9mcmVxX3JlXCIsXCJ3b3JkX2ZyZXFfZWR1XCIsXCJ3b3JkX2ZyZXFfdGFibGVcIixcIndvcmRfZnJlcV9jb25mZXJlbmNlXCIsXCJjaGFyX2ZyZXFfO1wiLFwiY2hhcl9mcmVxXyhcIixcImNoYXJfZnJlcV9bXCIsXCJjaGFyX2ZyZXFfIVwiLFwiY2hhcl9mcmVxXyRcIixcImNoYXJfZnJlcV8jXCIsXCJjYXBpdGFsX3J1bl9sZW5ndGhfYXZlcmFnZVwiLFwiY2FwaXRhbF9ydW5fbGVuZ3RoX2xvbmdlc3RcIixcImNhcGl0YWxfcnVuX2xlbmd0aF90b3RhbFwiLCBcInRhcmdldFwiIFxuKVxuY29sbmFtZXMoc3BhbSkgPC0gY29sX25hbWVzX3RvX3NldFxuYGBgIn0= --&gt;
+
+```r
+col_names_to_set &lt;- c(&quot;word_freq_make&quot;,&quot;word_freq_address&quot;,&quot;word_freq_all&quot;,&quot;word_freq_3d&quot;,&quot;word_freq_our&quot;,&quot;word_freq_over&quot;,&quot;word_freq_remove&quot;,&quot;word_freq_internet&quot;,&quot;word_freq_order&quot;,&quot;word_freq_mail&quot;,&quot;word_freq_receive&quot;,&quot;word_freq_will&quot;,&quot;word_freq_people&quot;,&quot;word_freq_report&quot;,&quot;word_freq_addresses&quot;,&quot;word_freq_free&quot;,&quot;word_freq_business&quot;,&quot;word_freq_email&quot;,&quot;word_freq_you&quot;,&quot;word_freq_credit&quot;,&quot;word_freq_your&quot;,&quot;word_freq_font&quot;,&quot;word_freq_000&quot;,&quot;word_freq_money&quot;,&quot;word_freq_hp&quot;,&quot;word_freq_hpl&quot;,&quot;word_freq_george&quot;,&quot;word_freq_650&quot;,&quot;word_freq_lab&quot;,&quot;word_freq_labs&quot;,&quot;word_freq_telnet&quot;,&quot;word_freq_857&quot;,&quot;word_freq_data&quot;,&quot;word_freq_415&quot;,&quot;word_freq_85&quot;,&quot;word_freq_technology&quot;,&quot;word_freq_1999&quot;,&quot;word_freq_parts&quot;,&quot;word_freq_pm&quot;,&quot;word_freq_direct&quot;,&quot;word_freq_cs&quot;,&quot;word_freq_meeting&quot;,&quot;word_freq_original&quot;,&quot;word_freq_project&quot;,&quot;word_freq_re&quot;,&quot;word_freq_edu&quot;,&quot;word_freq_table&quot;,&quot;word_freq_conference&quot;,&quot;char_freq_;&quot;,&quot;char_freq_(&quot;,&quot;char_freq_[&quot;,&quot;char_freq_!&quot;,&quot;char_freq_$&quot;,&quot;char_freq_#&quot;,&quot;capital_run_length_average&quot;,&quot;capital_run_length_longest&quot;,&quot;capital_run_length_total&quot;, &quot;target&quot; 
+)
+colnames(spam) &lt;- col_names_to_set</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="check-for-missing-values" class="section level1">
+<h1>Check for missing values</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShzcGFtKVxuYGBgIn0= -->
+<pre class="r"><code>summary(spam)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BhbVtpcy5uYShzcGFtKSwgXVxuYGBgIn0= -->
+<pre class="r"><code>spam[is.na(spam), ]</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKHNwYW0kdGFyZ2V0KVxuc3BhbSR0YXJnZXQgPC0gYXMuZmFjdG9yKHNwYW0kdGFyZ2V0KVxuYGBgIn0= -->
+<pre class="r"><code>str(spam$target)
+spam$target &lt;- as.factor(spam$target)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="train-validation-test-split" class="section level2">
+<h2>Train / Validation / Test Split</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2V0LnNlZWQoMTIzKVxuYyh0cmFpbiwgdmFsLCB0ZXN0KSAlPC0lIHRyYWluX3ZhbF90ZXN0X3NwbGl0KGRmID0gc3BhbSwgdHJhaW5fcmF0aW8gPSAwLjgsIHZhbF9yYXRpbyA9IDAuMiwgdGVzdF9yYXRpbyA9IDApXG5gYGAifQ== -->
+<pre class="r"><code>set.seed(123)
+c(train, val, test) %&lt;-% train_val_test_split(df = spam, train_ratio = 0.8, val_ratio = 0.2, test_ratio = 0)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="model-creation" class="section level2">
+<h2>Model Creation</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kZWxfZGVjaXNpb25fdHJlZSA8LSBycGFydChmb3JtdWxhID0gdGFyZ2V0IH4gLiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSB0cmFpbilcbmBgYCJ9 -->
+<pre class="r"><code>model_decision_tree &lt;- rpart(formula = target ~ ., 
+                             data = train)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="visualisation" class="section level2">
+<h2>Visualisation</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucnBhcnQucGxvdDo6cnBhcnQucGxvdChtb2RlbF9kZWNpc2lvbl90cmVlKVxuYGBgIn0= -->
+<pre class="r"><code>rpart.plot::rpart.plot(model_decision_tree)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="predictions" class="section level1">
+<h1>Predictions</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHJhaW4kdGFyZ2V0X3ByZWQgPC0gcHJlZGljdChtb2RlbF9kZWNpc2lvbl90cmVlLCBuZXdkYXRhID0gdHJhaW4pWywgMl1cbnZhbCR0YXJnZXRfcHJlZCA8LSBwcmVkaWN0KG1vZGVsX2RlY2lzaW9uX3RyZWUsIG5ld2RhdGEgPSB2YWwpWywgMl1cbmBgYCJ9 -->
+<pre class="r"><code>train$target_pred &lt;- predict(model_decision_tree, newdata = train)[, 2]
+val$target_pred &lt;- predict(model_decision_tree, newdata = val)[, 2]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGhyZXNob2xkIDwtIDAuNVxudHJhaW4kdGFyZ2V0X3ByZWRfY2xhc3MgPC0gaWZlbHNlKHRyYWluJHRhcmdldF9wcmVkID50aHJlc2hvbGQsIDEsIDApICU+JSBhcy5mYWN0b3IoKVxudmFsJHRhcmdldF9wcmVkX2NsYXNzIDwtIGlmZWxzZSh2YWwkdGFyZ2V0X3ByZWQgPnRocmVzaG9sZCwgMSwgMCkgJT4lIGFzLmZhY3RvcigpXG5gYGAifQ== -->
+<pre class="r"><code>threshold &lt;- 0.5
+train$target_pred_class &lt;- ifelse(train$target_pred &gt;threshold, 1, 0) %&gt;% as.factor()
+val$target_pred_class &lt;- ifelse(val$target_pred &gt;threshold, 1, 0) %&gt;% as.factor()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="model-performance" class="section level1">
+<h1>Model Performance</h1>
+<div id="baseline-classifier" class="section level2">
+<h2>Baseline Classifier</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFibGUodHJhaW4kdGFyZ2V0KVsxXSAvIGxlbmd0aCh0cmFpbiR0YXJnZXQpICogMTAwXG5gYGAifQ== -->
+<pre class="r"><code>table(train$target)[1] / length(train$target) * 100</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgIDAgXG42MC44OTY3NCBcbiJ9 -->
+<pre><code>       0 
+60.89674 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="confusion-matrix" class="section level2">
+<h2>Confusion Matrix</h2>
+<p>Calculate a confusion matrix for Training Data:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGhyZXNob2xkIDwtIDAuNVxuXG50cmFpbiR0YXJnZXRfcHJlZCA8LSBwcmVkaWN0KG1vZGVsX2RlY2lzaW9uX3RyZWUsIG5ld2RhdGEgPSB0cmFpbilbLCAyXVxudHJhaW4kdGFyZ2V0X3ByZWRfY2xhc3MgPC0gaWZlbHNlKHRyYWluJHRhcmdldF9wcmVkID50aHJlc2hvbGQsIDEsIDApICU+JSBhcy5mYWN0b3IoKVxuXG5jb25mX21hdF90cmFpbiA8LSB0YWJsZShwcmVkaWN0ZWQgPSB0cmFpbiR0YXJnZXRfcHJlZF9jbGFzcywgYWN0dWFsID0gdHJhaW4kdGFyZ2V0KVxuY29uZl9tYXRfdHJhaW5cbmBgYCJ9 -->
+<pre class="r"><code>threshold &lt;- 0.5
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRlY2lzaW9uIFRyZWVzIDIiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQoNCg0KYGBge3J9DQojIyBEYXRhIEltcG9ydA0KDQpmaWxlX3BhdGggPC0gIi4vZGF0YS9zcGFtLmNzdiINCmlmICghZmlsZS5leGlzdHMoZmlsZV9wYXRoKSkgew0KICBkaXIuY3JlYXRlKCIuL2RhdGEiKQ0KICB1cmwgPC0gImh0dHBzOi8vYXJjaGl2ZS5pY3MudWNpLmVkdS9tbC9tYWNoaW5lLWxlYXJuaW5nLWRhdGFiYXNlcy9zcGFtYmFzZS9zcGFtYmFzZS5kYXRhIg0KICBkb3dubG9hZC5maWxlKHVybCA9IHVybCwgDQogICAgICAgICAgICAgICAgZGVzdGZpbGUgPSBmaWxlX3BhdGgpDQp9DQpgYGANCg0KYGBge3J9DQpzcGFtIDwtIHJlYWQuY3N2KGZpbGVfcGF0aCwgc2VwID0gIiwiLCBoZWFkZXIgPSBGKQ0KYGBgDQoNCmBgYHtyfQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoZHBseXIpKQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoa2VyYXMpKQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoY2FyZXQpKQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkocnBhcnQpKQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkocnBhcnQucGxvdCkpDQoNCnNvdXJjZSgiLi9mdW5jdGlvbnMvdHJhaW5fdmFsX3Rlc3QuUiIpDQpgYGANCg0KYGBge3J9DQoNCmBgYA0KDQo=</div>
+train$target_pred &lt;- predict(model_decision_tree, newdata = train)[, 2]
+train$target_pred_class &lt;- ifelse(train$target_pred &gt;threshold, 1, 0) %&gt;% as.factor()
+
+conf_mat_train &lt;- table(predicted = train$target_pred_class, actual = train$target)
+conf_mat_train</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgYWN0dWFsXG5wcmVkaWN0ZWQgICAgMCAgICAxXG4gICAgICAgIDAgMjEwNiAgMjQ1XG4gICAgICAgIDEgIDEzNSAxMTk0XG4ifQ== -->
+<pre><code>         actual
+predicted    0    1
+        0 2106  245
+        1  135 1194</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Calculate a confusion matrix for Validation Data:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29uZl9tYXRfdmFsIDwtIHRhYmxlKHByZWRpY3RlZCA9IHZhbCR0YXJnZXRfcHJlZF9jbGFzcywgYWN0dWFsID0gdmFsJHRhcmdldClcbmNvbmZfbWF0X3ZhbFxuYGBgIn0= -->
+<pre class="r"><code>conf_mat_val &lt;- table(predicted = val$target_pred_class, actual = val$target)
+conf_mat_val</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgYWN0dWFsXG5wcmVkaWN0ZWQgICAwICAgMVxuICAgICAgICAwIDUwNSAgNjZcbiAgICAgICAgMSAgNDEgMzA4XG4ifQ== -->
+<pre><code>         actual
+predicted   0   1
+        0 505  66
+        1  41 308</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Calculate the Accuracy from the confusion matrix (for training and
+validation data).</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FyZXQ6OmNvbmZ1c2lvbk1hdHJpeChjb25mX21hdF90cmFpbilcbmBgYCJ9 -->
+<pre class="r"><code>caret::confusionMatrix(conf_mat_train)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ29uZnVzaW9uIE1hdHJpeCBhbmQgU3RhdGlzdGljc1xuXG4gICAgICAgICBhY3R1YWxcbnByZWRpY3RlZCAgICAwICAgIDFcbiAgICAgICAgMCAyMTA2ICAyNDVcbiAgICAgICAgMSAgMTM1IDExOTRcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgQWNjdXJhY3kgOiAwLjg5NjcgICAgICAgICAgXG4gICAgICAgICAgICAgICAgIDk1JSBDSSA6ICgwLjg4NjUsIDAuOTA2NClcbiAgICBObyBJbmZvcm1hdGlvbiBSYXRlIDogMC42MDkgICAgICAgICAgIFxuICAgIFAtVmFsdWUgW0FjYyA+IE5JUl0gOiA8IDIuMmUtMTYgICAgICAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiAgICAgICAgICAgICAgICAgIEthcHBhIDogMC43ODAyICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gTWNuZW1hcidzIFRlc3QgUC1WYWx1ZSA6IDIuMjVlLTA4ICAgICAgICBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgU2Vuc2l0aXZpdHkgOiAwLjkzOTggICAgICAgICAgXG4gICAgICAgICAgICBTcGVjaWZpY2l0eSA6IDAuODI5NyAgICAgICAgICBcbiAgICAgICAgIFBvcyBQcmVkIFZhbHVlIDogMC44OTU4ICAgICAgICAgIFxuICAgICAgICAgTmVnIFByZWQgVmFsdWUgOiAwLjg5ODQgICAgICAgICAgXG4gICAgICAgICAgICAgUHJldmFsZW5jZSA6IDAuNjA5MCAgICAgICAgICBcbiAgICAgICAgIERldGVjdGlvbiBSYXRlIDogMC41NzIzICAgICAgICAgIFxuICAgRGV0ZWN0aW9uIFByZXZhbGVuY2UgOiAwLjYzODkgICAgICAgICAgXG4gICAgICBCYWxhbmNlZCBBY2N1cmFjeSA6IDAuODg0OCAgICAgICAgICBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICdQb3NpdGl2ZScgQ2xhc3MgOiAwICAgICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiJ9 -->
+<pre><code>Confusion Matrix and Statistics
+
+         actual
+predicted    0    1
+        0 2106  245
+        1  135 1194
+                                          
+               Accuracy : 0.8967          
+                 95% CI : (0.8865, 0.9064)
+    No Information Rate : 0.609           
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+                                          
+                  Kappa : 0.7802          
+                                          
+ Mcnemar&#39;s Test P-Value : 2.25e-08        
+                                          
+            Sensitivity : 0.9398          
+            Specificity : 0.8297          
+         Pos Pred Value : 0.8958          
+         Neg Pred Value : 0.8984          
+             Prevalence : 0.6090          
+         Detection Rate : 0.5723          
+   Detection Prevalence : 0.6389          
+      Balanced Accuracy : 0.8848          
+                                          
+       &#39;Positive&#39; Class : 0               
+                                          </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FyZXQ6OmNvbmZ1c2lvbk1hdHJpeChjb25mX21hdF92YWwpXG5gYGAifQ== -->
+<pre class="r"><code>caret::confusionMatrix(conf_mat_val)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ29uZnVzaW9uIE1hdHJpeCBhbmQgU3RhdGlzdGljc1xuXG4gICAgICAgICBhY3R1YWxcbnByZWRpY3RlZCAgIDAgICAxXG4gICAgICAgIDAgNTA1ICA2NlxuICAgICAgICAxICA0MSAzMDhcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgQWNjdXJhY3kgOiAwLjg4MzcgICAgICAgICAgXG4gICAgICAgICAgICAgICAgIDk1JSBDSSA6ICgwLjg2MTIsIDAuOTAzNylcbiAgICBObyBJbmZvcm1hdGlvbiBSYXRlIDogMC41OTM1ICAgICAgICAgIFxuICAgIFAtVmFsdWUgW0FjYyA+IE5JUl0gOiA8IDJlLTE2ICAgICAgICAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiAgICAgICAgICAgICAgICAgIEthcHBhIDogMC43NTY0ICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gTWNuZW1hcidzIFRlc3QgUC1WYWx1ZSA6IDAuMDIwMzMgICAgICAgICBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgU2Vuc2l0aXZpdHkgOiAwLjkyNDkgICAgICAgICAgXG4gICAgICAgICAgICBTcGVjaWZpY2l0eSA6IDAuODIzNSAgICAgICAgICBcbiAgICAgICAgIFBvcyBQcmVkIFZhbHVlIDogMC44ODQ0ICAgICAgICAgIFxuICAgICAgICAgTmVnIFByZWQgVmFsdWUgOiAwLjg4MjUgICAgICAgICAgXG4gICAgICAgICAgICAgUHJldmFsZW5jZSA6IDAuNTkzNSAgICAgICAgICBcbiAgICAgICAgIERldGVjdGlvbiBSYXRlIDogMC41NDg5ICAgICAgICAgIFxuICAgRGV0ZWN0aW9uIFByZXZhbGVuY2UgOiAwLjYyMDcgICAgICAgICAgXG4gICAgICBCYWxhbmNlZCBBY2N1cmFjeSA6IDAuODc0MiAgICAgICAgICBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICdQb3NpdGl2ZScgQ2xhc3MgOiAwICAgICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiJ9 -->
+<pre><code>Confusion Matrix and Statistics
+
+         actual
+predicted   0   1
+        0 505  66
+        1  41 308
+                                          
+               Accuracy : 0.8837          
+                 95% CI : (0.8612, 0.9037)
+    No Information Rate : 0.5935          
+    P-Value [Acc &gt; NIR] : &lt; 2e-16         
+                                          
+                  Kappa : 0.7564          
+                                          
+ Mcnemar&#39;s Test P-Value : 0.02033         
+                                          
+            Sensitivity : 0.9249          
+            Specificity : 0.8235          
+         Pos Pred Value : 0.8844          
+         Neg Pred Value : 0.8825          
+             Prevalence : 0.5935          
+         Detection Rate : 0.5489          
+   Detection Prevalence : 0.6207          
+      Balanced Accuracy : 0.8742          
+                                          
+       &#39;Positive&#39; Class : 0               
+                                          </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRlY2lzaW9uIFRyZWVzIDIiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQoNCg0KYGBge3J9DQojIyBEYXRhIEltcG9ydA0KDQpmaWxlX3BhdGggPC0gIi4vZGF0YS9zcGFtLmNzdiINCmlmICghZmlsZS5leGlzdHMoZmlsZV9wYXRoKSkgew0KICBkaXIuY3JlYXRlKCIuL2RhdGEiKQ0KICB1cmwgPC0gImh0dHBzOi8vYXJjaGl2ZS5pY3MudWNpLmVkdS9tbC9tYWNoaW5lLWxlYXJuaW5nLWRhdGFiYXNlcy9zcGFtYmFzZS9zcGFtYmFzZS5kYXRhIg0KICBkb3dubG9hZC5maWxlKHVybCA9IHVybCwgDQogICAgICAgICAgICAgICAgZGVzdGZpbGUgPSBmaWxlX3BhdGgpDQp9DQpgYGANCg0KYGBge3J9DQpzcGFtIDwtIHJlYWQuY3N2KGZpbGVfcGF0aCwgc2VwID0gIiwiLCBoZWFkZXIgPSBGKQ0KYGBgDQoNCmBgYHtyfQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoZHBseXIpKQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoa2VyYXMpKQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoY2FyZXQpKQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkocnBhcnQpKQ0Kc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkocnBhcnQucGxvdCkpDQoNCnNvdXJjZSgiLi9mdW5jdGlvbnMvdHJhaW5fdmFsX3Rlc3QuUiIpDQpgYGANCiMgQXNzaWduIHRoZSBjb2x1bW4gbmFtZXMNCmBgYHtyfQ0KY29sX25hbWVzX3RvX3NldCA8LSBjKCJ3b3JkX2ZyZXFfbWFrZSIsIndvcmRfZnJlcV9hZGRyZXNzIiwid29yZF9mcmVxX2FsbCIsIndvcmRfZnJlcV8zZCIsIndvcmRfZnJlcV9vdXIiLCJ3b3JkX2ZyZXFfb3ZlciIsIndvcmRfZnJlcV9yZW1vdmUiLCJ3b3JkX2ZyZXFfaW50ZXJuZXQiLCJ3b3JkX2ZyZXFfb3JkZXIiLCJ3b3JkX2ZyZXFfbWFpbCIsIndvcmRfZnJlcV9yZWNlaXZlIiwid29yZF9mcmVxX3dpbGwiLCJ3b3JkX2ZyZXFfcGVvcGxlIiwid29yZF9mcmVxX3JlcG9ydCIsIndvcmRfZnJlcV9hZGRyZXNzZXMiLCJ3b3JkX2ZyZXFfZnJlZSIsIndvcmRfZnJlcV9idXNpbmVzcyIsIndvcmRfZnJlcV9lbWFpbCIsIndvcmRfZnJlcV95b3UiLCJ3b3JkX2ZyZXFfY3JlZGl0Iiwid29yZF9mcmVxX3lvdXIiLCJ3b3JkX2ZyZXFfZm9udCIsIndvcmRfZnJlcV8wMDAiLCJ3b3JkX2ZyZXFfbW9uZXkiLCJ3b3JkX2ZyZXFfaHAiLCJ3b3JkX2ZyZXFfaHBsIiwid29yZF9mcmVxX2dlb3JnZSIsIndvcmRfZnJlcV82NTAiLCJ3b3JkX2ZyZXFfbGFiIiwid29yZF9mcmVxX2xhYnMiLCJ3b3JkX2ZyZXFfdGVsbmV0Iiwid29yZF9mcmVxXzg1NyIsIndvcmRfZnJlcV9kYXRhIiwid29yZF9mcmVxXzQxNSIsIndvcmRfZnJlcV84NSIsIndvcmRfZnJlcV90ZWNobm9sb2d5Iiwid29yZF9mcmVxXzE5OTkiLCJ3b3JkX2ZyZXFfcGFydHMiLCJ3b3JkX2ZyZXFfcG0iLCJ3b3JkX2ZyZXFfZGlyZWN0Iiwid29yZF9mcmVxX2NzIiwid29yZF9mcmVxX21lZXRpbmciLCJ3b3JkX2ZyZXFfb3JpZ2luYWwiLCJ3b3JkX2ZyZXFfcHJvamVjdCIsIndvcmRfZnJlcV9yZSIsIndvcmRfZnJlcV9lZHUiLCJ3b3JkX2ZyZXFfdGFibGUiLCJ3b3JkX2ZyZXFfY29uZmVyZW5jZSIsImNoYXJfZnJlcV87IiwiY2hhcl9mcmVxXygiLCJjaGFyX2ZyZXFfWyIsImNoYXJfZnJlcV8hIiwiY2hhcl9mcmVxXyQiLCJjaGFyX2ZyZXFfIyIsImNhcGl0YWxfcnVuX2xlbmd0aF9hdmVyYWdlIiwiY2FwaXRhbF9ydW5fbGVuZ3RoX2xvbmdlc3QiLCJjYXBpdGFsX3J1bl9sZW5ndGhfdG90YWwiLCAidGFyZ2V0IiANCikNCmNvbG5hbWVzKHNwYW0pIDwtIGNvbF9uYW1lc190b19zZXQNCmBgYA0KIyBDaGVjayBmb3IgbWlzc2luZyB2YWx1ZXMNCmBgYHtyfQ0Kc3VtbWFyeShzcGFtKQ0KYGBgDQoNCmBgYHtyfQ0Kc3BhbVtpcy5uYShzcGFtKSwgXQ0KYGBgDQoNCmBgYHtyfQ0Kc3RyKHNwYW0kdGFyZ2V0KQ0Kc3BhbSR0YXJnZXQgPC0gYXMuZmFjdG9yKHNwYW0kdGFyZ2V0KQ0KYGBgDQojIyBUcmFpbiAvIFZhbGlkYXRpb24gLyBUZXN0IFNwbGl0DQpgYGB7cn0NCnNldC5zZWVkKDEyMykNCmModHJhaW4sIHZhbCwgdGVzdCkgJTwtJSB0cmFpbl92YWxfdGVzdF9zcGxpdChkZiA9IHNwYW0sIHRyYWluX3JhdGlvID0gMC44LCB2YWxfcmF0aW8gPSAwLjIsIHRlc3RfcmF0aW8gPSAwKQ0KYGBgDQoNCiMjIE1vZGVsIENyZWF0aW9uDQpgYGB7cn0NCm1vZGVsX2RlY2lzaW9uX3RyZWUgPC0gcnBhcnQoZm9ybXVsYSA9IHRhcmdldCB+IC4sIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gdHJhaW4pDQpgYGANCg0KIyMgVmlzdWFsaXNhdGlvbg0KYGBge3J9DQpycGFydC5wbG90OjpycGFydC5wbG90KG1vZGVsX2RlY2lzaW9uX3RyZWUpDQpgYGANCg0KIyBQcmVkaWN0aW9ucw0KDQpgYGB7cn0NCnRyYWluJHRhcmdldF9wcmVkIDwtIHByZWRpY3QobW9kZWxfZGVjaXNpb25fdHJlZSwgbmV3ZGF0YSA9IHRyYWluKVssIDJdDQp2YWwkdGFyZ2V0X3ByZWQgPC0gcHJlZGljdChtb2RlbF9kZWNpc2lvbl90cmVlLCBuZXdkYXRhID0gdmFsKVssIDJdDQpgYGANCg0KYGBge3J9DQp0aHJlc2hvbGQgPC0gMC41DQp0cmFpbiR0YXJnZXRfcHJlZF9jbGFzcyA8LSBpZmVsc2UodHJhaW4kdGFyZ2V0X3ByZWQgPnRocmVzaG9sZCwgMSwgMCkgJT4lIGFzLmZhY3RvcigpDQp2YWwkdGFyZ2V0X3ByZWRfY2xhc3MgPC0gaWZlbHNlKHZhbCR0YXJnZXRfcHJlZCA+dGhyZXNob2xkLCAxLCAwKSAlPiUgYXMuZmFjdG9yKCkNCmBgYA0KDQojIE1vZGVsIFBlcmZvcm1hbmNlDQoNCiMjIEJhc2VsaW5lIENsYXNzaWZpZXINCg0KYGBge3J9DQp0YWJsZSh0cmFpbiR0YXJnZXQpWzFdIC8gbGVuZ3RoKHRyYWluJHRhcmdldCkgKiAxMDANCg0KYGBgDQojIyBDb25mdXNpb24gTWF0cml4DQoNCkNhbGN1bGF0ZSBhIGNvbmZ1c2lvbiBtYXRyaXggZm9yIFRyYWluaW5nIERhdGE6DQoNCmBgYHtyfQ0KdGhyZXNob2xkIDwtIDAuNQ0KDQp0cmFpbiR0YXJnZXRfcHJlZCA8LSBwcmVkaWN0KG1vZGVsX2RlY2lzaW9uX3RyZWUsIG5ld2RhdGEgPSB0cmFpbilbLCAyXQ0KdHJhaW4kdGFyZ2V0X3ByZWRfY2xhc3MgPC0gaWZlbHNlKHRyYWluJHRhcmdldF9wcmVkID50aHJlc2hvbGQsIDEsIDApICU+JSBhcy5mYWN0b3IoKQ0KDQpjb25mX21hdF90cmFpbiA8LSB0YWJsZShwcmVkaWN0ZWQgPSB0cmFpbiR0YXJnZXRfcHJlZF9jbGFzcywgYWN0dWFsID0gdHJhaW4kdGFyZ2V0KQ0KY29uZl9tYXRfdHJhaW4NCg0KYGBgDQoNCkNhbGN1bGF0ZSBhIGNvbmZ1c2lvbiBtYXRyaXggZm9yIFZhbGlkYXRpb24gRGF0YToNCg0KYGBge3J9DQpjb25mX21hdF92YWwgPC0gdGFibGUocHJlZGljdGVkID0gdmFsJHRhcmdldF9wcmVkX2NsYXNzLCBhY3R1YWwgPSB2YWwkdGFyZ2V0KQ0KY29uZl9tYXRfdmFsDQpgYGANCg0KQ2FsY3VsYXRlIHRoZSBBY2N1cmFjeSBmcm9tIHRoZSBjb25mdXNpb24gbWF0cml4IChmb3IgdHJhaW5pbmcgYW5kIHZhbGlkYXRpb24gZGF0YSkuDQoNCmBgYHtyfQ0KY2FyZXQ6OmNvbmZ1c2lvbk1hdHJpeChjb25mX21hdF90cmFpbikNCmNhcmV0Ojpjb25mdXNpb25NYXRyaXgoY29uZl9tYXRfdmFsKQ0KYGBgDQoNCg==</div>
 
 
 
@@ -1840,7 +2076,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Decision Trees.Rmd");
+  window.initializeSourceEmbed("Decision Trees 2.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
