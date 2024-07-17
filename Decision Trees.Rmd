@@ -1,0 +1,126 @@
+---
+title: "Decision Trees"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+library(rpart)
+library(rpart.plot)
+library(keras)
+library(rattle)
+```
+
+# Train / Validation/ Test Split
+```{r}
+train_ratio <- 0.6
+validation_ratio <- 0.2
+test_ratio <- 1 - train_ratio - validation_ratio
+```
+# Function for Train/ Validation / Test Split
+```{r}
+train_val_test_split <- function(df, train_ratio = 0.6, val_ratio = 0.2, test_ratio = 0.2) {
+  n_obs <- nrow(df)
+  sample_size_train <- floor(train_ratio * n_obs)
+  sample_size_valid <- floor(validation_ratio * n_obs)
+  sample_size_test <- floor(test_ratio * n_obs)
+
+  indices_train <- base::sample(x = 1:n_obs, size = sample_size_train) %>% sort
+  indicies_not_train <- base::setdiff(x = 1:n_obs, indices_train)
+  indicies_validation <- base::sample(x = indicies_not_train, size = sample_size_valid)
+  indicies_test <- base::setdiff(indicies_not_train, indicies_validation)
+
+  train <- df[indices_train, ]
+  val <- df[indicies_validation, ]
+  test <- df[indicies_test, ]
+  list(train, val, test)
+  
+}
+```
+# Import Data
+```{r}
+# https://github.com/DataScienceHamburg/R_Ultimate/blob/main/Rultimate_Project/data/CreditApproval_mod.RDS
+credit_approval <- readRDS("./data/CreditApproval_mod.RDS")
+credit_approval$Approved <- as.factor(credit_approval$Approved)
+```
+
+```{r}
+credit_approval %>% summary()
+```
+```{r}
+credit_approval$Approved %>% table()
+```
+
+# Train / Validation / Holdout Split
+```{r}
+set.seed(123)
+c(train, val, test) %<-% train_val_test_split(credit_approval)
+```
+
+# Modelling
+```{r}
+tree_fit <- rpart(formula = Approved ~ Income + CreditScore, data = train)
+```
+
+```{r}
+print(tree_fit)
+```
+
+```{r}
+asRules(tree_fit)
+```
+# Visualisation
+```{r}
+rpart.plot(x = tree_fit)
+```
+# A nicer visualisation with fancyRpartplot()
+```{r}
+fancyRpartPlot(tree_fit)
+```
+# Prediction
+```{r}
+val$y_pred_prob <- predict(object = tree_fit,
+                           newdata = val)[, 2]
+
+val$y_pred_class <- ifelse(val$y_pred_prob > 0.5, 1 , 0)
+
+```
+
+# Model Evaluation
+```{r}
+df_grid <- expand.grid(Income = seq(0, 10, 1),
+                       CreditScore = seq(0,10, 1))
+df_grid <- df_grid %>% 
+  as.tibble() %>% 
+  dplyr::mutate(y_pred_prob = predict(object = tree_fit, newdata = .)[, 2]) %>% 
+  dplyr::mutate(y_pred_class = ifelse(y_pred_prob > 0.5, 1, 0)) %>% 
+  dplyr::mutate(y_pred_class = as.factor(y_pred_class))
+
+g <- ggplot(df_grid, aes(x = Income,
+                         y = CreditScore,
+                         col = as.factor(y_pred_class)))
+g <- g + geom_raster(aes(fill = y_pred_class))
+g <- g + scale_fill_brewer(name = "Approved", palette = "RdYlGn")
+g <- g + geom_point(data = val, aes(x = Income,
+                                         y = CreditScore,
+                                         col = Approved
+                                         ))
+g <- g + coord_cartesian(xlim = c(0, 10),
+                         ylim = c(0, 10))
+g <- g + scale_color_brewer(name = "Acceptance\nProbability", palette = "RdYlGn")
+g <- g + theme_bw()
+g
+```
+ baseline (null) classifier
+```{r}
+tab_classes <- val$Approved %>% as.character() %>% as.numeric() %>% table()
+tab_classes
+
+max(tab_classes) / sum(tab_classes)
+```
+ Our Classifier
+```{r}
+caret::postResample(pred = val$y_pred_class, obs = val$Approved)
+```
+ 
