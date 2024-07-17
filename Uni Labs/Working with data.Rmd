@@ -5,9 +5,43 @@ output: html_notebook
 
 # Data Preparation
 
+Before you can visualise your data, you have to get it into R. This involves importing the data from an external source and converting it into a useful format.
+
 ## Importing data
 
-```{r}
+R can import data from almost any source, including text files, excel spreadsheets, statistical packages, and database management systems. We'll  illustrate these techniques using the Salaries dataset, containing the 9-month academic salaries of college professors at a single institution in 2008-2009.
 
+# Text files
+
+The readr package provides functions for importing delimited text files into R data frames.
+
+```{r}
+library(readr)
+```
+
+# import data from a comma delimited file
+
+```{r}
+Salaries <- read.csv("salaries.csv")
+```
+
+# import data from a tab delimited file
+
+```{r}
+Salaries <- read.table("salaries.txt")
+```
+
+These functions assume that the first line of data contains the variable names, values and are separated by commas or tabs respectively, and that missing data are represented by blanks.
+
+The readxl package can import data from Excel workbooks. Both xls and xlsx formats are supported.
+
+```{r}
+library(readxl)
+```
+
+# import data from an Excel workbook
+
+```{r}
+Salaries <- read_excel("salaries.xlsx", sheet=1)
 ```
 

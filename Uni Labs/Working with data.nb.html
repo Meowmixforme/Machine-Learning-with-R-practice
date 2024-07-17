@@ -1754,17 +1754,75 @@ display: none;
 <!-- rnb-text-begin -->
 <div id="data-preparation" class="section level1">
 <h1>Data Preparation</h1>
+<p>Before you can visualise your data, you have to get it into R. This
+involves importing the data from an external source and converting it
+into a useful format.</p>
 <div id="importing-data" class="section level2">
 <h2>Importing data</h2>
+<p>R can import data from almost any source, including text files, excel
+spreadsheets, statistical packages, and database management systems.
+We’ll illustrate these techniques using the Salaries dataset, containing
+the 9-month academic salaries of college professors at a single
+institution in 2008-2009.</p>
+</div>
+</div>
+<div id="text-files" class="section level1">
+<h1>Text files</h1>
+<p>The readr package provides functions for importing delimited text
+files into R data frames.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkcilcbmBgYCJ9 -->
+<pre class="r"><code>library(readr)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="import-data-from-a-comma-delimited-file" class="section level1">
+<h1>import data from a comma delimited file</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU2FsYXJpZXMgPC0gcmVhZC5jc3YoXCJzYWxhcmllcy5jc3ZcIilcbmBgYCJ9 -->
+<pre class="r"><code>Salaries &lt;- read.csv(&quot;salaries.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="import-data-from-a-tab-delimited-file" class="section level1">
+<h1>import data from a tab delimited file</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU2FsYXJpZXMgPC0gcmVhZC50YWJsZShcInNhbGFyaWVzLnR4dFwiKVxuYGBgIn0= -->
+<pre class="r"><code>Salaries &lt;- read.table(&quot;salaries.txt&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>These functions assume that the first line of data contains the
+variable names, values and are separated by commas or tabs respectively,
+and that missing data are represented by blanks.</p>
+<p>The readxl package can import data from Excel workbooks. Both xls and
+xlsx formats are supported.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkeGwpXG5gYGAifQ== -->
+<pre class="r"><code>library(readxl)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="import-data-from-an-excel-workbook" class="section level1">
+<h1>import data from an Excel workbook</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU2FsYXJpZXMgPC0gcmVhZF9leGNlbChcInNhbGFyaWVzLnhsc3hcIiwgc2hlZXQ9MSlcbmBgYCJ9 -->
+<pre class="r"><code>Salaries &lt;- read_excel(&quot;salaries.xlsx&quot;, sheet=1)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
-</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIldvcmtpbmcgd2l0aCBkYXRhIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyBEYXRhIFByZXBhcmF0aW9uDQoNCiMjIEltcG9ydGluZyBkYXRhDQoNCmBgYHtyfQ0KDQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIldvcmtpbmcgd2l0aCBkYXRhIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyBEYXRhIFByZXBhcmF0aW9uDQoNCkJlZm9yZSB5b3UgY2FuIHZpc3VhbGlzZSB5b3VyIGRhdGEsIHlvdSBoYXZlIHRvIGdldCBpdCBpbnRvIFIuIFRoaXMgaW52b2x2ZXMgaW1wb3J0aW5nIHRoZSBkYXRhIGZyb20gYW4gZXh0ZXJuYWwgc291cmNlIGFuZCBjb252ZXJ0aW5nIGl0IGludG8gYSB1c2VmdWwgZm9ybWF0Lg0KDQojIyBJbXBvcnRpbmcgZGF0YQ0KDQpSIGNhbiBpbXBvcnQgZGF0YSBmcm9tIGFsbW9zdCBhbnkgc291cmNlLCBpbmNsdWRpbmcgdGV4dCBmaWxlcywgZXhjZWwgc3ByZWFkc2hlZXRzLCBzdGF0aXN0aWNhbCBwYWNrYWdlcywgYW5kIGRhdGFiYXNlIG1hbmFnZW1lbnQgc3lzdGVtcy4gV2UnbGwgIGlsbHVzdHJhdGUgdGhlc2UgdGVjaG5pcXVlcyB1c2luZyB0aGUgU2FsYXJpZXMgZGF0YXNldCwgY29udGFpbmluZyB0aGUgOS1tb250aCBhY2FkZW1pYyBzYWxhcmllcyBvZiBjb2xsZWdlIHByb2Zlc3NvcnMgYXQgYSBzaW5nbGUgaW5zdGl0dXRpb24gaW4gMjAwOC0yMDA5Lg0KDQojIFRleHQgZmlsZXMNCg0KVGhlIHJlYWRyIHBhY2thZ2UgcHJvdmlkZXMgZnVuY3Rpb25zIGZvciBpbXBvcnRpbmcgZGVsaW1pdGVkIHRleHQgZmlsZXMgaW50byBSIGRhdGEgZnJhbWVzLg0KDQpgYGB7cn0NCmxpYnJhcnkocmVhZHIpDQpgYGANCg0KIyBpbXBvcnQgZGF0YSBmcm9tIGEgY29tbWEgZGVsaW1pdGVkIGZpbGUNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkLmNzdigic2FsYXJpZXMuY3N2IikNCmBgYA0KDQojIGltcG9ydCBkYXRhIGZyb20gYSB0YWIgZGVsaW1pdGVkIGZpbGUNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkLnRhYmxlKCJzYWxhcmllcy50eHQiKQ0KYGBgDQoNClRoZXNlIGZ1bmN0aW9ucyBhc3N1bWUgdGhhdCB0aGUgZmlyc3QgbGluZSBvZiBkYXRhIGNvbnRhaW5zIHRoZSB2YXJpYWJsZSBuYW1lcywgdmFsdWVzIGFuZCBhcmUgc2VwYXJhdGVkIGJ5IGNvbW1hcyBvciB0YWJzIHJlc3BlY3RpdmVseSwgYW5kIHRoYXQgbWlzc2luZyBkYXRhIGFyZSByZXByZXNlbnRlZCBieSBibGFua3MuDQoNClRoZSByZWFkeGwgcGFja2FnZSBjYW4gaW1wb3J0IGRhdGEgZnJvbSBFeGNlbCB3b3JrYm9va3MuIEJvdGggeGxzIGFuZCB4bHN4IGZvcm1hdHMgYXJlIHN1cHBvcnRlZC4NCg0KYGBge3J9DQpsaWJyYXJ5KHJlYWR4bCkNCmBgYA0KDQojIGltcG9ydCBkYXRhIGZyb20gYW4gRXhjZWwgd29ya2Jvb2sNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkX2V4Y2VsKCJzYWxhcmllcy54bHN4Iiwgc2hlZXQ9MSkNCmBgYA0KDQo=</div>
 
 
 
