@@ -1800,6 +1800,9 @@ files into R data frames.</p>
 <p>These functions assume that the first line of data contains the
 variable names, values and are separated by commas or tabs respectively,
 and that missing data are represented by blanks.</p>
+</div>
+<div id="excel-spreadsheets" class="section level1">
+<h1>Excel spreadsheets</h1>
 <p>The readxl package can import data from Excel workbooks. Both xls and
 xlsx formats are supported.</p>
 <!-- rnb-text-end -->
@@ -1819,10 +1822,139 @@ xlsx formats are supported.</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>Since workbooks can have more than one worksheet, you can specify the
+one you want with the sheet option. The default is sheet=1.</p>
+</div>
+<div id="statistical-packages" class="section level1">
+<h1>Statistical packages</h1>
+<p>The haven package provides functions for importing data from a
+variety of statistical packages.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShoYXZlbilcbmBgYCJ9 -->
+<pre class="r"><code>library(haven)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="converting-csv-to-dta" class="section level2">
+<h2>Converting csv to dta</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShoYXZlbilcbnggPC0gcmVhZC5jc3YoXCJzYWxhcmllcy5jc3ZcIilcblxuIyBSZXBsYWNlIGlsbGVnYWwgY2hhcmFjdGVycyBpbiB2YXJpYWJsZSBuYW1lc1xubmFtZXMoeCkgPC0gZ3N1YihcIlxcXFwuXCIsIFwiX1wiLCBuYW1lcyh4KSlcblxuIyBXcml0ZSB0byBTdGF0YSBmb3JtYXRcbndyaXRlX2R0YSh4LCBcInNhbGFyaWVzLmR0YVwiKVxuYGBgIn0= -->
+<pre class="r"><code>library(haven)
+x &lt;- read.csv(&quot;salaries.csv&quot;)
+
+# Replace illegal characters in variable names
+names(x) &lt;- gsub(&quot;\\.&quot;, &quot;_&quot;, names(x))
+
+# Write to Stata format
+write_dta(x, &quot;salaries.dta&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="import-data-from-stata" class="section level1">
+<h1>import data from Stata</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU2FsYXJpZXMgPC0gcmVhZF9kdGEoXCJzYWxhcmllcy5kdGFcIilcbmBgYCJ9 -->
+<pre class="r"><code>Salaries &lt;- read_dta(&quot;salaries.dta&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="converting-csv-to-spss" class="section level2">
+<h2>Converting csv to SPSS</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfc2F2KFNhbGFyaWVzLCBcInNhbGFyaWVzLnNhdlwiKVxuYGBgIn0= -->
+<pre class="r"><code>write_sav(Salaries, &quot;salaries.sav&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="import-data-from-spss" class="section level1">
+<h1>import data from SPSS</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU2FsYXJpZXMgPC0gcmVhZF9zYXYoXCJzYWxhcmllcy5zYXZcIilcbmBgYCJ9 -->
+<pre class="r"><code>Salaries &lt;- read_sav(&quot;salaries.sav&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="import-data-from-sas" class="section level1">
+<h1>import data from SAS</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuU2FsYXJpZXMgPC0gcmVhZF9zYXMoXCJzYWxhcmllcy5zYXM3ZGJhdFwiKVxuYGBgIn0= -->
+<pre class="r"><code>Salaries &lt;- read_sas(&quot;salaries.sas7dbat&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="selecting-variables" class="section level1">
+<h1>Selecting variables</h1>
+<p>The select function allows you to limit your dataset to specified
+variables (columns).</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmBgYCJ9 -->
+<pre class="r"><code>library(dplyr)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYZHBseXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnN0YXRz4oCZOlxuXG4gICAgZmlsdGVyLCBsYWdcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmJhc2XigJk6XG5cbiAgICBpbnRlcnNlY3QsIHNldGRpZmYsIHNldGVxdWFsLCB1bmlvblxuIn0= -->
+<pre><code>
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="keep-the-variables-name-height-and-gender" class="section level1">
+<h1>keep the variables name, height and gender</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmV3ZGF0YSA8LSBzZWxlY3Qoc3RhcndhcnMsIG5hbWUsIGhlaWdodCwgZ2VuZGVyKVxuYGBgIn0= -->
+<pre class="r"><code>newdata &lt;- select(starwars, name, height, gender)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="keep-the-variables-name-and-all-variables-between-mass-and-species-inclusive" class="section level1">
+<h1>keep the variables name and all variables between mass and species
+inclusive</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmV3ZGF0YSA8LSBzZWxlY3Qoc3RhcndhcnMsIG5hbWUsIG1hc3M6c3BlY2llcylcbmBgYCJ9 -->
+<pre class="r"><code>newdata &lt;- select(starwars, name, mass:species)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="keep-all-variables-except-birth_year-and-gender" class="section level1">
+<h1>keep all variables except birth_year and gender</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmV3ZGF0YSA8LSBzZWxlY3Qoc3RhcndhcnMsIC1iaXJ0aF95ZWFyLCAtZ2VuZGVyKVxuYGBgIn0= -->
+<pre class="r"><code>newdata &lt;- select(starwars, -birth_year, -gender)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="selecting-observations" class="section level1">
+<h1>Selecting observations</h1>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIldvcmtpbmcgd2l0aCBkYXRhIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyBEYXRhIFByZXBhcmF0aW9uDQoNCkJlZm9yZSB5b3UgY2FuIHZpc3VhbGlzZSB5b3VyIGRhdGEsIHlvdSBoYXZlIHRvIGdldCBpdCBpbnRvIFIuIFRoaXMgaW52b2x2ZXMgaW1wb3J0aW5nIHRoZSBkYXRhIGZyb20gYW4gZXh0ZXJuYWwgc291cmNlIGFuZCBjb252ZXJ0aW5nIGl0IGludG8gYSB1c2VmdWwgZm9ybWF0Lg0KDQojIyBJbXBvcnRpbmcgZGF0YQ0KDQpSIGNhbiBpbXBvcnQgZGF0YSBmcm9tIGFsbW9zdCBhbnkgc291cmNlLCBpbmNsdWRpbmcgdGV4dCBmaWxlcywgZXhjZWwgc3ByZWFkc2hlZXRzLCBzdGF0aXN0aWNhbCBwYWNrYWdlcywgYW5kIGRhdGFiYXNlIG1hbmFnZW1lbnQgc3lzdGVtcy4gV2UnbGwgIGlsbHVzdHJhdGUgdGhlc2UgdGVjaG5pcXVlcyB1c2luZyB0aGUgU2FsYXJpZXMgZGF0YXNldCwgY29udGFpbmluZyB0aGUgOS1tb250aCBhY2FkZW1pYyBzYWxhcmllcyBvZiBjb2xsZWdlIHByb2Zlc3NvcnMgYXQgYSBzaW5nbGUgaW5zdGl0dXRpb24gaW4gMjAwOC0yMDA5Lg0KDQojIFRleHQgZmlsZXMNCg0KVGhlIHJlYWRyIHBhY2thZ2UgcHJvdmlkZXMgZnVuY3Rpb25zIGZvciBpbXBvcnRpbmcgZGVsaW1pdGVkIHRleHQgZmlsZXMgaW50byBSIGRhdGEgZnJhbWVzLg0KDQpgYGB7cn0NCmxpYnJhcnkocmVhZHIpDQpgYGANCg0KIyBpbXBvcnQgZGF0YSBmcm9tIGEgY29tbWEgZGVsaW1pdGVkIGZpbGUNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkLmNzdigic2FsYXJpZXMuY3N2IikNCmBgYA0KDQojIGltcG9ydCBkYXRhIGZyb20gYSB0YWIgZGVsaW1pdGVkIGZpbGUNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkLnRhYmxlKCJzYWxhcmllcy50eHQiKQ0KYGBgDQoNClRoZXNlIGZ1bmN0aW9ucyBhc3N1bWUgdGhhdCB0aGUgZmlyc3QgbGluZSBvZiBkYXRhIGNvbnRhaW5zIHRoZSB2YXJpYWJsZSBuYW1lcywgdmFsdWVzIGFuZCBhcmUgc2VwYXJhdGVkIGJ5IGNvbW1hcyBvciB0YWJzIHJlc3BlY3RpdmVseSwgYW5kIHRoYXQgbWlzc2luZyBkYXRhIGFyZSByZXByZXNlbnRlZCBieSBibGFua3MuDQoNClRoZSByZWFkeGwgcGFja2FnZSBjYW4gaW1wb3J0IGRhdGEgZnJvbSBFeGNlbCB3b3JrYm9va3MuIEJvdGggeGxzIGFuZCB4bHN4IGZvcm1hdHMgYXJlIHN1cHBvcnRlZC4NCg0KYGBge3J9DQpsaWJyYXJ5KHJlYWR4bCkNCmBgYA0KDQojIGltcG9ydCBkYXRhIGZyb20gYW4gRXhjZWwgd29ya2Jvb2sNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkX2V4Y2VsKCJzYWxhcmllcy54bHN4Iiwgc2hlZXQ9MSkNCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIldvcmtpbmcgd2l0aCBkYXRhIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyBEYXRhIFByZXBhcmF0aW9uDQoNCkJlZm9yZSB5b3UgY2FuIHZpc3VhbGlzZSB5b3VyIGRhdGEsIHlvdSBoYXZlIHRvIGdldCBpdCBpbnRvIFIuIFRoaXMgaW52b2x2ZXMgaW1wb3J0aW5nIHRoZSBkYXRhIGZyb20gYW4gZXh0ZXJuYWwgc291cmNlIGFuZCBjb252ZXJ0aW5nIGl0IGludG8gYSB1c2VmdWwgZm9ybWF0Lg0KDQojIyBJbXBvcnRpbmcgZGF0YQ0KDQpSIGNhbiBpbXBvcnQgZGF0YSBmcm9tIGFsbW9zdCBhbnkgc291cmNlLCBpbmNsdWRpbmcgdGV4dCBmaWxlcywgZXhjZWwgc3ByZWFkc2hlZXRzLCBzdGF0aXN0aWNhbCBwYWNrYWdlcywgYW5kIGRhdGFiYXNlIG1hbmFnZW1lbnQgc3lzdGVtcy4gV2UnbGwgIGlsbHVzdHJhdGUgdGhlc2UgdGVjaG5pcXVlcyB1c2luZyB0aGUgU2FsYXJpZXMgZGF0YXNldCwgY29udGFpbmluZyB0aGUgOS1tb250aCBhY2FkZW1pYyBzYWxhcmllcyBvZiBjb2xsZWdlIHByb2Zlc3NvcnMgYXQgYSBzaW5nbGUgaW5zdGl0dXRpb24gaW4gMjAwOC0yMDA5Lg0KDQojIFRleHQgZmlsZXMNCg0KVGhlIHJlYWRyIHBhY2thZ2UgcHJvdmlkZXMgZnVuY3Rpb25zIGZvciBpbXBvcnRpbmcgZGVsaW1pdGVkIHRleHQgZmlsZXMgaW50byBSIGRhdGEgZnJhbWVzLg0KDQpgYGB7cn0NCmxpYnJhcnkocmVhZHIpDQpgYGANCg0KIyBpbXBvcnQgZGF0YSBmcm9tIGEgY29tbWEgZGVsaW1pdGVkIGZpbGUNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkLmNzdigic2FsYXJpZXMuY3N2IikNCmBgYA0KDQojIGltcG9ydCBkYXRhIGZyb20gYSB0YWIgZGVsaW1pdGVkIGZpbGUNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkLnRhYmxlKCJzYWxhcmllcy50eHQiKQ0KYGBgDQoNClRoZXNlIGZ1bmN0aW9ucyBhc3N1bWUgdGhhdCB0aGUgZmlyc3QgbGluZSBvZiBkYXRhIGNvbnRhaW5zIHRoZSB2YXJpYWJsZSBuYW1lcywgdmFsdWVzIGFuZCBhcmUgc2VwYXJhdGVkIGJ5IGNvbW1hcyBvciB0YWJzIHJlc3BlY3RpdmVseSwgYW5kIHRoYXQgbWlzc2luZyBkYXRhIGFyZSByZXByZXNlbnRlZCBieSBibGFua3MuDQoNCiMgRXhjZWwgc3ByZWFkc2hlZXRzDQoNClRoZSByZWFkeGwgcGFja2FnZSBjYW4gaW1wb3J0IGRhdGEgZnJvbSBFeGNlbCB3b3JrYm9va3MuIEJvdGggeGxzIGFuZCB4bHN4IGZvcm1hdHMgYXJlIHN1cHBvcnRlZC4NCg0KYGBge3J9DQpsaWJyYXJ5KHJlYWR4bCkNCmBgYA0KDQojIGltcG9ydCBkYXRhIGZyb20gYW4gRXhjZWwgd29ya2Jvb2sNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkX2V4Y2VsKCJzYWxhcmllcy54bHN4Iiwgc2hlZXQ9MSkNCmBgYA0KDQpTaW5jZSB3b3JrYm9va3MgY2FuIGhhdmUgbW9yZSB0aGFuIG9uZSB3b3Jrc2hlZXQsIHlvdSBjYW4gc3BlY2lmeSB0aGUgb25lIHlvdSB3YW50IHdpdGggdGhlIHNoZWV0IG9wdGlvbi4gVGhlIGRlZmF1bHQgaXMgc2hlZXQ9MS4NCg0KIyBTdGF0aXN0aWNhbCBwYWNrYWdlcw0KDQpUaGUgaGF2ZW4gcGFja2FnZSBwcm92aWRlcyBmdW5jdGlvbnMgZm9yIGltcG9ydGluZyBkYXRhIGZyb20gYSB2YXJpZXR5IG9mIHN0YXRpc3RpY2FsIHBhY2thZ2VzLg0KDQpgYGB7cn0NCmxpYnJhcnkoaGF2ZW4pDQpgYGANCg0KIyMgQ29udmVydGluZyBjc3YgdG8gZHRhDQoNCmBgYHtyfQ0KbGlicmFyeShoYXZlbikNCg0KeCA8LSByZWFkLmNzdigic2FsYXJpZXMuY3N2IikNCg0KIyBSZXBsYWNlIGlsbGVnYWwgY2hhcmFjdGVycyBpbiB2YXJpYWJsZSBuYW1lcw0KbmFtZXMoeCkgPC0gZ3N1YigiXFwuIiwgIl8iLCBuYW1lcyh4KSkNCg0KIyBXcml0ZSB0byBTdGF0YSBmb3JtYXQNCndyaXRlX2R0YSh4LCAic2FsYXJpZXMuZHRhIikNCmBgYA0KDQojIGltcG9ydCBkYXRhIGZyb20gU3RhdGENCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkX2R0YSgic2FsYXJpZXMuZHRhIikNCmBgYA0KDQojIyBDb252ZXJ0aW5nIGNzdiB0byBTUFNTDQoNCmBgYHtyfQ0Kd3JpdGVfc2F2KFNhbGFyaWVzLCAic2FsYXJpZXMuc2F2IikNCmBgYA0KDQojIGltcG9ydCBkYXRhIGZyb20gU1BTUw0KDQpgYGB7cn0NClNhbGFyaWVzIDwtIHJlYWRfc2F2KCJzYWxhcmllcy5zYXYiKQ0KYGBgDQoNCiMgaW1wb3J0IGRhdGEgZnJvbSBTQVMNCg0KYGBge3J9DQpTYWxhcmllcyA8LSByZWFkX3Nhcygic2FsYXJpZXMuc2FzN2RiYXQiKQ0KYGBgDQoNCiMgU2VsZWN0aW5nIHZhcmlhYmxlcw0KDQpUaGUgc2VsZWN0IGZ1bmN0aW9uIGFsbG93cyB5b3UgdG8gbGltaXQgeW91ciBkYXRhc2V0IHRvIHNwZWNpZmllZCB2YXJpYWJsZXMgKGNvbHVtbnMpLg0KDQpgYGB7cn0NCmxpYnJhcnkoZHBseXIpDQpgYGANCiMga2VlcCB0aGUgdmFyaWFibGVzIG5hbWUsIGhlaWdodCBhbmQgZ2VuZGVyDQoNCmBgYHtyfQ0KbmV3ZGF0YSA8LSBzZWxlY3Qoc3RhcndhcnMsIG5hbWUsIGhlaWdodCwgZ2VuZGVyKQ0KYGBgDQoNCiMga2VlcCB0aGUgdmFyaWFibGVzIG5hbWUgYW5kIGFsbCB2YXJpYWJsZXMgYmV0d2VlbiBtYXNzIGFuZCBzcGVjaWVzIGluY2x1c2l2ZQ0KDQpgYGB7cn0NCm5ld2RhdGEgPC0gc2VsZWN0KHN0YXJ3YXJzLCBuYW1lLCBtYXNzOnNwZWNpZXMpDQpgYGANCg0KIyBrZWVwIGFsbCB2YXJpYWJsZXMgZXhjZXB0IGJpcnRoX3llYXIgYW5kIGdlbmRlcg0KDQpgYGB7cn0NCm5ld2RhdGEgPC0gc2VsZWN0KHN0YXJ3YXJzLCAtYmlydGhfeWVhciwgLWdlbmRlcikNCmBgYA0KDQojIFNlbGVjdGluZyBvYnNlcnZhdGlvbnMNCg0KDQo=</div>
 
 
 

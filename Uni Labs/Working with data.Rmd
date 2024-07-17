@@ -33,6 +33,8 @@ Salaries <- read.table("salaries.txt")
 
 These functions assume that the first line of data contains the variable names, values and are separated by commas or tabs respectively, and that missing data are represented by blanks.
 
+# Excel spreadsheets
+
 The readxl package can import data from Excel workbooks. Both xls and xlsx formats are supported.
 
 ```{r}
@@ -44,4 +46,80 @@ library(readxl)
 ```{r}
 Salaries <- read_excel("salaries.xlsx", sheet=1)
 ```
+
+Since workbooks can have more than one worksheet, you can specify the one you want with the sheet option. The default is sheet=1.
+
+# Statistical packages
+
+The haven package provides functions for importing data from a variety of statistical packages.
+
+```{r}
+library(haven)
+```
+
+## Converting csv to dta
+
+```{r}
+library(haven)
+
+x <- read.csv("salaries.csv")
+
+# Replace illegal characters in variable names
+names(x) <- gsub("\\.", "_", names(x))
+
+# Write to Stata format
+write_dta(x, "salaries.dta")
+```
+
+# import data from Stata
+
+```{r}
+Salaries <- read_dta("salaries.dta")
+```
+
+## Converting csv to SPSS
+
+```{r}
+write_sav(Salaries, "salaries.sav")
+```
+
+# import data from SPSS
+
+```{r}
+Salaries <- read_sav("salaries.sav")
+```
+
+# import data from SAS
+
+```{r}
+Salaries <- read_sas("salaries.sas7dbat")
+```
+
+# Selecting variables
+
+The select function allows you to limit your dataset to specified variables (columns).
+
+```{r}
+library(dplyr)
+```
+# keep the variables name, height and gender
+
+```{r}
+newdata <- select(starwars, name, height, gender)
+```
+
+# keep the variables name and all variables between mass and species inclusive
+
+```{r}
+newdata <- select(starwars, name, mass:species)
+```
+
+# keep all variables except birth_year and gender
+
+```{r}
+newdata <- select(starwars, -birth_year, -gender)
+```
+
+# Selecting observations
+
 
