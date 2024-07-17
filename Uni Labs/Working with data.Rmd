@@ -1,0 +1,13 @@
+---
+title: "Working with data"
+output: html_notebook
+---
+
+# Data Preparation
+
+## Importing data
+
+```{r}
+
+```
+
