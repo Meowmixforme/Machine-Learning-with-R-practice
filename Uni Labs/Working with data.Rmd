@@ -217,4 +217,40 @@ newdata <- summarise(starwars,
 
 newdata
 ```
+# calculate mean height and weight by gender
+
+```{r}
+newdata <- group_by(starwars, gender)
+starwars <- summarise(newdata, 
+                      mean_ht = mean(height, na.rm=TRUE),
+                      mean_wt = mean(mass, na.rm=TRUE))
+```
+
+# Using pipes
+
+Packages like dplyr and tidyr allow you to write your code in a compact format using the pipe %>% operator.
+
+# Calculate mean height for women by species
+
+```{r}
+newdata <- filter(starwars,
+                  gender == "feminine")
+newdata <- group_by(newdata, species)
+newdata <- summarise(newdata,
+                     mean_ht = mean(height, na.rm=TRUE))
+```
+
+# this can be written as
+
+```{r}
+newdata <- starwars %>%
+  filter(gender == "feminine") %>%
+  group_by(species) %>%
+  summarise(mean_ht = mean(height, na.rm = TRUE))
+```
+
+The pipe operator passes the result on the left to the first parameter of the function on the right.
+
+# Reshaping data
+
 
