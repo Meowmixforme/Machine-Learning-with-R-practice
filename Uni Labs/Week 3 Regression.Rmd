@@ -20,6 +20,9 @@ scatter.smooth(x = cars$speed, y = cars$dist, main = "Dist~Speed") #Scatterplot
 
 ```
 
+A scatter plot in R is a graphical representation used to visualize the relationship between two continuous variables. Each point on the plot represents an observation in the dataset, with its position determined by the values of the two variables.
+
+
 # Boxplot to check for outliers
 
 ```{r}
@@ -31,4 +34,68 @@ boxplot(cars$speed, main = "Speed", sub = paste("Outlier rows: ", boxplot.stats(
 boxplot(cars$dist, main = "Distance", sub = paste("Outlier rows: ", boxplot.stats(cars$dist)$out)) # boxplot for distance
         
 ```
+Interpretation
+Box Width: Indicates the spread of the middle 50% of the data.
+Whiskers: Show the range of the data within 1.5 * IQR.
+Outliers: Highlight unusual data points that may need further investigation.
+
+
+# Density plot to check check response variable is close to normality
+
+```{r}
+library(e1071)
+
+par(mfrow = c(1, 2)) # Divide the graph area in 2 columns
+
+plot(density(cars$speed), main = "Density Plot Speed", ylab = "Frequency", 
+     sub = paste("Skewness",
+                 round(e1071::skewness(cars$speed), 2))) # density plot for speed
+
+polygon(density(cars$speed), col = "red")
+
+plot(density(cars$dist), main = "Density Plot : Distance", ylab = "Frequency",
+     sub = paste("Skewness", round(e1071::skewness(cars$dist), 2))) # density plot for dist
+polygon(density(cars$dist), col = "red")
+
+
+```
+Interpretation
+Peaks: Peaks in the density plot indicate where data points are concentrated.
+Width: The width of the density plot shows the spread of the data.
+
+
+
+# Correlation
+
+```{r}
+cor(cars$speed, cars$dist) # calculate correlation between speed and distance
+```
+
+# Building a Linear Model
+
+```{r}
+linearMod <- lm(dist ~ speed, data = cars) # build a linear model with the lm()function and formula within
+
+print(linearMod)
+```
+# Linear Regression Diagnostics
+
+```{r}
+summary(linearMod)
+```
+
+What is a p-value?
+
+Definition: The p-value is the probability of obtaining test results at least as extreme as the observed results, assuming that the null hypothesis is true.
+
+Purpose: It helps you decide whether to reject the null hypothesis. A low p-value indicates that the observed data is unlikely under the null hypothesis, suggesting that the alternative hypothesis may be true.
+Interpreting p-values
+
+Common Thresholds:
+p < 0.05: Strong evidence against the null hypothesis, so you reject the null hypothesis.
+p < 0.01: Very strong evidence against the null hypothesis.
+p < 0.001: Extremely strong evidence against the null hypothesis.
+p > 0.05: Weak evidence against the null hypothesis, so you fail to reject the null hypothesis
+
+In R, a t-value is a statistic used in t-tests to determine if there is a significant difference between the means of two groups. It is calculated as the ratio of the difference between the sample mean and the population mean to the standard error of the sample mean.
 
