@@ -3,9 +3,32 @@ title: "Week 3: Regression"
 output: html_notebook
 ---
 
- 
+# View the first few rows
 
 ```{r}
 
+head(cars)
+
+```
+
+# Scatter plot to visualise linear relationships
+
+```{r}
+scatter.smooth(x = cars$speed, y = cars$dist, main = "Dist~Speed") #Scatterplot
+
+# If the line goes up or down there is a linear relationship
+
+```
+
+# Boxplot to check for outliers
+
+```{r}
+
+par(mfrow = c(1, 2)) # Divide graph area into 2 columns
+
+boxplot(cars$speed, main = "Speed", sub = paste("Outlier rows: ", boxplot.stats(cars$speed)$out)) #box plot for speed
+
+boxplot(cars$dist, main = "Distance", sub = paste("Outlier rows: ", boxplot.stats(cars$dist)$out)) # boxplot for distance
+        
 ```
 
