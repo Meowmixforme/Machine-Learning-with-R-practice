@@ -484,3 +484,11 @@ dev.off()
 
 # Lab 2
 
+```{r}
+#Calculate the wingspan for every bird type
+
+edidiv <- read.csv("edidiv.csv")
+
+
+```
+
