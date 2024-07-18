@@ -336,6 +336,8 @@ head(edidiv) # displays the first few rows
 tail(edidiv) # displays the last few rows
 str(edidiv) # Tells you the type of data a variable is (int, categorical, characters)
 ```
+# Converting data types
+
 ```{r}
 head(edidiv$taxonGroup) # Displays the first few rows of this column only
 
@@ -345,5 +347,140 @@ edidiv$taxonGroup <- as.factor(edidiv$taxonGroup) # Changes the variable from it
 
 class(edidiv$taxonGroup) # The variable is not showing as a factor.
 ```
+# Filtering data
 
+```{r}
+unique(edidiv$taxonGroup) # To see all unique values in taxonGroup.
+
+```
+
+
+```{r}
+Beetle <- filter(edidiv, taxonGroup == "Beetle") # Creates a dataframe with only information for beetles.
+
+Bird <- filter(edidiv, taxonGroup == "Bird") # # Creates a dataframe with only information for birds , and so on....
+
+Butterfly <- filter(edidiv, taxonGroup == "Butterfly")
+
+Dragonfly <- filter(edidiv, taxonGroup == "Dragonfly")
+
+Hymenopteran <- filter(edidiv, taxonGroup == "Hymenopteran")
+
+Lichen <- filter(edidiv, taxonGroup == "Lichen")
+
+Liverwort <- filter(edidiv, taxonGroup == "Liverwort")
+
+Mollusc <- filter(edidiv, taxonGroup == "Mollusc")
+
+Mammal <- filter(edidiv, taxonGroup == "Mammal")
+
+Flowering.Plants <- filter(edidiv, taxonGroup == "Flowering.Plants")
+
+Fungus <- filter(edidiv, taxonGroup == "Fungus")
+
+```
+
+# Species richness
+
+```{r}
+a <- length(unique(Beetle$taxonName)) # unique() identifies species and length() counts them
+b <- length(unique(Bird$taxonName))
+c <- length(unique(Butterfly$taxonName))
+d <- length(unique(Dragonfly$taxonName))
+e <- length(unique(Hymenopteran$taxonName))
+f <- length(unique(Lichen$taxonName))
+g <- length(unique(Liverwort$taxonName))
+h <- length(unique(Mollusc$taxonName))
+i <- length(unique(Mammal$taxonName))
+j <- length(unique(Flowering.Plants$taxonName))
+k <- length(unique(Fungus$taxonName))
+
+```
+
+# Create a vector
+
+The c() function stands for concatenate (or chain) , names() labels the values
+
+```{r}
+biodiv <- c(a, b, c, d, e, f, g, h, i, j, k)
+
+names(biodiv) <- c("Beetle",
+                   "Bird",
+                   "Butterfly",
+                   "Dragonfly",
+                   "Hymenopteran",
+                   "Lichen",
+                   "Liverwort",
+                   "Mollusc",
+                   "Mammal",
+                   "Flowering.Plants",
+                   "Fungus")
+```
+
+# Plotting
+
+```{r}
+barplot(biodiv)
+```
+
+```{r}
+help(barplot) # For help with barplot() function
+help(par) # For help with plotting in general
+```
+
+# Saving the data to file
+
+```{r}
+# Creating an object called taxa that contains all of the taxa names
+
+taxa <- c("Beetle",
+          "Bird",
+          "Butterfly",
+          "Dragonfly",
+          "Hymenopteran",
+          "Lichen",
+          "Liverwort",
+          "Mollusc",
+          "Mammal",
+          "Flowering.Plants",
+          "Fungus")
+
+# Turning this object into a factor (categorical variable)
+
+taxa_f <- factor(taxa)
+
+# Combining all of the values for the number of species in an object called richness
+
+richness <- c(a, b, c, d, e, f, g, h, i, j, k)
+
+# Creating a dataframe from the two vectors
+
+biodata <- data.frame(taxa_f, richness)
+
+# Saving the file
+
+write.csv(biodata, file = "biodata.csv")
+
+```
+
+# Barplot from the dataframe
+
+```{r}
+png("barplot2.png", width = 1600, height = 600)
+barplot(biodata$richness, names.arg = c("Beetle",
+          "Bird",
+          "Butterfly",
+          "Dragonfly",
+          "Hymenopteran",
+          "Lichen",
+          "Liverwort",
+          "Mollusc",
+          "Mammal",
+          "Flowering.Plants",
+          "Fungus"),
+        xlab = "Taxa", ylab = "Number of species", ylim = c(0, 600))
+dev.off()
+```
+
+# Lab 2
 
