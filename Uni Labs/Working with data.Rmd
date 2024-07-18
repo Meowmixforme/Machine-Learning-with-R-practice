@@ -487,8 +487,42 @@ dev.off()
 ```{r}
 #Calculate the wingspan for every bird type
 
-edidiv <- read.csv("edidiv.csv")
+sparrow <- mean(22, 24, 21)
+kingfisher <- mean(26, 23, 25)
+eagle <- mean(195, 201, 185)
+hummingbird <- mean(8, 9, 9)
 
+# Chain them together in a vector
+
+wingspan <- c(sparrow, kingfisher, eagle, hummingbird)
+
+# Create a bird species vector (matching the order of the previous vector)
+
+bird_sp <- c("sparrow", "kingfisher", "eagle", "hummingbird")
+
+# Change bird_sp into a factor
+
+class(bird_sp)
+bird_sp <- as.factor(bird_sp)
+class(bird_sp)
+
+# Combine the two vectos into a dataframe
+
+wings <- data.frame(bird_sp, wingspan)
 
 ```
+
+# Plot the bar plot and save it to a file
+
+```{r}
+png("wingspan_plot.png", width = 800, height = 600)
+barplot(wings$wingspan, names.arg = wings$bird_sp, # Much simpler to call the bird_sp column than typing them all out
+        xlab = "Bird Species",
+        ylab = "Average Wingspan (cm)", # setting the axis names
+        ylim = c(0,200), # setting the limits to fit the eagle
+        col = "gold") # colour = gold
+
+dev.off()
+```
+
 
