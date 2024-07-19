@@ -19,3 +19,9 @@ gc <- read.csv("german_credit.csv")
 head(gc)
 ```
 
+# understanding data structure
+
+```{r}
+str(gc)
+```
+
