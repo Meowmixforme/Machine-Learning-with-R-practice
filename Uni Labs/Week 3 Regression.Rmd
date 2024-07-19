@@ -222,3 +222,17 @@ str(airquality)
 
 # Apply Linear Regression using Least Squares Method on "Ozone" and "Solar.R"
 
+```{r}
+Y <- airquality[, "Ozone"] # select Target attribute
+
+X <- airquality[, "Solar.R"] # select Predictor attribute
+
+model1 <- lm(Y~X)
+
+model1 # provides regression line coefficients (slope and y-intercept)
+
+plot(Y~X) # scatter plot between X and Y
+
+abline(model1, col = "blue", lwd = 3) # add regression line to scatter plot to see relationship between X and Y
+```
+
