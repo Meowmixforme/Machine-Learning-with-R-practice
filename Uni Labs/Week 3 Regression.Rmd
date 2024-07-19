@@ -99,3 +99,126 @@ p > 0.05: Weak evidence against the null hypothesis, so you fail to reject the n
 
 In R, a t-value is a statistic used in t-tests to determine if there is a significant difference between the means of two groups. It is calculated as the ratio of the difference between the sample mean and the population mean to the standard error of the sample mean.
 
+# Preducting Linear Models
+
+# Create training and test data
+
+```{r}
+set.seed(100) # Setting the seed reproduces results of random sampling
+
+trainingRowIndex <- sample(1:nrow(cars), 0.8*nrow(cars)) # row indices for training data
+trainingData <- cars[trainingRowIndex, ] # model training data
+testData <- cars[-trainingRowIndex, ] #test data
+
+```
+
+# Develop the model on the training data to predict distance on test data
+
+# Build the model on the training data
+
+```{r}
+lmMod <- lm(dist ~ speed, data = trainingData) # lm(linear model and the formula (dist over speed and data source))
+distPred <- predict(lmMod, testData) # predict distance
+```
+
+# Review diagnostic measures
+
+```{r}
+summary(lmMod)
+```
+
+# Calculate prediction accuracy and error rates
+
+```{r}
+actuals_preds <- data.frame(cbind(actuals = testData$dist,
+                                  predicteds = distPred)) # make actuals_predicteds dataframe
+
+correlation_accuracy <- cor(actuals_preds)
+
+head(actuals_preds)
+
+#MinMaxAccuracy
+
+min_max_accuracy <- mean(apply(actuals_preds, 1, min) / apply(actuals_preds, 1, max))
+
+# Mean Absolute Percentage Error
+
+mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals)) / actuals_preds$actuals)
+
+min_max_accuracy
+mape
+```
+
+# k-Fold Cross Validation
+
+```{r}
+library(DAAG)
+
+par(mfrow = c(1, 1))
+
+CVlm(data = cars, form.lm = dist ~ speed, m = 5, dots = FALSE, seed = 29,
+     legeng.pos = "topleft", printit = FALSE, cex = 0.5,
+     main = "Small symbols are predicted values while bigger ones are actuals")
+
+legend('topleft', legend = C('Fold 1', 'Fold 2', 'Fold 3', 'Fold 4', 'Fold 5'),
+       col = c('brown3', 'chartreuse3', 'darkviolet', 'black', 'deepskyblue3'),
+       lty = 2:6, pch = 2:6, cex = 0.5)
+attr(cvResults, 'ms') # mean squared error
+
+```
+
+Y = mX + c
+Where: m = slope of straight line and c = Y-intercept
+
+# Linear Regression using AirQuality Dataset
+
+```{r}
+
+require("datasets")
+data("airquality")
+str(airquality)
+
+```
+
+# Preprocess the dataset
+
+```{r}
+# Search for missing values
+
+coll <- mapply(anyNA, airquality) # which columns have missing values
+
+coll
+
+```
+
+```{r}
+# Impute monthly mean in Ozone
+
+for (i in 1:nrow(airquality)) {
+  if(is.na(airquality[i, "Ozone"])){
+    
+    airquality[i, "Ozone"] <- mean(airquality[which(airquality[,"Month"] == airquality[i, "Month"]),
+                                              "Ozone"], na.rm = TRUE)
+  }
+  
+  if(is.na(airquality[i, "Solar.R"])) {
+    
+    airquality[i, "Solar.R"] <-mean(airquality[which(airquality[, "Month"] == airquality[i, "Month"]), "Solar.R"], na.rm = TRUE)
+    
+  }
+  
+}
+
+# Normalize the dataset so that no particular attribute has more impact on clustering algorithm than others.
+
+normalize <- function(x) {
+  return((x-min(x) / (max(x) - min(x))))
+}
+
+airquality < - normalize(airquality) # replaces contents of dataset with normalized values
+
+str(airquality)
+```
+
+# Apply Linear Regression using Least Squares Method on "Ozone" and "Solar.R"
+
