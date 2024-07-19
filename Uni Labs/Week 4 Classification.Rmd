@@ -3,11 +3,19 @@ title: "Week 4: Classification"
 output: html_notebook
 ---
 
-
+# import the data
 
 ```{r}
 
+gc <- read.csv("german_credit.csv")
 
 
+
+```
+
+# check the data
+
+```{r}
+head(gc)
 ```
 
