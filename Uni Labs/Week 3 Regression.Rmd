@@ -236,3 +236,40 @@ plot(Y~X) # scatter plot between X and Y
 abline(model1, col = "blue", lwd = 3) # add regression line to scatter plot to see relationship between X and Y
 ```
 
+# Apply Linear Regression using Least Squares Method on "Ozone" and "Wind"
+
+```{r}
+Y <- airquality[, "Ozone"] # select target variable
+
+X <- airquality[, "Wind"] # select target variable
+
+model2 <- lm(Y~X)
+
+model2
+
+model2 # provides regression line coefficients (slope and y-intercept)
+
+plot(Y~X) # scatter plot between X and Y
+
+abline(model2, col = "hotpink", lwd = 3) # add regression line to scatter plot to see relationship between X and Y
+```
+
+Conclusion: Solar.R is positively related to Ozone, whereas Wind is negatively related.
+
+# Perform Prediction
+
+```{r}
+# Predictions of 'Ozone' when 'Solar.R' = 10
+
+p1 <- predict(model1, data.frame("X" = 10))
+
+p1
+
+# Predictions of 'Ozone' when 'Wind' = 5
+
+p2 <- predict(model2, data.frame("X" = 5))
+
+p2
+
+```
+
