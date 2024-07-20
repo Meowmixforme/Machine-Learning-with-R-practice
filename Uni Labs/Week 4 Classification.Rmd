@@ -25,3 +25,43 @@ head(gc)
 str(gc)
 ```
 
+# Feature / Attribute Selection
+
+# The variable 'Credibility' is out target variable i.e. this variable will determine whether the bank manager will approve a loan based on the 7 Attributes.
+
+```{r}
+gc.subset <- gc[c('Creditability', 'Age..years.', 'Sex...Marital.Status', 'Occupation', 'Account.Balance', 'Credit.Amount', 'Length.of.current.employment', 'Purpose')]
+
+head(gc.subset)
+```
+
+# Data normalization to avoid biasness as the value scale of 'Credit.Amount' is in thousands whereas other attributes value are in 2 digit or 1 digit.
+
+```{r}
+
+normalize <- function(x) {
+  return((x - min(x)) / (max(x) - min(x))) # creating a normalize function for easy conversion
+}
+
+gc.subset.n <- as.data.frame(lapply(gc.subset[,2:8], normalize)) # lapply creates a list that is why it is converted to a dataframe and it applies the defined function (which is 'normalize') to all the list values which is here column 2 to 8 as first column is target/response.
+
+head(gc.subset.n)
+```
+
+# Creating Training and Test data set
+
+```{r}
+set.seed(123) # To get the same random sample
+
+dat.d <- sample(1:nrow(gc.subset.n), size = nrow(gc.subset.n) * 0.7, replace = FALSE) # Random selection of 70% data.
+
+train.gc <- gc.subset[dat.d,] # 70% training data
+test.gc <- gc.subset[-dat.d,] # remaining 30% test data
+
+# Now creating separate dataframe for 'Credibility' feature which is our target.
+
+train.gc_labels <- gc.subset[dat.d, 1]
+test.gc_labels <- gc.subset[-dat.d, 1]
+
+```
+
