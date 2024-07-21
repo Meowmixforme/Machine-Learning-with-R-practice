@@ -65,3 +65,60 @@ test.gc_labels <- gc.subset[-dat.d, 1]
 
 ```
 
+# Training the model
+
+```{r}
+library(class)
+
+NROW(train.gc_labels) # to find number of observations
+
+# To identify optimum value of k, generally square root of total no of observations (700) which is 26.45 is taken, so will try with 26, 27 and then will check for optimal value of k.
+
+knn.26 <- knn(train = train.gc, test = test.gc, cl = train.gc_labels, k = 26)
+
+knn.27 <- knn(train = train.gc, test = test.gc, cl = train.gc_labels, k = 27)
+  
+  
+```
+
+# Evaluate model performance
+
+```{r}
+
+ACC.26 <- 100 * sum(test.gc_labels == knn.26) / NROW(test.gc_labels) # for knn = 26
+
+ACC.27 <- 100 * sum(test.gc_labels == knn.27) / NROW(test.gc_labels) # for knn = 27
+
+ACC.26 
+
+ACC.27 # At 69 is most accurate (Uni Lab papers were worng .. cough.. cough...)
+
+table(knn.26, test.gc_labels) # to check prediction against actual value in tabular form
+
+
+table(knn.27, test.gc_labels)
+
+```
+Accuracy can also be calculated using the 'caret' package and 'confusion matrix' function
+
+```{r}
+# For knn.26
+
+library(caret)
+
+test.gc_labels <- as.factor(test.gc_labels)
+confusionMatrix(knn.26, test.gc_labels)
+
+## Confusion matrix and statistics
+```
+
+```{r}
+# For knn.27
+
+test.gc_labels <- as.factor(test.gc_labels)
+confusionMatrix(knn.27, test.gc_labels)
+
+```
+
+# Improve the model
+
