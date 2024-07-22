@@ -7,9 +7,61 @@ output: html_notebook
 
 ```{r}
 
-train <- read.csv("train.csv")
+train <- read.csv("train.csv", stringsAsFactors = FALSE)
 test <- read.csv("test.csv")
 
 ```
 
+# Exploring datasets
+
+```{r}
+
+str(train)
+
+table(train$Survived)
+
+prop.table(table(train$Survived))
+
+test$Survived <- rep(0, 418) # create table in test
+
+
+```
+
+# Women and children first?
+
+```{r}
+
+train$Sex <- as.factor(train$Sex)
+
+summary(train$Sex) # Majority of passangers were male
+
+prop.table(table(train$Sex, train$Survived), 1) # How many of each gender survived?
+
+
+```
+
+# Update prediction
+
+```{r}
+test$Survived <- 0
+
+test$Survived[test$Sex == 'female'] <- 1
+
+```
+
+# Age
+
+```{r}
+
+summary(train$Age)
+
+train$Child <- 0 # Create new variable child
+test$Child <- 0
+
+train$Child[train$Age < 18] <- 1 # Add all people under 18 from age to child
+test$Child[test$Age < 18] <- 1 # Add all people under 18 from age to child
+
+aggregate(Survived ~ Child + Sex, data = train, FUN = function(x){sum(x) / length(x)})
+
+```
 

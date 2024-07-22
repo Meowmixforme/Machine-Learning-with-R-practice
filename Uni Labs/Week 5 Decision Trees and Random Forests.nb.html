@@ -1757,18 +1757,137 @@ Forests</h1>
 <h1>Import data</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG50cmFpbiA8LSByZWFkLmNzdihcInRyYWluLmNzdlwiKVxudGVzdCA8LSByZWFkLmNzdihcInRlc3QuY3N2XCIpXG5cblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG50cmFpbiA8LSByZWFkLmNzdihcInRyYWluLmNzdlwiLCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpXG50ZXN0IDwtIHJlYWQuY3N2KFwidGVzdC5jc3ZcIilcblxuYGBgIn0= -->
 <pre class="r"><code>
-train &lt;- read.csv(&quot;train.csv&quot;)
+train &lt;- read.csv(&quot;train.csv&quot;, stringsAsFactors = FALSE)
 test &lt;- read.csv(&quot;test.csv&quot;)
 </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="exploring-datasets" class="section level1">
+<h1>Exploring datasets</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5zdHIodHJhaW4pXG5gYGAifQ== -->
+<pre class="r"><code>
+str(train)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiJ2RhdGEuZnJhbWUnOlx0ODkxIG9icy4gb2YgIDEyIHZhcmlhYmxlczpcbiAkIFBhc3NlbmdlcklkOiBpbnQgIDEgMiAzIDQgNSA2IDcgOCA5IDEwIC4uLlxuICQgU3Vydml2ZWQgICA6IGludCAgMCAxIDEgMSAwIDAgMCAwIDEgMSAuLi5cbiAkIFBjbGFzcyAgICAgOiBpbnQgIDMgMSAzIDEgMyAzIDEgMyAzIDIgLi4uXG4gJCBOYW1lICAgICAgIDogY2hyICBcIkJyYXVuZCwgTXIuIE93ZW4gSGFycmlzXCIgXCJDdW1pbmdzLCBNcnMuIEpvaG4gQnJhZGxleSAoRmxvcmVuY2UgQnJpZ2dzIFRoYXllcilcIiBcIkhlaWtraW5lbiwgTWlzcy4gTGFpbmFcIiBcIkZ1dHJlbGxlLCBNcnMuIEphY3F1ZXMgSGVhdGggKExpbHkgTWF5IFBlZWwpXCIgLi4uXG4gJCBTZXggICAgICAgIDogY2hyICBcIm1hbGVcIiBcImZlbWFsZVwiIFwiZmVtYWxlXCIgXCJmZW1hbGVcIiAuLi5cbiAkIEFnZSAgICAgICAgOiBudW0gIDIyIDM4IDI2IDM1IDM1IE5BIDU0IDIgMjcgMTQgLi4uXG4gJCBTaWJTcCAgICAgIDogaW50ICAxIDEgMCAxIDAgMCAwIDMgMCAxIC4uLlxuICQgUGFyY2ggICAgICA6IGludCAgMCAwIDAgMCAwIDAgMCAxIDIgMCAuLi5cbiAkIFRpY2tldCAgICAgOiBjaHIgIFwiQS81IDIxMTcxXCIgXCJQQyAxNzU5OVwiIFwiU1RPTi9PMi4gMzEwMTI4MlwiIFwiMTEzODAzXCIgLi4uXG4gJCBGYXJlICAgICAgIDogbnVtICA3LjI1IDcxLjI4IDcuOTIgNTMuMSA4LjA1IC4uLlxuICQgQ2FiaW4gICAgICA6IGNociAgXCJcIiBcIkM4NVwiIFwiXCIgXCJDMTIzXCIgLi4uXG4gJCBFbWJhcmtlZCAgIDogY2hyICBcIlNcIiBcIkNcIiBcIlNcIiBcIlNcIiAuLi5cbiJ9 -->
+<pre><code>&#39;data.frame&#39;:   891 obs. of  12 variables:
+ $ PassengerId: int  1 2 3 4 5 6 7 8 9 10 ...
+ $ Survived   : int  0 1 1 1 0 0 0 0 1 1 ...
+ $ Pclass     : int  3 1 3 1 3 3 1 3 3 2 ...
+ $ Name       : chr  &quot;Braund, Mr. Owen Harris&quot; &quot;Cumings, Mrs. John Bradley (Florence Briggs Thayer)&quot; &quot;Heikkinen, Miss. Laina&quot; &quot;Futrelle, Mrs. Jacques Heath (Lily May Peel)&quot; ...
+ $ Sex        : chr  &quot;male&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; ...
+ $ Age        : num  22 38 26 35 35 NA 54 2 27 14 ...
+ $ SibSp      : int  1 1 0 1 0 0 0 3 0 1 ...
+ $ Parch      : int  0 0 0 0 0 0 0 1 2 0 ...
+ $ Ticket     : chr  &quot;A/5 21171&quot; &quot;PC 17599&quot; &quot;STON/O2. 3101282&quot; &quot;113803&quot; ...
+ $ Fare       : num  7.25 71.28 7.92 53.1 8.05 ...
+ $ Cabin      : chr  &quot;&quot; &quot;C85&quot; &quot;&quot; &quot;C123&quot; ...
+ $ Embarked   : chr  &quot;S&quot; &quot;C&quot; &quot;S&quot; &quot;S&quot; ...</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFibGUodHJhaW4kU3Vydml2ZWQpXG5gYGAifQ== -->
+<pre class="r"><code>table(train$Survived)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gIDAgICAxIFxuNTQ5IDM0MiBcbiJ9 -->
+<pre><code>
+  0   1 
+549 342 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJvcC50YWJsZSh0YWJsZSh0cmFpbiRTdXJ2aXZlZCkpXG5gYGAifQ== -->
+<pre class="r"><code>prop.table(table(train$Survived))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gICAgICAgIDAgICAgICAgICAxIFxuMC42MTYxNjE2IDAuMzgzODM4NCBcbiJ9 -->
+<pre><code>
+        0         1 
+0.6161616 0.3838384 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVzdCRTdXJ2aXZlZCA8LSByZXAoMCwgNDE4KSAjIGNyZWF0ZSB0YWJsZSBpbiB0ZXN0XG5cblxuYGBgIn0= -->
+<pre class="r"><code>test$Survived &lt;- rep(0, 418) # create table in test
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="women-and-children-first" class="section level1">
+<h1>Women and children first?</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG50cmFpbiRTZXggPC0gYXMuZmFjdG9yKHRyYWluJFNleClcblxuc3VtbWFyeSh0cmFpbiRTZXgpICMgTWFqb3JpdHkgb2YgcGFzc2FuZ2VycyB3ZXJlIG1hbGVcbmBgYCJ9 -->
+<pre class="r"><code>
+train$Sex &lt;- as.factor(train$Sex)
+
+summary(train$Sex) # Majority of passangers were male</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiZmVtYWxlICAgbWFsZSBcbiAgIDMxNCAgICA1NzcgXG4ifQ== -->
+<pre><code>female   male 
+   314    577 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJvcC50YWJsZSh0YWJsZSh0cmFpbiRTZXgsIHRyYWluJFN1cnZpdmVkKSwgMSkgIyBIb3cgbWFueSBvZiBlYWNoIGdlbmRlciBzdXJ2aXZlZD9cbmBgYCJ9 -->
+<pre class="r"><code>prop.table(table(train$Sex, train$Survived), 1) # How many of each gender survived?</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICBcbiAgICAgICAgICAgICAgICAgMCAgICAgICAgIDFcbiAgZmVtYWxlIDAuMjU3OTYxOCAwLjc0MjAzODJcbiAgbWFsZSAgIDAuODExMDkxOSAwLjE4ODkwODFcbiJ9 -->
+<pre><code>        
+                 0         1
+  female 0.2579618 0.7420382
+  male   0.8110919 0.1889081</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="update-prediction" class="section level1">
+<h1>Update prediction</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVzdCRTdXJ2aXZlZCA8LSAwXG5cbnRlc3QkU3Vydml2ZWRbdGVzdCRTZXggPT0gJ2ZlbWFsZSddIDwtIDFcblxuYGBgIn0= -->
+<pre class="r"><code>test$Survived &lt;- 0
+
+test$Survived[test$Sex == &#39;female&#39;] &lt;- 1
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="age" class="section level1">
+<h1>Age</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5zdW1tYXJ5KHRyYWluJEFnZSlcbmBgYCJ9 -->
+<pre class="r"><code>
+summary(train$Age)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgTWluLiAxc3QgUXUuICBNZWRpYW4gICAgTWVhbiAzcmQgUXUuICAgIE1heC4gICAgTkEncyBcbiAgIDAuNDIgICAyMC4xMiAgIDI4LjAwICAgMjkuNzAgICAzOC4wMCAgIDgwLjAwICAgICAxNzcgXG4ifQ== -->
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+   0.42   20.12   28.00   29.70   38.00   80.00     177 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHJhaW4kQ2hpbGQgPC0gMCAjIENyZWF0ZSBuZXcgdmFyaWFibGUgY2hpbGRcbnRlc3QkQ2hpbGQgPC0gMFxuXG50cmFpbiRDaGlsZFt0cmFpbiRBZ2UgPCAxOF0gPC0gMSAjIEFkZCBhbGwgcGVvcGxlIHVuZGVyIDE4IGZyb20gYWdlIHRvIGNoaWxkXG50ZXN0JENoaWxkW3Rlc3QkQWdlIDwgMThdIDwtIDEgIyBBZGQgYWxsIHBlb3BsZSB1bmRlciAxOCBmcm9tIGFnZSB0byBjaGlsZFxuXG5hZ2dyZWdhdGUoU3Vydml2ZWQgfiBDaGlsZCArIFNleCwgZGF0YSA9IHRyYWluLCBGVU4gPSBmdW5jdGlvbih4KXtzdW0oeCkgLyBsZW5ndGgoeCl9KVxuYGBgIn0= -->
+<pre class="r"><code>train$Child &lt;- 0 # Create new variable child
+test$Child &lt;- 0
+
+train$Child[train$Age &lt; 18] &lt;- 1 # Add all people under 18 from age to child
+test$Child[test$Age &lt; 18] &lt;- 1 # Add all people under 18 from age to child
+
+aggregate(Survived ~ Child + Sex, data = train, FUN = function(x){sum(x) / length(x)})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NCwibmNvbCI6Mywic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbNCDDlyAzXSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMVJ6VXJEUUJDZVpEZlJCcXlLQjZINkNzMmxDTjV5VUh3QXE5RHJtbXpiNEhZVDhtZEJRWDBKajU1OUJFOWV4QmNRRlh3QjhTTDRCTlZOc3FNa0MwTyttWjN2Mnk4emgvdWpnVE55QUlBQXBRWVFTMEd3am84Tytyc0ExRlNKQVJRNjVYZXVtamFxVG9DdUNncjZlTi9RT1A4NVdkRjloZzZ6am9hd0xYakJSYXJRV25XcnEyTStZNExyakZhNHliTjh3VktrL1ltTm1aOUZpVUlMdE9sOWJ0Ni9YbDVmZUI5YlgremhiZHQ3Mm5sOHZuM3BlZStzZDM2emZ0ZVdsV3pHVVpaZ2NXOGFpa0FuWk1qbkdpNFA4NlFJQ3g2MFJEcEpkT2FpVURrRTg2cWVDSzBieVUvTHR4T3dqTG5qUkZGcTd3MjVwU2pPd2tncU1iUGNnTjBpRzBtcnNKckw4dkdnNzA5emVkb2Z0SzVKTENmbG0zb3BvRDBhZWxtSVNlMkNvbGNiWjh6bEpKUzRHa3V3RXk1UU9lQ0ZobDAxZ21vQ2JweUVNc1AvVk5YVXphS01JY1h4STRHVmVtdUxYK3BURGRhV0FnQUEifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Child"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Sex"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["Survived"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"0","2":"female","3":"0.7528958"},{"1":"1","2":"female","3":"0.6909091"},{"1":"0","2":"male","3":"0.1657033"},{"1":"1","2":"male","3":"0.3965517"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[4]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTkFcbmBgYCJ9 -->
+<pre class="r"><code>NA</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIldlZWsgNTogRGVjaXNpb24gVHJlZXMgYW5kIFJhbmRvbSBGb3Jlc3RzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyBJbXBvcnQgZGF0YQ0KDQpgYGB7cn0NCg0KdHJhaW4gPC0gcmVhZC5jc3YoInRyYWluLmNzdiIpDQp0ZXN0IDwtIHJlYWQuY3N2KCJ0ZXN0LmNzdiIpDQoNCmBgYA0KDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIldlZWsgNTogRGVjaXNpb24gVHJlZXMgYW5kIFJhbmRvbSBGb3Jlc3RzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyBJbXBvcnQgZGF0YQ0KDQpgYGB7cn0NCg0KdHJhaW4gPC0gcmVhZC5jc3YoInRyYWluLmNzdiIsIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRSkNCnRlc3QgPC0gcmVhZC5jc3YoInRlc3QuY3N2IikNCg0KYGBgDQoNCiMgRXhwbG9yaW5nIGRhdGFzZXRzDQoNCmBgYHtyfQ0KDQpzdHIodHJhaW4pDQoNCnRhYmxlKHRyYWluJFN1cnZpdmVkKQ0KDQpwcm9wLnRhYmxlKHRhYmxlKHRyYWluJFN1cnZpdmVkKSkNCg0KdGVzdCRTdXJ2aXZlZCA8LSByZXAoMCwgNDE4KSAjIGNyZWF0ZSB0YWJsZSBpbiB0ZXN0DQoNCg0KYGBgDQoNCiMgV29tZW4gYW5kIGNoaWxkcmVuIGZpcnN0Pw0KDQpgYGB7cn0NCg0KdHJhaW4kU2V4IDwtIGFzLmZhY3Rvcih0cmFpbiRTZXgpDQoNCnN1bW1hcnkodHJhaW4kU2V4KSAjIE1ham9yaXR5IG9mIHBhc3NhbmdlcnMgd2VyZSBtYWxlDQoNCnByb3AudGFibGUodGFibGUodHJhaW4kU2V4LCB0cmFpbiRTdXJ2aXZlZCksIDEpICMgSG93IG1hbnkgb2YgZWFjaCBnZW5kZXIgc3Vydml2ZWQ/DQoNCg0KYGBgDQoNCiMgVXBkYXRlIHByZWRpY3Rpb24NCg0KYGBge3J9DQp0ZXN0JFN1cnZpdmVkIDwtIDANCg0KdGVzdCRTdXJ2aXZlZFt0ZXN0JFNleCA9PSAnZmVtYWxlJ10gPC0gMQ0KDQpgYGANCg0KIyBBZ2UNCg0KYGBge3J9DQoNCnN1bW1hcnkodHJhaW4kQWdlKQ0KDQp0cmFpbiRDaGlsZCA8LSAwICMgQ3JlYXRlIG5ldyB2YXJpYWJsZSBjaGlsZA0KdGVzdCRDaGlsZCA8LSAwDQoNCnRyYWluJENoaWxkW3RyYWluJEFnZSA8IDE4XSA8LSAxICMgQWRkIGFsbCBwZW9wbGUgdW5kZXIgMTggZnJvbSBhZ2UgdG8gY2hpbGQNCnRlc3QkQ2hpbGRbdGVzdCRBZ2UgPCAxOF0gPC0gMSAjIEFkZCBhbGwgcGVvcGxlIHVuZGVyIDE4IGZyb20gYWdlIHRvIGNoaWxkDQoNCmFnZ3JlZ2F0ZShTdXJ2aXZlZCB+IENoaWxkICsgU2V4LCBkYXRhID0gdHJhaW4sIEZVTiA9IGZ1bmN0aW9uKHgpe3N1bSh4KSAvIGxlbmd0aCh4KX0pDQoNCmBgYA0KDQo=</div>
 
 
 
