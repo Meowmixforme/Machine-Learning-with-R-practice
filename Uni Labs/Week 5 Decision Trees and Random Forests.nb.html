@@ -1884,10 +1884,58 @@ aggregate(Survived ~ Child + Sex, data = train, FUN = function(x){sum(x) / lengt
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="fare" class="section level1">
+<h1>Fare</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG50cmFpbiRGYXJlMiA8LSAnMzArJ1xudGVzdCRGYXJlMiA8LSAnMzArJ1xuXG50cmFpbiRGYXJlMlt0cmFpbiRGYXJlIDwgMzAgJiB0cmFpbiRGYXJlID49IDIwXSA8LSAnMjAtMzAnXG50cmFpbiRGYXJlMlt0cmFpbiRGYXJlIDwgMjAgJiB0cmFpbiRGYXJlID49IDEwXSA8LSAnMTAtMjAnXG50cmFpbiRGYXJlMlt0cmFpbiRGYXJlIDwgMTBdIDwtICc8MTAnXG5cbnRlc3QkRmFyZTJbdGVzdCRGYXJlIDwgMzAgJiB0ZXN0JEZhcmUgPj0gMjBdIDwtICcyMC0zMCdcbnRlc3QkRmFyZTJbdGVzdCRGYXJlIDwgMjAgJiB0ZXN0JEZhcmUgPj0gMTBdIDwtICcxMC0yMCdcbnRlc3QkRmFyZTJbdGVzdCRGYXJlIDwgMTBdIDwtICc8MTAnXG5cbmFnZ3JlZ2F0ZShTdXJ2aXZlZCB+IEZhcmUyICsgUGNsYXNzICsgU2V4LCBkYXRhID0gdHJhaW4sIEZVTiA9IGZ1bmN0aW9uKHgpIHtzdW0oeCkvbGVuZ3RoKHgpfSlcbmBgYCJ9 -->
+<pre class="r"><code>
+train$Fare2 &lt;- &#39;30+&#39;
+test$Fare2 &lt;- &#39;30+&#39;
+
+train$Fare2[train$Fare &lt; 30 &amp; train$Fare &gt;= 20] &lt;- &#39;20-30&#39;
+train$Fare2[train$Fare &lt; 20 &amp; train$Fare &gt;= 10] &lt;- &#39;10-20&#39;
+train$Fare2[train$Fare &lt; 10] &lt;- &#39;&lt;10&#39;
+
+test$Fare2[test$Fare &lt; 30 &amp; test$Fare &gt;= 20] &lt;- &#39;20-30&#39;
+test$Fare2[test$Fare &lt; 20 &amp; test$Fare &gt;= 10] &lt;- &#39;10-20&#39;
+test$Fare2[test$Fare &lt; 10] &lt;- &#39;&lt;10&#39;
+
+aggregate(Survived ~ Fare2 + Pclass + Sex, data = train, FUN = function(x) {sum(x)/length(x)})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MjAsIm5jb2wiOjQsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzIwIMOXIDRdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQmd0eWlURG1pdUJpWUdCZ1ptQmhZV1JnWmdVeUdWaERROXgwTFJnWVdKaUFIRVlHRmdaT0VGMEJWQ1FNWkxBQXNRQVFpMEFsV0kwTWRJME5vQnhtWXdOdG1MaWhnYTZSQVFGRnpEYUdCdVNxcDRHUitOVXpNUENDL1EwS0ZBaG1Rc0xNYUpnUmh6b3NhcG5SemNXSDBjM0NnMUVpa0MwbnRTdzFweGdhZTB3dzBiVFUzTVNjVkNpUEJjeEcxY2VhbkpOWUROTUdOeXd0TWJra3Z3akkrZ2ZFZkNEbjI3OWFCUUtyN2QrN1hpeUpGWGV6Zit0NFJSYUk3TitjQVlHejloOFl3TUQrTVpSK05PdFV0dWFhNWZaWFE4SEEvZ0FEQ3JDL09STUVadG5mNkh0azNmRk9CUzUrSk5CVkJJanNqMVE5ZEY4blVtMS9PbmZiYlNDeTM5Tjc0azd2aWJ2MjV3S3VUekY5eWdzenovN2Nqc0RYclhJNzBMMlZsNWliQ3ZNV0MwelFMYkVvMVFqbXh3Q0l6NkVwSURpMUFzcmtDQzR0S3Nzc1MwMUJNNUt6S0w5Y0QyWXNLRXFaR2lCT0VJRW9aUDZQRm9wY0tZa2xpWHBwUlVBdGtKQkVNWTQ5djZBa016OFBhQmdUS04reG9XbG1MRUlUNEMvTkExbWVvcHVjVVpxWHJXdUlKczFja0pjT3NoT2FqQmlnYm1TRUpqMFltd1hpQ2hhWVc5bGdvWkdhbDU2WkIwc29yRG1KU2FrNU1KTlRVc3VnVEQ1Z0VJQkRRSytnS0RPdkJPWlBvR2l4WGtsK1NTSk1DMWR5Zmc1TUJKS0cvZ0VBOWhsR0Q0d0VBQUE9In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Fare2"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Pclass"],"name":[2],"type":["int"],"align":["right"]},{"label":["Sex"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["Survived"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"20-30","2":"1","3":"female","4":"0.8333333"},{"1":"30+","2":"1","3":"female","4":"0.9772727"},{"1":"10-20","2":"2","3":"female","4":"0.9142857"},{"1":"20-30","2":"2","3":"female","4":"0.9000000"},{"1":"30+","2":"2","3":"female","4":"1.0000000"},{"1":"<10","2":"3","3":"female","4":"0.5937500"},{"1":"10-20","2":"3","3":"female","4":"0.5813953"},{"1":"20-30","2":"3","3":"female","4":"0.3333333"},{"1":"30+","2":"3","3":"female","4":"0.1250000"},{"1":"<10","2":"1","3":"male","4":"0.0000000"},{"1":"20-30","2":"1","3":"male","4":"0.4000000"},{"1":"30+","2":"1","3":"male","4":"0.3837209"},{"1":"<10","2":"2","3":"male","4":"0.0000000"},{"1":"10-20","2":"2","3":"male","4":"0.1587302"},{"1":"20-30","2":"2","3":"male","4":"0.1600000"},{"1":"30+","2":"2","3":"male","4":"0.2142857"},{"1":"<10","2":"3","3":"male","4":"0.1115385"},{"1":"10-20","2":"3","3":"male","4":"0.2368421"},{"1":"20-30","2":"3","3":"male","4":"0.1250000"},{"1":"30+","2":"3","3":"male","4":"0.2400000"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[20]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTkFcbmBgYCJ9 -->
+<pre class="r"><code>NA</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="new-prediction" class="section level1">
+<h1>New prediction</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG50ZXN0JFN1cnZpdmVkIDwtIDBcblxudGVzdCRTdXJ2aXZlZFt0ZXN0JFNleCA9PSAnZmVtYWxlJ10gPC0gMVxuXG50ZXN0JFN1cnZpdmVkW3Rlc3QkU2V4ID09ICdmZW1hbGUnICYgdGVzdCRQY2xhc3MgPT0gMyAmIHRlc3QkRmFyZSA+PSAyMF0gPC0gMFxuXG5gYGAifQ== -->
+<pre class="r"><code>
+test$Survived &lt;- 0
+
+test$Survived[test$Sex == &#39;female&#39;] &lt;- 1
+
+test$Survived[test$Sex == &#39;female&#39; &amp; test$Pclass == 3 &amp; test$Fare &gt;= 20] &lt;- 0
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIldlZWsgNTogRGVjaXNpb24gVHJlZXMgYW5kIFJhbmRvbSBGb3Jlc3RzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyBJbXBvcnQgZGF0YQ0KDQpgYGB7cn0NCg0KdHJhaW4gPC0gcmVhZC5jc3YoInRyYWluLmNzdiIsIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRSkNCnRlc3QgPC0gcmVhZC5jc3YoInRlc3QuY3N2IikNCg0KYGBgDQoNCiMgRXhwbG9yaW5nIGRhdGFzZXRzDQoNCmBgYHtyfQ0KDQpzdHIodHJhaW4pDQoNCnRhYmxlKHRyYWluJFN1cnZpdmVkKQ0KDQpwcm9wLnRhYmxlKHRhYmxlKHRyYWluJFN1cnZpdmVkKSkNCg0KdGVzdCRTdXJ2aXZlZCA8LSByZXAoMCwgNDE4KSAjIGNyZWF0ZSB0YWJsZSBpbiB0ZXN0DQoNCg0KYGBgDQoNCiMgV29tZW4gYW5kIGNoaWxkcmVuIGZpcnN0Pw0KDQpgYGB7cn0NCg0KdHJhaW4kU2V4IDwtIGFzLmZhY3Rvcih0cmFpbiRTZXgpDQoNCnN1bW1hcnkodHJhaW4kU2V4KSAjIE1ham9yaXR5IG9mIHBhc3NhbmdlcnMgd2VyZSBtYWxlDQoNCnByb3AudGFibGUodGFibGUodHJhaW4kU2V4LCB0cmFpbiRTdXJ2aXZlZCksIDEpICMgSG93IG1hbnkgb2YgZWFjaCBnZW5kZXIgc3Vydml2ZWQ/DQoNCg0KYGBgDQoNCiMgVXBkYXRlIHByZWRpY3Rpb24NCg0KYGBge3J9DQp0ZXN0JFN1cnZpdmVkIDwtIDANCg0KdGVzdCRTdXJ2aXZlZFt0ZXN0JFNleCA9PSAnZmVtYWxlJ10gPC0gMQ0KDQpgYGANCg0KIyBBZ2UNCg0KYGBge3J9DQoNCnN1bW1hcnkodHJhaW4kQWdlKQ0KDQp0cmFpbiRDaGlsZCA8LSAwICMgQ3JlYXRlIG5ldyB2YXJpYWJsZSBjaGlsZA0KdGVzdCRDaGlsZCA8LSAwDQoNCnRyYWluJENoaWxkW3RyYWluJEFnZSA8IDE4XSA8LSAxICMgQWRkIGFsbCBwZW9wbGUgdW5kZXIgMTggZnJvbSBhZ2UgdG8gY2hpbGQNCnRlc3QkQ2hpbGRbdGVzdCRBZ2UgPCAxOF0gPC0gMSAjIEFkZCBhbGwgcGVvcGxlIHVuZGVyIDE4IGZyb20gYWdlIHRvIGNoaWxkDQoNCmFnZ3JlZ2F0ZShTdXJ2aXZlZCB+IENoaWxkICsgU2V4LCBkYXRhID0gdHJhaW4sIEZVTiA9IGZ1bmN0aW9uKHgpe3N1bSh4KSAvIGxlbmd0aCh4KX0pDQoNCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIldlZWsgNTogRGVjaXNpb24gVHJlZXMgYW5kIFJhbmRvbSBGb3Jlc3RzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyBJbXBvcnQgZGF0YQ0KDQpgYGB7cn0NCg0KdHJhaW4gPC0gcmVhZC5jc3YoInRyYWluLmNzdiIsIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRSkNCnRlc3QgPC0gcmVhZC5jc3YoInRlc3QuY3N2IikNCg0KYGBgDQoNCiMgRXhwbG9yaW5nIGRhdGFzZXRzDQoNCmBgYHtyfQ0KDQpzdHIodHJhaW4pDQoNCnRhYmxlKHRyYWluJFN1cnZpdmVkKQ0KDQpwcm9wLnRhYmxlKHRhYmxlKHRyYWluJFN1cnZpdmVkKSkNCg0KdGVzdCRTdXJ2aXZlZCA8LSByZXAoMCwgNDE4KSAjIGNyZWF0ZSB0YWJsZSBpbiB0ZXN0DQoNCg0KYGBgDQoNCiMgV29tZW4gYW5kIGNoaWxkcmVuIGZpcnN0Pw0KDQpgYGB7cn0NCg0KdHJhaW4kU2V4IDwtIGFzLmZhY3Rvcih0cmFpbiRTZXgpDQoNCnN1bW1hcnkodHJhaW4kU2V4KSAjIE1ham9yaXR5IG9mIHBhc3NhbmdlcnMgd2VyZSBtYWxlDQoNCnByb3AudGFibGUodGFibGUodHJhaW4kU2V4LCB0cmFpbiRTdXJ2aXZlZCksIDEpICMgSG93IG1hbnkgb2YgZWFjaCBnZW5kZXIgc3Vydml2ZWQ/DQoNCg0KYGBgDQoNCiMgVXBkYXRlIHByZWRpY3Rpb24NCg0KYGBge3J9DQp0ZXN0JFN1cnZpdmVkIDwtIDANCg0KdGVzdCRTdXJ2aXZlZFt0ZXN0JFNleCA9PSAnZmVtYWxlJ10gPC0gMQ0KDQpgYGANCg0KIyBBZ2UNCg0KYGBge3J9DQoNCnN1bW1hcnkodHJhaW4kQWdlKQ0KDQp0cmFpbiRDaGlsZCA8LSAwICMgQ3JlYXRlIG5ldyB2YXJpYWJsZSBjaGlsZA0KdGVzdCRDaGlsZCA8LSAwDQoNCnRyYWluJENoaWxkW3RyYWluJEFnZSA8IDE4XSA8LSAxICMgQWRkIGFsbCBwZW9wbGUgdW5kZXIgMTggZnJvbSBhZ2UgdG8gY2hpbGQNCnRlc3QkQ2hpbGRbdGVzdCRBZ2UgPCAxOF0gPC0gMSAjIEFkZCBhbGwgcGVvcGxlIHVuZGVyIDE4IGZyb20gYWdlIHRvIGNoaWxkDQoNCmFnZ3JlZ2F0ZShTdXJ2aXZlZCB+IENoaWxkICsgU2V4LCBkYXRhID0gdHJhaW4sIEZVTiA9IGZ1bmN0aW9uKHgpe3N1bSh4KSAvIGxlbmd0aCh4KX0pDQoNCmBgYA0KDQojIEZhcmUNCg0KYGBge3J9DQoNCnRyYWluJEZhcmUyIDwtICczMCsnDQp0ZXN0JEZhcmUyIDwtICczMCsnDQoNCnRyYWluJEZhcmUyW3RyYWluJEZhcmUgPCAzMCAmIHRyYWluJEZhcmUgPj0gMjBdIDwtICcyMC0zMCcNCnRyYWluJEZhcmUyW3RyYWluJEZhcmUgPCAyMCAmIHRyYWluJEZhcmUgPj0gMTBdIDwtICcxMC0yMCcNCnRyYWluJEZhcmUyW3RyYWluJEZhcmUgPCAxMF0gPC0gJzwxMCcNCg0KdGVzdCRGYXJlMlt0ZXN0JEZhcmUgPCAzMCAmIHRlc3QkRmFyZSA+PSAyMF0gPC0gJzIwLTMwJw0KdGVzdCRGYXJlMlt0ZXN0JEZhcmUgPCAyMCAmIHRlc3QkRmFyZSA+PSAxMF0gPC0gJzEwLTIwJw0KdGVzdCRGYXJlMlt0ZXN0JEZhcmUgPCAxMF0gPC0gJzwxMCcNCg0KYWdncmVnYXRlKFN1cnZpdmVkIH4gRmFyZTIgKyBQY2xhc3MgKyBTZXgsIGRhdGEgPSB0cmFpbiwgRlVOID0gZnVuY3Rpb24oeCkge3N1bSh4KS9sZW5ndGgoeCl9KQ0KDQpgYGANCg0KIyBOZXcgcHJlZGljdGlvbg0KDQpgYGB7cn0NCg0KdGVzdCRTdXJ2aXZlZCA8LSAwDQoNCnRlc3QkU3Vydml2ZWRbdGVzdCRTZXggPT0gJ2ZlbWFsZSddIDwtIDENCg0KdGVzdCRTdXJ2aXZlZFt0ZXN0JFNleCA9PSAnZmVtYWxlJyAmIHRlc3QkUGNsYXNzID09IDMgJiB0ZXN0JEZhcmUgPj0gMjBdIDwtIDANCg0KYGBgDQoNCg==</div>
 
 
 
