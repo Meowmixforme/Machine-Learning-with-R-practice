@@ -96,4 +96,199 @@ As we can see the predictions are exactly the same. The only way to improve is t
 
 # Lab 2
 
+```{r}
+
+# import packages
+
+library(tidyverse)
+library(ggplot2)
+library(caret)
+library(caretEnsemble)
+library(psych)
+library(Amelia)
+library(mice)
+library(GGally)
+library(rpart)
+library(randomForest)
+```
+
+# import the dataset
+
+```{r}
+
+data <- read.csv("diabetes.csv")
+
+```
+
+# Setting outcome variables as categorical
+
+```{r}
+
+data$Outcome <- factor(data$Outcome, levels = c(0,1), labels = c("False", "True"))
+
+
+```
+
+# Studying the dataset
+
+```{r}
+
+str(data)
+
+```
+
+# Understanding the dataset
+
+```{r}
+
+head(data)
+
+describe(data)
+
+```
+
+# Data Cleaning
+
+```{r}
+
+# Convert 0 values into NA
+
+data[, 2:7][data[, 2:7] == 0] <- NA
+
+```
+
+# Check how many missing values by visualising the data
+
+```{r}
+
+missmap(data)
+
+```
+
+# Imputations with mice
+
+```{r}
+
+mice_mod <- mice(data[,c("Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI")], method = 'rf')
+mice_complete <- complete(mice_mod)
+
+# Transfer the predicted missing values into the main dataset
+
+data$Glucose <- mice_complete$Glucose
+data$BloodPressure <- mice_complete$BloodPressure
+data$SkinThickness <- mice_complete$SkinThickness
+data$Insulin <- mice_complete$Insulin
+data$BMI <- mice_complete$BMI
+
+```
+
+# Check dataset for missing values again
+
+```{r}
+
+missmap(data)
+
+```
+
+# EDA
+
+```{r}
+# Data Visualisation
+
+# Visual 1
+
+ggplot(data, aes(Age, colour = Outcome)) +
+  geom_freqpoly(binwidth = 1) + labs(title = "Age Distrobution by Outcome")
+
+```
+
+```{r}
+# Visual 2
+
+c <- ggplot(data, aes(x = Pregnancies, fill = Outcome, colour = Outcome)) +
+  geom_histogram(binwidth = 1) + labs(title = "Pregnancy Distribution by Outcome")
+c + theme_bw()
+```
+
+```{r}
+
+# Visual 3
+
+P <- ggplot(data, aes(x = BMI, fill = Outcome, colour = Outcome)) +
+  geom_histogram(binwidth = 1) + labs(title = "BMI Distribution by Outcome")
+
+P + theme_bw()
+
+```
+
+```{r}
+
+# Visual 4
+
+ggplot(data, aes(Glucose, colour = Outcome)) +
+  geom_freqpoly(binwidth = 1) + labs(title = "Glucose Distribution by Outcome")
+
+```
+
+```{r}
+
+# Visual 5
+
+ggpairs(data)
+
+```
+
+# Data Modelling
+
+```{r}
+
+# Building a model
+
+# Split data into training and testing
+
+indxTrain <- createDataPartition(y = data$Outcome,p = 0.75,list = FALSE)
+training <- data[indxTrain,]
+testing <- data[-indxTrain,]
+prop.table(table(data$Outcome)) * 100  #Check dimensions of the split 
+
+```
+
+```{r}
+
+# Create objects x which holds the predictor variables and y which holds the response variables
+
+x = training[,-9]
+
+y = training$Outcome
+
+```
+
+# Create the model
+
+```{r}
+
+library(e1071)
+
+model = caret::train(x,y,'nb',trControl=trainControl(method='cv',number=10))
+
+```
+
+
+# Model Evaluation
+
+```{r}
+
+Predict <- predict(model,newdata = testing ) #Get the confusion matrix to see accuracy value and other parameter values
+confusionMatrix(Predict,testing$Outcome )
+
+```
+
+# Plot variable performance
+
+```{r}
+
+X <- varImp(model)
+plot(X)
+
+```
 
