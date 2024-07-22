@@ -1767,10 +1767,179 @@ Titanic_df=as.data.frame(Titanic)
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="creating-data-from-table" class="section level1">
+<h1>Creating data from table</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5yZXBlYXRpbmdfc2VxdWVuY2UgPSByZXAuaW50KHNlcV9sZW4obnJvdyhUaXRhbmljX2RmKSksVGl0YW5pY19kZiRGcmVxKSAjIFRoaXMgd2lsbCByZXBlYXQgZWFjaCBjb21iaW5hdGlvbiBlcXVhbCB0byB0aGUgZnJlcXVlbmN5IG9mIGVhY2ggY29tYmluYXRpb25cblxuIyBDcmVhdGUgZGF0YXNldCBieSByb3cgcmVwZXRpdGlvbiBjcmVhdGVkXG5cblRpdGFuaWNfZGF0YXNldCA9IFRpdGFuaWNfZGZbcmVwZWF0aW5nX3NlcXVlbmNlLF1cblxuIyBXZSBubyBsb25nZXIgbmVlZCB0aGUgZnJlcXVlbmN5LCBkcm9wIHRoZSBmZWF0dXJlXG5cblRpdGFuaWNfZGF0YXNldCRGcmVxPU5VTExcblxuYGBgIn0= -->
+<pre class="r"><code>
+repeating_sequence = rep.int(seq_len(nrow(Titanic_df)),Titanic_df$Freq) # This will repeat each combination equal to the frequency of each combination
+
+# Create dataset by row repetition created
+
+Titanic_dataset = Titanic_df[repeating_sequence,]
+
+# We no longer need the frequency, drop the feature
+
+Titanic_dataset$Freq=NULL
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="fitting-the-naive-bayes-model" class="section level1">
+<h1>Fitting the Naive Bayes Model</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5OYWl2ZV9CYXllc19Nb2RlbCA9IG5haXZlQmF5ZXMoU3Vydml2ZWQgfiAuLCBkYXRhID0gVGl0YW5pY19kYXRhc2V0KSAjIGZvcm11bGEgYW5kIGRhdGFcblxuTmFpdmVfQmF5ZXNfTW9kZWxcbmBgYCJ9 -->
+<pre class="r"><code>
+Naive_Bayes_Model = naiveBayes(Survived ~ ., data = Titanic_dataset) # formula and data
+
+Naive_Bayes_Model</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5OYWl2ZSBCYXllcyBDbGFzc2lmaWVyIGZvciBEaXNjcmV0ZSBQcmVkaWN0b3JzXG5cbkNhbGw6XG5uYWl2ZUJheWVzLmRlZmF1bHQoeCA9IFgsIHkgPSBZLCBsYXBsYWNlID0gbGFwbGFjZSlcblxuQS1wcmlvcmkgcHJvYmFiaWxpdGllczpcbllcbiAgICAgIE5vICAgICAgWWVzIFxuMC42NzY5NjUgMC4zMjMwMzUgXG5cbkNvbmRpdGlvbmFsIHByb2JhYmlsaXRpZXM6XG4gICAgIENsYXNzXG5ZICAgICAgICAgICAgMXN0ICAgICAgICAybmQgICAgICAgIDNyZCAgICAgICBDcmV3XG4gIE5vICAwLjA4MTg3OTE5IDAuMTEyMDgwNTQgMC4zNTQzNjI0MiAwLjQ1MTY3Nzg1XG4gIFllcyAwLjI4NTUxMzM2IDAuMTY1OTYzNDMgMC4yNTAzNTE2MiAwLjI5ODE3MTU5XG5cbiAgICAgU2V4XG5ZICAgICAgICAgICBNYWxlICAgICBGZW1hbGVcbiAgTm8gIDAuOTE1NDM2MjQgMC4wODQ1NjM3NlxuICBZZXMgMC41MTYxNzQ0MCAwLjQ4MzgyNTYwXG5cbiAgICAgQWdlXG5ZICAgICAgICAgIENoaWxkICAgICAgQWR1bHRcbiAgTm8gIDAuMDM0ODk5MzMgMC45NjUxMDA2N1xuICBZZXMgMC4wODAxNjg3OCAwLjkxOTgzMTIyXG4ifQ== -->
+<pre><code>
+Naive Bayes Classifier for Discrete Predictors
+
+Call:
+naiveBayes.default(x = X, y = Y, laplace = laplace)
+
+A-priori probabilities:
+Y
+      No      Yes 
+0.676965 0.323035 
+
+Conditional probabilities:
+     Class
+Y            1st        2nd        3rd       Crew
+  No  0.08187919 0.11208054 0.35436242 0.45167785
+  Yes 0.28551336 0.16596343 0.25035162 0.29817159
+
+     Sex
+Y           Male     Female
+  No  0.91543624 0.08456376
+  Yes 0.51617440 0.48382560
+
+     Age
+Y          Child      Adult
+  No  0.03489933 0.96510067
+  Yes 0.08016878 0.91983122</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="prediction-on-the-dataset" class="section level1">
+<h1>Prediction on the dataset</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5OQl9QcmVkaWN0aW9ucyA9IHByZWRpY3QoTmFpdmVfQmF5ZXNfTW9kZWwsIFRpdGFuaWNfZGF0YXNldClcblxuIyBDb25mdXNpb24gbWF0cml4IHRvIGNoZWNrIGFjY3VyYWN5XG5cbnRhYmxlKE5CX1ByZWRpY3Rpb25zLCBUaXRhbmljX2RhdGFzZXQkU3Vydml2ZWQpXG5gYGAifQ== -->
+<pre class="r"><code>
+NB_Predictions = predict(Naive_Bayes_Model, Titanic_dataset)
+
+# Confusion matrix to check accuracy
+
+table(NB_Predictions, Titanic_dataset$Survived)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICBcbk5CX1ByZWRpY3Rpb25zICAgTm8gIFllc1xuICAgICAgICAgICBObyAgMTM2NCAgMzYyXG4gICAgICAgICAgIFllcyAgMTI2ICAzNDlcbiJ9 -->
+<pre><code>              
+NB_Predictions   No  Yes
+           No  1364  362
+           Yes  126  349</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="using-mlr-to-try-and-improve-accuracy" class="section level1">
+<h1>Using mlr to try and improve accuracy</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5saWJyYXJ5KG1scilcblxuIyBDcmVhdGUgYSBjbGFzc2lmaWNhdGlvbiB0YXNrIGZvciBsZWFybmluZyBvbiBUaXRhbmljIERhdGFzZXQgYW5kIHNwZWNpZnkgdGFyZ2V0IGZlYXR1cmVcblxudGFzayA9IG1ha2VDbGFzc2lmVGFzayhkYXRhID0gVGl0YW5pY19kYXRhc2V0LCB0YXJnZXQgPSBcIlN1cnZpdmVkXCIpXG5cbiMgSW5pdGlhbGl6ZSB0aGUgTmFpdmUgQmF5ZXMgY2Fsc3NpZmllclxuXG5zZWxlY3RlZF9tb2RlbCA9IG1ha2VMZWFybmVyKFwiY2xhc3NpZi5uYWl2ZUJheWVzXCIpXG5cbiMgVHJhaW4gdGhlIG1vZGVsXG5cbk5CX21sciA9IHRyYWluKHNlbGVjdGVkX21vZGVsLCB0YXNrKVxuXG4jIFByaW50IHN1bW1hcnlcblxuTkJfbWxyJGxlYXJuZXIubW9kZWxcbmBgYCJ9 -->
+<pre class="r"><code>
+library(mlr)
+
+# Create a classification task for learning on Titanic Dataset and specify target feature
+
+task = makeClassifTask(data = Titanic_dataset, target = &quot;Survived&quot;)
+
+# Initialize the Naive Bayes calssifier
+
+selected_model = makeLearner(&quot;classif.naiveBayes&quot;)
+
+# Train the model
+
+NB_mlr = train(selected_model, task)
+
+# Print summary
+
+NB_mlr$learner.model</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5OYWl2ZSBCYXllcyBDbGFzc2lmaWVyIGZvciBEaXNjcmV0ZSBQcmVkaWN0b3JzXG5cbkNhbGw6XG5uYWl2ZUJheWVzLmRlZmF1bHQoeCA9IFgsIHkgPSBZLCBsYXBsYWNlID0gbGFwbGFjZSlcblxuQS1wcmlvcmkgcHJvYmFiaWxpdGllczpcbllcbiAgICAgIE5vICAgICAgWWVzIFxuMC42NzY5NjUgMC4zMjMwMzUgXG5cbkNvbmRpdGlvbmFsIHByb2JhYmlsaXRpZXM6XG4gICAgIENsYXNzXG5ZICAgICAgICAgICAgMXN0ICAgICAgICAybmQgICAgICAgIDNyZCAgICAgICBDcmV3XG4gIE5vICAwLjA4MTg3OTE5IDAuMTEyMDgwNTQgMC4zNTQzNjI0MiAwLjQ1MTY3Nzg1XG4gIFllcyAwLjI4NTUxMzM2IDAuMTY1OTYzNDMgMC4yNTAzNTE2MiAwLjI5ODE3MTU5XG5cbiAgICAgU2V4XG5ZICAgICAgICAgICBNYWxlICAgICBGZW1hbGVcbiAgTm8gIDAuOTE1NDM2MjQgMC4wODQ1NjM3NlxuICBZZXMgMC41MTYxNzQ0MCAwLjQ4MzgyNTYwXG5cbiAgICAgQWdlXG5ZICAgICAgICAgIENoaWxkICAgICAgQWR1bHRcbiAgTm8gIDAuMDM0ODk5MzMgMC45NjUxMDA2N1xuICBZZXMgMC4wODAxNjg3OCAwLjkxOTgzMTIyXG4ifQ== -->
+<pre><code>
+Naive Bayes Classifier for Discrete Predictors
+
+Call:
+naiveBayes.default(x = X, y = Y, laplace = laplace)
+
+A-priori probabilities:
+Y
+      No      Yes 
+0.676965 0.323035 
+
+Conditional probabilities:
+     Class
+Y            1st        2nd        3rd       Crew
+  No  0.08187919 0.11208054 0.35436242 0.45167785
+  Yes 0.28551336 0.16596343 0.25035162 0.29817159
+
+     Sex
+Y           Male     Female
+  No  0.91543624 0.08456376
+  Yes 0.51617440 0.48382560
+
+     Age
+Y          Child      Adult
+  No  0.03489933 0.96510067
+  Yes 0.08016878 0.91983122</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>A-priori probabilities and conditional probabilities are similar
+between both models. This means that the predictions will both be the
+same.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIFByZWRpY3QgZGF0YXNldCB3aXRob3V0IHBhc3NpbmcgdGhlIHRhcmdldCBmZWF0dXJlXG5cbnByZWRpY3Rpb25zX21sciA9IGFzLmRhdGEuZnJhbWUocHJlZGljdChOQl9tbHIsIG5ld2RhdGEgPSBUaXRhbmljX2RhdGFzZXRbLDE6M10pKVxuXG4jIGNvbmZ1c2lvbiBtYXRyaXggdG8gY2hlY2sgYWNjdXJhY3lcblxudGFibGUocHJlZGljdGlvbnNfbWxyWywxXSwgVGl0YW5pY19kYXRhc2V0JFN1cnZpdmVkKVxuYGBgIn0= -->
+<pre class="r"><code>
+# Predict dataset without passing the target feature
+
+predictions_mlr = as.data.frame(predict(NB_mlr, newdata = Titanic_dataset[,1:3]))
+
+# confusion matrix to check accuracy
+
+table(predictions_mlr[,1], Titanic_dataset$Survived)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICBcbiAgICAgICAgTm8gIFllc1xuICBObyAgMTM2NCAgMzYyXG4gIFllcyAgMTI2ICAzNDlcbiJ9 -->
+<pre><code>     
+        No  Yes
+  No  1364  362
+  Yes  126  349</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>As we can see the predictions are exactly the same. The only way to
+improve is to have more features or more data. Perhaps, if we have more
+features such as exact age, size of family, number of parents in the
+ship and siblings then we may arrive at a better model using Naive
+Bayes. Using ‘caret’ would also give us the same predictions and
+probability.</p>
+</div>
+<div id="lab-2" class="section level1">
+<h1>Lab 2</h1>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIldlZWsgNDogTmFpdmUgQmF5ZXMiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQogDQojIEdldHRpbmcgc3RhcnRlZCB3aXRoIE5haXZlIEJheWVzDQpgYGB7cn0NCg0KbGlicmFyeShlMTA3MSkNCg0KZGF0YSgiVGl0YW5pYyIpDQoNClRpdGFuaWNfZGY9YXMuZGF0YS5mcmFtZShUaXRhbmljKQ0KDQpgYGANCg0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIldlZWsgNDogTmFpdmUgQmF5ZXMiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQogDQojIEdldHRpbmcgc3RhcnRlZCB3aXRoIE5haXZlIEJheWVzDQoNCmBgYHtyfQ0KDQpsaWJyYXJ5KGUxMDcxKQ0KDQpkYXRhKCJUaXRhbmljIikNCg0KVGl0YW5pY19kZj1hcy5kYXRhLmZyYW1lKFRpdGFuaWMpDQoNCmBgYA0KDQoNCiMgQ3JlYXRpbmcgZGF0YSBmcm9tIHRhYmxlDQoNCmBgYHtyfQ0KDQpyZXBlYXRpbmdfc2VxdWVuY2UgPSByZXAuaW50KHNlcV9sZW4obnJvdyhUaXRhbmljX2RmKSksVGl0YW5pY19kZiRGcmVxKSAjIFRoaXMgd2lsbCByZXBlYXQgZWFjaCBjb21iaW5hdGlvbiBlcXVhbCB0byB0aGUgZnJlcXVlbmN5IG9mIGVhY2ggY29tYmluYXRpb24NCg0KIyBDcmVhdGUgZGF0YXNldCBieSByb3cgcmVwZXRpdGlvbiBjcmVhdGVkDQoNClRpdGFuaWNfZGF0YXNldCA9IFRpdGFuaWNfZGZbcmVwZWF0aW5nX3NlcXVlbmNlLF0NCg0KIyBXZSBubyBsb25nZXIgbmVlZCB0aGUgZnJlcXVlbmN5LCBkcm9wIHRoZSBmZWF0dXJlDQoNClRpdGFuaWNfZGF0YXNldCRGcmVxPU5VTEwNCg0KYGBgDQoNCiMgRml0dGluZyB0aGUgTmFpdmUgQmF5ZXMgTW9kZWwNCg0KYGBge3J9DQoNCk5haXZlX0JheWVzX01vZGVsID0gbmFpdmVCYXllcyhTdXJ2aXZlZCB+IC4sIGRhdGEgPSBUaXRhbmljX2RhdGFzZXQpICMgZm9ybXVsYSBhbmQgZGF0YQ0KDQpOYWl2ZV9CYXllc19Nb2RlbA0KDQpgYGANCg0KIyBQcmVkaWN0aW9uIG9uIHRoZSBkYXRhc2V0DQoNCmBgYHtyfQ0KDQpOQl9QcmVkaWN0aW9ucyA9IHByZWRpY3QoTmFpdmVfQmF5ZXNfTW9kZWwsIFRpdGFuaWNfZGF0YXNldCkNCg0KIyBDb25mdXNpb24gbWF0cml4IHRvIGNoZWNrIGFjY3VyYWN5DQoNCnRhYmxlKE5CX1ByZWRpY3Rpb25zLCBUaXRhbmljX2RhdGFzZXQkU3Vydml2ZWQpDQoNCmBgYA0KDQojIFVzaW5nIG1sciB0byB0cnkgYW5kIGltcHJvdmUgYWNjdXJhY3kNCg0KYGBge3J9DQoNCmxpYnJhcnkobWxyKQ0KDQojIENyZWF0ZSBhIGNsYXNzaWZpY2F0aW9uIHRhc2sgZm9yIGxlYXJuaW5nIG9uIFRpdGFuaWMgRGF0YXNldCBhbmQgc3BlY2lmeSB0YXJnZXQgZmVhdHVyZQ0KDQp0YXNrID0gbWFrZUNsYXNzaWZUYXNrKGRhdGEgPSBUaXRhbmljX2RhdGFzZXQsIHRhcmdldCA9ICJTdXJ2aXZlZCIpDQoNCiMgSW5pdGlhbGl6ZSB0aGUgTmFpdmUgQmF5ZXMgY2Fsc3NpZmllcg0KDQpzZWxlY3RlZF9tb2RlbCA9IG1ha2VMZWFybmVyKCJjbGFzc2lmLm5haXZlQmF5ZXMiKQ0KDQojIFRyYWluIHRoZSBtb2RlbA0KDQpOQl9tbHIgPSB0cmFpbihzZWxlY3RlZF9tb2RlbCwgdGFzaykNCg0KIyBQcmludCBzdW1tYXJ5DQoNCk5CX21sciRsZWFybmVyLm1vZGVsDQoNCmBgYA0KQS1wcmlvcmkgcHJvYmFiaWxpdGllcyBhbmQgY29uZGl0aW9uYWwgcHJvYmFiaWxpdGllcyBhcmUgc2ltaWxhciBiZXR3ZWVuIGJvdGggbW9kZWxzLiBUaGlzIG1lYW5zIHRoYXQgdGhlIHByZWRpY3Rpb25zIHdpbGwgYm90aCBiZSB0aGUgc2FtZS4NCg0KYGBge3J9DQoNCiMgUHJlZGljdCBkYXRhc2V0IHdpdGhvdXQgcGFzc2luZyB0aGUgdGFyZ2V0IGZlYXR1cmUNCg0KcHJlZGljdGlvbnNfbWxyID0gYXMuZGF0YS5mcmFtZShwcmVkaWN0KE5CX21sciwgbmV3ZGF0YSA9IFRpdGFuaWNfZGF0YXNldFssMTozXSkpDQoNCiMgY29uZnVzaW9uIG1hdHJpeCB0byBjaGVjayBhY2N1cmFjeQ0KDQp0YWJsZShwcmVkaWN0aW9uc19tbHJbLDFdLCBUaXRhbmljX2RhdGFzZXQkU3Vydml2ZWQpDQoNCmBgYA0KQXMgd2UgY2FuIHNlZSB0aGUgcHJlZGljdGlvbnMgYXJlIGV4YWN0bHkgdGhlIHNhbWUuIFRoZSBvbmx5IHdheSB0byBpbXByb3ZlIGlzIHRvIGhhdmUgbW9yZSBmZWF0dXJlcyBvciBtb3JlIGRhdGEuIFBlcmhhcHMsIGlmIHdlIGhhdmUgbW9yZSBmZWF0dXJlcyBzdWNoIGFzIGV4YWN0IGFnZSwgc2l6ZSBvZiBmYW1pbHksIG51bWJlciBvZiBwYXJlbnRzIGluIHRoZSBzaGlwIGFuZCBzaWJsaW5ncyB0aGVuIHdlIG1heSBhcnJpdmUgYXQgYSBiZXR0ZXIgbW9kZWwgdXNpbmcgTmFpdmUgQmF5ZXMuIFVzaW5nICdjYXJldCcgd291bGQgYWxzbyBnaXZlIHVzIHRoZSBzYW1lIHByZWRpY3Rpb25zIGFuZCBwcm9iYWJpbGl0eS4NCg0KDQojIExhYiAyDQoNCg0K</div>
 
 
 

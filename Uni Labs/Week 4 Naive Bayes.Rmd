@@ -5,6 +5,7 @@ output: html_notebook
 
  
 # Getting started with Naive Bayes
+
 ```{r}
 
 library(e1071)
@@ -14,5 +15,85 @@ data("Titanic")
 Titanic_df=as.data.frame(Titanic)
 
 ```
+
+
+# Creating data from table
+
+```{r}
+
+repeating_sequence = rep.int(seq_len(nrow(Titanic_df)),Titanic_df$Freq) # This will repeat each combination equal to the frequency of each combination
+
+# Create dataset by row repetition created
+
+Titanic_dataset = Titanic_df[repeating_sequence,]
+
+# We no longer need the frequency, drop the feature
+
+Titanic_dataset$Freq=NULL
+
+```
+
+# Fitting the Naive Bayes Model
+
+```{r}
+
+Naive_Bayes_Model = naiveBayes(Survived ~ ., data = Titanic_dataset) # formula and data
+
+Naive_Bayes_Model
+
+```
+
+# Prediction on the dataset
+
+```{r}
+
+NB_Predictions = predict(Naive_Bayes_Model, Titanic_dataset)
+
+# Confusion matrix to check accuracy
+
+table(NB_Predictions, Titanic_dataset$Survived)
+
+```
+
+# Using mlr to try and improve accuracy
+
+```{r}
+
+library(mlr)
+
+# Create a classification task for learning on Titanic Dataset and specify target feature
+
+task = makeClassifTask(data = Titanic_dataset, target = "Survived")
+
+# Initialize the Naive Bayes calssifier
+
+selected_model = makeLearner("classif.naiveBayes")
+
+# Train the model
+
+NB_mlr = train(selected_model, task)
+
+# Print summary
+
+NB_mlr$learner.model
+
+```
+A-priori probabilities and conditional probabilities are similar between both models. This means that the predictions will both be the same.
+
+```{r}
+
+# Predict dataset without passing the target feature
+
+predictions_mlr = as.data.frame(predict(NB_mlr, newdata = Titanic_dataset[,1:3]))
+
+# confusion matrix to check accuracy
+
+table(predictions_mlr[,1], Titanic_dataset$Survived)
+
+```
+As we can see the predictions are exactly the same. The only way to improve is to have more features or more data. Perhaps, if we have more features such as exact age, size of family, number of parents in the ship and siblings then we may arrive at a better model using Naive Bayes. Using 'caret' would also give us the same predictions and probability.
+
+
+# Lab 2
 
 
