@@ -259,4 +259,99 @@ accuracy(tb)
 ```
 # Detecting prostate cancer
 
+```{r}
 
+# import the data
+
+library(readr)
+
+prc <- read.csv("Prostate_Cancer.csv", stringsAsFactors = FALSE) # imports data and converts every chat to a factor wherever it makes sense
+
+str(prc)
+
+```
+# id is not useful and so should be removed
+
+```{r}
+prc <- prc[-1] # removed the first variable (column) from the dataset (id)
+
+```
+
+The dataset contains patients who have been diagnosed with either Malignant (M) or Benign (B) cancer
+
+```{r}
+
+table(prc$diagnosis_result) # it helps us to get number of patients with B & M
+
+```
+
+In case we wish to rename B as "Benign" and M as "Malignant" and see the results in percentage form
+
+```{r}
+# WARNING: Run either this or previous cell but not both as it will wipe the data
+
+prc$diagnosis_result <- factor(prc$diagnosis_result, levels = c("B", "M"), labels = c("Benign", "Malignant"))
+
+round(prop.table(table(prc$diagnosis_result)) * 100, digits = 1)
+
+```
+
+# Normalizing numeric data
+
+```{r}
+
+normalize <- function(x) {
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+```
+
+# Apply normalization on the dataset
+
+```{r}
+
+prc_n <- as.data.frame(lapply(prc[2:9], normalize))
+
+```
+
+# Check data has been normalized by viewing radius
+
+```{r}
+
+summary(prc_n$radius)
+
+```
+
+# Creating train and test data
+
+```{r}
+prc_train <- prc_n[1:65,]
+
+prc_test <- prc_n[66:100,]
+
+prc_train_labels <- prc[1:65, 1] # Include diagnosis_factor to label the data
+
+prc_test_labels <- prc[66:100, 1]
+
+```
+
+# Calssify data with k-NN 
+
+```{r}
+
+library(class)
+
+prc_test_pred <- knn(train = prc_train, test = prc_test, cl = prc_train_labels, k =10) # k = square root of num of observations
+
+```
+
+# Evaluate model performance
+
+```{r}
+
+library(gmodels)
+
+CrossTable(x = prc_test_labels, y = prc_test_pred, prop.chisq = FALSE)
+
+```
+Improve accuracy by repeating steps 3 & 4 and changing the k value + or - 10 while keeping FN;s as low as possible.
