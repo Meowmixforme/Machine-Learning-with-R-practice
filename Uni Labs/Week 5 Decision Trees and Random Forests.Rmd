@@ -96,3 +96,111 @@ test$Survived[test$Sex == 'female' & test$Pclass == 3 & test$Fare >= 20] <- 0
 
 ```
 
+# Lab 1
+
+```{r}
+
+library(rpart)
+
+fit <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked,
+             data = train,
+             method = "class")
+
+plot(fit) # Ugly!
+text(fit)
+
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+
+fancyRpartPlot(fit) # Much better!
+
+```
+
+# Prediction
+
+```{r}
+
+Prediction <- predict(fit, test, type = "class")
+confMat <- table(test$Survived, Prediction)
+accuracy <- sum(diag(confMat)) / sum(confMat)
+accuracy * 100
+
+```
+
+# Purposely Overfitting
+
+```{r}
+
+fit <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked,
+             data = train,
+             method = "class",
+             control = rpart.control(minsplit = 2, cp = 0))
+
+fancyRpartPlot(fit)
+
+Prediction <- predict(fit, test, type = "class")
+confMat <- table(test$Survived, Prediction)
+accuracy <- sum(diag(confMat)) / sum(confMat)
+accuracy * 100
+
+```
+
+# Control Parameters
+
+```{r}
+
+fit <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked,
+             data = train,
+             method = "class",
+             control = rpart.control(minsplit = 24, cp = 0))
+
+new.fit <- prp(fit, snip = TRUE)$obj
+
+fancyRpartPlot(new.fit)
+```
+
+# Feature Engineering
+
+```{r}
+
+train$Name <- as.factor(train$Name)
+train$Name[1]
+
+# Merge train / test
+
+test$Survived <- NA
+combi <- rbind(train, test)
+
+```
+
+```{r}
+# Change back to a char
+
+combi$Name <- as.character(combi$Name)
+combi$Name[1]
+
+# Split the char apart
+strsplit(combi$Name[1], split = '[,.]')
+
+strsplit(combi$Name[1], split = '[,.]')[[1]]
+
+strsplit(combi$Name[1], split = '[,.]')[[1]][2] # index 2
+
+combi$Title <- sapply(combi$Name, FUN = function(x) {strsplit(x, split = '[,.]')[[1]][2]}) # Create Title variable (column)
+
+combi$Title <- sub(' ','', combi$Title) # Strip spaces from beginning of titles
+
+table(combi$Title)
+```
+
+# Redundant titles
+
+```{r}
+
+combi$Title[combi$Title %in% c('Mme','Mlle')] <- 'Mlle' # Combine lesser used titles
+
+
+
+```
+
