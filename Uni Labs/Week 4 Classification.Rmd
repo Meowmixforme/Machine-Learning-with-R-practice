@@ -122,3 +122,141 @@ confusionMatrix(knn.27, test.gc_labels)
 
 # Improve the model
 
+For k-NN algorithm, the tuning parameters are 'k' value and number of 'features/attributes' selection.
+
+Optimum 'k' value can be found using 'maximum % accuracy' graph but 'feature selection' can be done through understanding of features in k-NN algorithm.
+
+```{r}
+
+i=1 # declaration for infinite for loop
+k.optm = 1 # declaration for infinite for loop
+
+for (i in 1:128) {
+  knn.mod <- knn(train = train.gc, test = test.gc, cl = train.gc_labels, k = i)
+  
+  k.optm[i] <- 100 * sum(test.gc_labels == knn.mod) / NROW(test.gc_labels)
+  k = i
+  cat(k, '=', k.optm[i], '\n') # to print % accuracy
+  
+}
+
+plot(k.optm, type = "b", xlab = "K-Value", ylab = "Accuracy level") # to plot % accuracy to k-value
+
+```
+
+At k=17, maximum accuracy is achieved which is 69%, after that, the accuracy seems stable. It is worse to class a customer as good when it is bad, than it is to class a customer bad when it is good.
+
+Further accuracy can be increased by optimizing feature selections and repeating the above mentioned algorithm.
+
+## Lab 2
+
+```{r}
+
+df <- data(iris) ## load data
+
+head(iris) ## see the structure
+
+```
+
+```{r}
+
+## Generate a random number that is 90% of the total number of rows in the dataset.
+
+ran <- sample(1:nrow(iris),0.9 * nrow(iris))
+
+## The normalization function is created
+
+nor <-function(x) {
+  (x -min(x) / (max(x) - min(x)))
+}
+
+# Run the normalization on first 4 columns of dataset because they are the predictors
+
+iris_norm <- as.data.frame(lapply(iris[c(1,2,3,4)], nor))
+
+```
+
+
+
+```{r}
+
+# Extract training set
+
+iris_train <- iris_norm[ran,]
+
+# Extract testing set
+
+iris_test <- iris_norm[-ran,]
+
+iris_target_category <- iris[ran, 5] # extract 5th column of train dataset because it will be used as 'cl' argument in k-nn function
+
+iris_test_category <- iris[-ran, 5] # extract 5th column of test dataset to measure the accuracy
+
+library(class)
+
+pr <- knn(iris_train, iris_test, cl = iris_target_category, k =13)
+
+## Create confusion matrix
+
+tab <- table(pr, iris_test_category)
+
+# this function divides the correct predictions by total number of predictions that tell us how accurate the model is.
+
+accuracy <- function(x) {
+  sum(diag(x) / sum(rowSums(x))) * 100
+}
+
+accuracy(tab)
+
+```
+## Lab 3
+
+```{r}
+
+# Because diamonds dataset is in ggplot2 package
+
+library(ggplot2)
+data(diamonds)
+
+dia <- data.frame(diamonds) # Store as a data frame
+
+ran <- sample(1:nrow(dia), 0.9 * nrow(dia)) # create a random number equal 90% of total number of rows
+
+#the normalization function is created
+nor <- function(x) { 
+  (x -min(x)) / (max(x) -min(x))
+}
+
+dia_nor <- as.data.frame(lapply(dia[,c(1,5,6,7,8,9,10)], nor))
+
+# training dataset extracted
+dia_train <- dia_nor[ran, ]
+
+# test dataset extracted
+dia_test <- dia_nor[-ran,]
+
+dia_target <- as.factor(dia[ran,2])
+
+test_target <- as.factor(dia[-ran, 2])
+
+# run knn functions
+
+library(class)
+
+pr <- knn(dia_train, dia_test, cl = dia_target, k = 20)
+
+# create the confusion matrix
+tb <- table(pr, test_target)
+
+# Check accuracy
+
+accuracy <- function(x) {
+  sum(diag(x) / (sum(rowSums(x)))) * 100
+}
+
+accuracy(tb)
+
+```
+# Detecting prostate cancer
+
+
