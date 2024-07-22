@@ -198,9 +198,13 @@ table(combi$Title)
 
 ```{r}
 
-combi$Title[combi$Title %in% c('Mme','Mlle')] <- 'Mlle' # Combine lesser used titles
+combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle' # Combine lesser used titles
 
+combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
+  
+combi$Title[combi$Title %in% c('Dona',  'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
 
+combi$Title <- factor(combi$Title) # Change back to a factor
 
 ```
 
