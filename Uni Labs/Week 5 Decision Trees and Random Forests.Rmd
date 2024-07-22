@@ -1,0 +1,15 @@
+---
+title: "Week 5: Decision Trees and Random Forests"
+output: html_notebook
+---
+
+# Import data
+
+```{r}
+
+train <- read.csv("train.csv")
+test <- read.csv("test.csv")
+
+```
+
+
