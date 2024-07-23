@@ -114,3 +114,38 @@ ggplot(wines, aes(x = Phenols, y = Flavanoids)) +
 
 # Data Preparation
 
+```{r}
+
+# Normalization
+
+winesNorm <- as.data.frame(scale(wines))
+
+# Original data
+
+p1 <- ggplot(wines, aes(x = Alcohol, y = Malic.acid)) +
+  geom_point()
+labs(title = "Original data") +
+  theme_bw()
+
+
+
+# Normalized data
+
+p2 <- ggplot(winesNorm, aes(x = Alcohol, y = Malic.acid)) +
+  geom_point()
+labs(title = "Normalized data") +
+  theme_bw()
+
+# Subplot
+
+grid.arrange(p1, p2, ncol = 2)
+
+```
+
+# k-means execution
+
+```{r}
+
+
+```
+
