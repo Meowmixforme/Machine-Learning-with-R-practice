@@ -96,7 +96,7 @@ test$Survived[test$Sex == 'female' & test$Pclass == 3 & test$Fare >= 20] <- 0
 
 ```
 
-# Lab 1
+# Decision Trees
 
 ```{r}
 
@@ -205,6 +205,77 @@ combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
 combi$Title[combi$Title %in% c('Dona',  'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
 
 combi$Title <- factor(combi$Title) # Change back to a factor
+
+```
+
+
+# Combining family
+
+```{r}
+
+combi$FamilySize <- combi$SibSp + combi$Parch + 1
+
+```
+
+
+# Combining Surname and FamilySize
+
+```{r}
+# Extract passenger lastnames
+
+combi$Surname <-sapply(combi$Name, FUN = function(x) {strsplit(x, split = '[,.]')[[1]][1]})
+
+# Change FamilySize to a char and append 
+
+combi$FamilyID <- paste(as.character(combi$FamilySize), combi$Surname, sep = "")
+
+# Any family of size <2 are classed as small (pesky Johnsons)
+
+combi$FamilyID[combi$FamilySize <= 2] <- 'small'
+
+famIDs <- data.frame(table(combi$FamilyID))
+
+```
+
+
+# Show only families with 2 or less members
+
+```{r}
+
+famIDs <- famIDs[famIDs$Freq <=2, ]
+
+```
+
+
+# Overwrite fasmily IDs in combi that were not correctly identified and convert into a factor
+
+```{r}
+
+combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'small'
+combi$FamilyID <- factor(combi$FamilyID)
+
+```
+
+
+# Train / Test split
+
+```{r}
+
+train <- combi[1:891,]
+test <- combi[892:1309,]
+
+```
+
+
+# Fit model
+
+```{r}
+
+fit <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
+             data = train,
+             method = "class")
+
+fancyRpartPlot(fit)
 
 ```
 
