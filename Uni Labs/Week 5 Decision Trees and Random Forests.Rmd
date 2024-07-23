@@ -279,3 +279,114 @@ fancyRpartPlot(fit)
 
 ```
 
+
+# Random Forest
+
+```{r}
+
+# Fill NA's in Age
+
+summary(combi$Age) # 263 NA's
+
+Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
+                data = combi[!is.na(combi$Age),],
+                method = "anova")
+
+combi$Age[is.na(combi$Age)] <- predict(Agefit,
+                                       combi[is.na(combi$Age),]) 
+
+summary(combi$Age)
+
+```
+
+# Fix Embarked
+
+```{r}
+
+summary(combi) # Combi is char and Fare has an NA
+
+combi$Embarked <- as.factor(combi$Embarked) # Convert to a factor
+
+summary(combi$Embarked) # Embarked has a blank
+
+which(combi$Embarked == '') # Indexes of blank fields (62, 830)
+
+combi$Embarked[c(62,830)] = "S" # Fill the blanks with 'S'
+combi$Embarked <- factor(combi$Embarked)
+
+```
+
+# Fix Fare
+
+```{r}
+
+summary(combi$Fare)
+
+which(is.na(combi$Fare)) # which index (1044)
+
+combi$Fare[1044] <- median(combi$Fare, na.rm = TRUE)
+
+```
+
+# Reduce number of levels in FamilyID
+
+```{r}
+
+combi$FamilyID2 <- combi$FamilyID
+combi$FamilyID2 <- as.character(combi$FamilyID2)
+combi$FamilyID2[combi$FamilySize <= 3] <- 'small'
+combi$FamilyID2 <- factor(combi$FamilyID2)
+
+```
+
+# Test / Train Split
+```{r}
+train <- combi[1:891,]
+test <- combi[892:1309,]
+```
+
+# Fit the model
+
+```{r}
+
+library(randomForest)
+
+set.seed(415)
+
+fit <- randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare +
+                    Embarked + Title + FamilySize + FamilyID2,
+                    data = train,
+                    importance = TRUE,
+                    ntree = 2000)
+
+varImpPlot(fit)
+
+```
+
+# Predictions
+
+```{r}
+
+Prediction <- predict(fit, test)
+
+
+```
+
+# Forest of conditional inference trees
+
+```{r}
+
+library(party)
+
+set.seed(415)
+
+fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch +
+                 Fare + Embarked + Title + FamilySize + FamilyID,
+               data = train,
+               controls = cforest_unbiased(ntree = 2000, mtry = 3))
+
+
+Prediction <- predict(fit, test, OOB = TRUE, type = "response")
+
+```
+
