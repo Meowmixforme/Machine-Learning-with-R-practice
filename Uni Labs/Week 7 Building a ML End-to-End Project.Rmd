@@ -75,10 +75,59 @@ cor(dataset[, sapply(dataset, is.numeric)])
 ```
 
 
-#
+# Unimodal data visualizations
 
 ```{r}
 
+# histograms each attribute
+
+par(mfrow = c(2,7))
+
+for (i in 1:13) {
+  hist(dataset[, i], main = names(dataset)[i])
+  
+}
+
+```
+
+```{r}
+
+# density plot for each attribute
+
+par(mfrow = c(2,7))
+for (i in 1:13) {
+  plot(density(dataset[,i]), main = names(dataset)[i])
+  
+}
+
+```
+
+```{r}
+
+# Boxplots for each attribute
+
+par(mfrow = c(2,7))
+for (i in 1:13) {
+  boxplot(dataset[,i], main = names(dataset)[i])
+  
+}
+```
+
+```{r}
+
+# scatterplot matrix
+
+pairs(dataset[,1:13])
+
+```
+
+```{r}
+
+# correlation plot
+
+correlations <- cor(dataset[,1:13])
+
+corrplot(correlations, method = "circle")
 
 ```
 
