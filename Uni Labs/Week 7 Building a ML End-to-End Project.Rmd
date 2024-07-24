@@ -1,0 +1,67 @@
+---
+title: "Week 7: Building a ML End-to-End Project"
+output: html_notebook
+---
+
+
+# Import packages
+
+```{r}
+library(caret)
+library(corrplot)
+library(mlbench)
+
+data(BostonHousing)
+
+```
+
+# Validation Dataset
+
+```{r}
+
+set.seed(7)
+
+# Create a list of 80% of the rows in the original dataset we can use for training
+
+validationIndex <- createDataPartition(BostonHousing$medv, p = .80, list = FALSE)
+
+# Select 20% of the data for validation
+
+validation <- BostonHousing[-validationIndex, ]
+
+# Use the remaining 80% of data for training and testing the models
+
+dataset <- BostonHousing[validationIndex, ]
+
+```
+
+
+# Analyse data
+
+```{r}
+
+# Dimensions of dataset
+
+dim(dataset)
+
+# list types for each attribute
+
+sapply(dataset, class)
+
+# Take a peek at the first 20 rows of the dataset
+
+head(dataset, n=20)
+
+# summarize attribute distributions
+
+summary(dataset)
+
+```
+
+
+#
+
+```{r}
+
+```
+
