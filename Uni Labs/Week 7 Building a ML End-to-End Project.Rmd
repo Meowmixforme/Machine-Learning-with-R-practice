@@ -10,6 +10,7 @@ output: html_notebook
 library(caret)
 library(corrplot)
 library(mlbench)
+library(kernlab)
 
 data(BostonHousing)
 
@@ -190,4 +191,29 @@ set.seed(7)
 fit.knn <- train(medv~., data = dataset, method = 'knn', metric = metric, preProc = c("center", "scale"), trControl = trainControl)
 
 ```
+
+
+# Collect resampled statistics from models and summarise results
+
+```{r}
+
+# compare algorithms
+
+results <- resamples(list(LM= fit.lm, GLM = fit.glm, GLMNET = fit.glmnet, SVM = fit.svm, CART = fit.cart, KNN = fit.knn))
+
+summary(results)
+
+dotplot(results)
+
+```
+
+It looks like SVM has the lowest RMSE, followed by the other non-linear algorithms CART and KNN. The linear regression algorithms all appear to be in the same ballpark with slightly worse error.
+
+We can also see that SVM and the other non-linear algorithms have the best fit for the data in their r2 measures.
+
+Did centering and scaling make a difference to the algorithms other than KNN? Doubtful, and best to hold the data constant at this stage. Perhaps the worse performance of the linear algorithms has something to do with the highly correlated attributes. Let's look at that in the next section.
+
+# Evaluate Algorithms: Feature Selection
+
+We have a theory that the correlated attributes are reducing the accuracy of the linear algorithms tried in the base line spot-check in the previous step. In this step we will remove the highly correlated attributes and see what effect that has on the evaluation metrics. We can find and remove the highly correlated attributes using the findCorrelation() function from the caret package.
 
