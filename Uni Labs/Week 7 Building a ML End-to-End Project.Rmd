@@ -59,9 +59,26 @@ summary(dataset)
 ```
 
 
+# Converting types and Coreelation
+
+```{r}
+# Uni lab had errors (corrected)
+
+# convert chas to a numeric attribute
+
+dataset$chas <- as.numeric(as.character(dataset$chas))
+
+# correlation between all the numeric attributes
+
+cor(dataset[, sapply(dataset, is.numeric)])
+
+```
+
+
 #
 
 ```{r}
+
 
 ```
 
