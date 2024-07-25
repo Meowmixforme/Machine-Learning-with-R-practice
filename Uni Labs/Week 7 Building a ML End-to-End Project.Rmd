@@ -419,6 +419,52 @@ Cubist, boosting (CUBIST).
 
 # try ensemble
 
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=3)
+metric <- "RMSE"
+
+# Random Forest
+set.seed(7)
+fit.rf <- train(medv~., data=dataset, method="rf", metric=metric,
+preProc=c("BoxCox"), trControl=trainControl)
+
+# Stochastic Gradient Boosting
+set.seed(7)
+fit.gbm <- train(medv~., data=dataset, method="gbm", metric=metric,
+preProc=c("BoxCox"), trControl=trainControl, verbose=FALSE)
+
+# Cubist
+set.seed(7)
+fit.cubist <- train(medv~., data=dataset, method="cubist", metric=metric,
+preProc=c("BoxCox"), trControl=trainControl)
+
+# Compare algorithms
+ensembleResults <- resamples(list(RF=fit.rf, GBM=fit.gbm,
+CUBIST=fit.cubist))
+summary(ensembleResults)
+dotplot(ensembleResults)
 
 ```
+
+We can see that Cubist was the most accurate.
+
+Let's dive deeper into Cubist and see if we can tune it further and get more skill out of it. Cubist
+has two parameters that are tuneable with caret: committees which is the number of boosting
+operations and neighbours which is used during prediction and is the number of instances used to
+correct the rule based prediction (although the documentation is perhaps a little ambiguous on
+this). For more information about Cubist see the help on the function ?cubist. Let's first look at the
+default tuning parameter used by caret that resulted in our accurate model.
+
+# Summarize accuracy of a model.
+
+```{r}
+
+# look at parameters used for Cubist
+print(fit.cubist)
+
+```
+
+We can see that the best RMSE was achieved with committees = 20 and neighbors = 5
+
+RMSE was used to select the optimal model using the smallest value.
+The final values used for the model were committees = 20 and neighbors = 5.
 
