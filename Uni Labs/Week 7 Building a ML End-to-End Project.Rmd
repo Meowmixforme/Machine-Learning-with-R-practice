@@ -554,5 +554,61 @@ print(rmse)
 ```
 
 
-# Lab2: Binary Classification Machine Learning Project
+## Lab2: Binary Classification Machine Learning Project
+
+# Import packages
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(corrgram)
+library(ggplot2)
+library(ggthemes)
+library(cluster)
+library(caret)
+library(ggplot2)
+
+# Insert dataset into R
+
+med <- read.csv("cancer_data.csv", sep = ",", header = TRUE)
+
+# Discard the id column as it will not be used in any of the analysis below
+
+med <- med[, 2:12]
+
+# change the name of the first column to diagnosis
+
+colnames(med)[1] <- "diagnosis"
+
+```
+
+
+# EDA
+
+Exploratory Data Analysis and Visualisations
+Before using the machine learning algorithms for classification task, it is essential to have an
+overview of the dataset. Below there is a box-plot of each predictor against the target variable
+(tumour). The log value of the predictors used instead of the actual values, for a better view of the
+plot.
+
+```{r}
+
+# Create a long version of the dataset
+med2 <- gather(med, "feature", "n", 2:11)
+ggplot(med2)+
+geom_boxplot(aes(diagnosis, log(n)))+
+facet_wrap(~feature, scales = "free")+
+labs(title = "Box-plot of all predictors(log scaled) per tumor type",
+subtitle = "tumor can be either malignant -M- or benign -B-")+
+theme_fivethirtyeight()+
+theme(axis.title = element_text()) +
+ylab("Predictor's log value") +
+xlab('')
+
+```
+
+It seems that for most predictors the malignant level of tumour type has higher values than the
+benign level. Now let’s see if the predictors are correlated. Below there is a scatter-plot matrix of
+all predictors
 
