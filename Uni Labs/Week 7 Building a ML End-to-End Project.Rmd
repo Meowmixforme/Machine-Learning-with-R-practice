@@ -3,6 +3,7 @@ title: "Week 7: Building a ML End-to-End Project"
 output: html_notebook
 ---
 
+## Lab1: Regression Machine Learning Case Study Project
 
 # Import packages
 
@@ -467,4 +468,91 @@ We can see that the best RMSE was achieved with committees = 20 and neighbors = 
 
 RMSE was used to select the optimal model using the smallest value.
 The final values used for the model were committees = 20 and neighbors = 5.
+
+Let's use a grid search to tune around those values. We'll try all committees between 15 and 25
+and spot-check a neighbours value above and below 5.
+
+# Tune the parameters of a model.
+
+```{r}
+
+# Tune the Cubist algorithm
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=3)
+metric <- "RMSE"
+set.seed(7)
+grid <- expand.grid(.committees=seq(15, 25, by=1), .neighbors=c(3, 5, 7))
+tune.cubist <- train(medv~., data=dataset, method="cubist",
+metric=metric,
+preProc=c("BoxCox"), tuneGrid=grid, trControl=trainControl)
+print(tune.cubist)
+plot(tune.cubist)
+
+```
+
+We can see that we have achieved a more accurate model again with an RMSE of 3.028333 using
+committees = 18 and neighbors = 3
+
+RMSE was used to select the optimal model using the smallest value.
+The final values used for the model were committees = 18 and neighbors =
+3.
+
+With more time we could tune the Cubist algorithm further. Also, with results like this, it also
+suggests it might be worth investigating whether we can get more out of the GBM or other
+boosting implementations.
+
+
+# Finalise the Model
+
+It looks like that cubist results in our most accurate model. Let's finalise it by creating a new
+standalone Cubist model with the parameters above trained using the whole dataset. We must
+also use the Box-Cox power transform.
+
+# Prepare the data transform and finalize the model
+
+```{r}
+
+# prepare the data transform using training data
+
+library(Cubist)
+
+set.seed(7)
+
+x <- dataset[,1:13]
+y <- dataset[,14]
+preprocessParams <- preProcess(x, method=c("BoxCox"))
+transX <- predict(preprocessParams, x)
+# train the final model
+finalModel <- cubist(x=transX, y=y, committees=18)
+summary(finalModel)
+
+```
+
+We can now use this model to evaluate our held-out validation dataset. Again, we must prepare
+the input data using the same Box-Cox transform.
+
+# Make predictions using the final model
+
+```{r}
+
+# transform the validation dataset
+
+set.seed(7)
+valX <- validation[,1:13]
+trans_valX <- predict(preprocessParams, valX)
+valY <- validation[,14]
+
+# use final model to make predictions on the validation dataset
+
+predictions <- predict(finalModel, newdata=trans_valX, neighbors=3)
+
+# calculate RMSE
+
+rmse <- RMSE(predictions, valY)
+r2 <- R2(predictions, valY)
+print(rmse)
+
+```
+
+
+# Lab2: Binary Classification Machine Learning Project
 
