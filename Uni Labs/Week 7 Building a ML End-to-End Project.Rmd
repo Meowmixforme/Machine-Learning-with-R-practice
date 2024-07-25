@@ -283,14 +283,142 @@ fit.knn <- train(medv~., data = dataset, method = 'knn', metric = metric, prePro
 
 # compare algorithms
 
-results <- resamples(list(LM= fit.lm, GLM = fit.glm, GLMNET = fit.glmnet, SVM = fit.svm, CART = fit.cart, KNN = fit.knn))
+feature_results <- resamples(list(LM= fit.lm, GLM = fit.glm, GLMNET = fit.glmnet, SVM = fit.svm, CART = fit.cart, KNN = fit.knn))
 
-summary(results)
+summary(feature_results)
 
-dotplot(results)
+dotplot(feature_results)
 
 ```
 
 Comparing the results, we can see that this has made the RMSE worse for the linear and non-linear algorithms. The correlated attributes we removed are contributing to the accuracy of the models.
 
+
+# Evaluated algorithms: Box-Cox Transform
+
+We know that some of the attributes have a skew and others perhaps have an exponential distribution. One option would be to explore squaring and log transforms respectively. Another approach would be to use a power transform and let it figure out the amount to correct each attribute. One example is the Box-Cox power transform. Let's try using this transform to rescale the original dat and evaluate the effect on the same 6 algorithms. We will also leave in the centering and scaling for the benefit of the instance-based method.
+
+# Estimate acuuracy of algorithms on transform dataset
+
+```{r}
+
+# Run algorithms using 10-fold cross validation
+
+trainControl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+
+metric <- "RMSE"
+
+#LM
+set.seed(7)
+fit.lm <- train(medv~., data = dataset, method = 'lm', metric = metric, preProc = c("center", "scale", "BoxCox"), trControl = trainControl)
+
+
+# GLM
+set.seed(7)
+fit.glm <- train(medv~., data = dataset, method = 'glm', metric = metric, preProc = c("center", "scale", "BoxCox"), trControl = trainControl)
+
+# GLMNET
+set.seed(7)
+fit.glmnet <- train(medv~., data = dataset, method = 'glmnet', metric = metric, preProc = c("center", "scale", "BoxCox"), trControl = trainControl)
+
+# SVM
+set.seed(7)
+fit.svm <- train(medv~., data = dataset, method = 'svmRadial', metric = metric, preProc = c("center", "scale", "BoxCox"), trControl = trainControl)
+
+# CART
+set.seed(7)
+grid <- expand.grid(.cp= c(0, 0.5, 0.1))
+fit.cart <- train(medv~., data = dataset, method = 'rpart', metric = metric, tuneGrid = grid, preProc = c("center", "scale", "BoxCox"), trControl = trainControl)
+
+# KNN
+set.seed(7)
+fit.knn <- train(medv~., data = dataset, method = 'knn', metric = metric, preProc = c("center", "scale", "BoxCox"), trControl = trainControl)
+
+
+# compare algorithms
+
+transformResults <- resamples(list(LM= fit.lm, GLM = fit.glm, GLMNET = fit.glmnet, SVM = fit.svm, CART = fit.cart, KNN = fit.knn))
+
+summary(transformResults)
+
+dotplot(transformResults)
+
+```
+
+We can see that this indeed decreased the RMSE and increased the R2 on all except the CART algorithm.The RMSE of SVM dropped to an average of 3.703.
+
+
+# Improve model with tuning
+
+We can improve the accuracy of the well performing algorithms by tuning their parameters. In this
+section we will look at tuning the parameters of SVM with a Radial Basis Function (RBF). with more
+time it might be worth exploring tuning of the parameters for CART and KNN. It might also be
+worth exploring other kernels for SVM besides the RBF. Let's look at the default parameters
+already adopted.
+
+
+# Display estimated accuracy of a model
+
+```{r}
+
+print(fit.svm)
+
+```
+
+Let's design a grid search around a C value of 1. We might see a small trend of decreasing RMSE
+with increasing C, so let’s try all integer C values between 1 and 10. Another parameter that caret
+lets us tune is the sigma parameter. This is a smoothing parameter. Good sigma values are often
+start around 0.1, so we will try numbers before and after.
+
+
+# Tune the parameters of a model.
+
+```{r}
+# tune SVM sigma and C parameters
+
+trainControl <- trainControl(method="repeatedcv", number=10, repeats=3)
+metric <- "RMSE"
+set.seed(7)
+grid <- expand.grid(.sigma=c(0.025, 0.05, 0.1, 0.15), .C=seq(1, 10,
+by=1))
+fit.svm <- train(medv~., data=dataset, method="svmRadial", metric=metric,
+tuneGrid=grid,
+preProc=c("BoxCox"), trControl=trainControl)
+print(fit.svm)
+plot(fit.svm)
+
+```
+
+We can see that the sigma values flatten out with larger C cost constraints. It looks like we might
+do well with a sigma of 0.1 and a C of 10. This gives us a respectable RMSE of 3.084181.
+
+RMSE was used to select the optimal model using the smallest value.
+The final values used for the model were sigma = 0.1 and C = 10
+
+If we wanted to take this further, we could try even more fine tuning with more grid searches. We
+could also explore trying to tune other parameters of the underlying ksvm() function. Finally and
+as already mentioned, we could perform some grid searches on the other non-linear regression
+methods
+
+
+# Ensemble Methods
+
+
+We can try some ensemble methods on the problem and see if we can get a further decrease in
+our RMSE. In this section we will look at some boosting and bagging techniques for decision trees.
+Additional approaches you could look into would be blending the predictions of multiple well
+performing models together, called stacking. Let's take a look at the following ensemble methods:
+
+Random Forest, bagging (RF).
+Gradient Boosting Machines boosting (GBM).
+Cubist, boosting (CUBIST).
+
+# Estimate accuracy of ensemble methods
+
+```{r}
+
+# try ensemble
+
+
+```
 
