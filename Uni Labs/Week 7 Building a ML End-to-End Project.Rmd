@@ -861,4 +861,4 @@ type II error (wrongly predict malignant tumours as benign). This is really impo
 problem. As expected, parametric methods, such as logistic regression, are performing better in
 this case, where we have a small dataset (569 observations). While our analysis is an interesting
 step it is based on a limited sample of cases. A larger sample of cases would probably lead us to a
-better classification model
+better classification model.
