@@ -612,3 +612,250 @@ It seems that for most predictors the malignant level of tumour type has higher 
 benign level. Now let’s see if the predictors are correlated. Below there is a scatter-plot matrix of
 all predictors
 
+```{r}
+
+# Scatterplot matrix of all numeric variables
+pairs(~., data = med[, sapply(med, is.numeric)], main = "Scatterplot Matrix
+of variables")
+
+```
+
+We can observe how there are some predictors that are strongly related, as expected, such as
+radius, perimeter, and area. A correlogram will serve us better and quantify all correlations.
+
+```{r}
+
+library(corrplot)
+# Plot correlogram of numeric variables
+corrplot(cor(med[,2:11]), type="lower", tl.srt = 90)
+
+```
+
+We can spot some less significant correlations, such as concave and concavity and compactness.
+Also concave against radius, perimeter, and area.
+
+
+# Making prediction using classification methods
+
+In the first part of this analysis, the goal is to predict whether the tumour is malignant or benign
+based on the variables produced by the digitized image using classification methods. Classification
+tasks consists of identifying to which of a set of categories (sub-populations) a new observation
+belongs, on the basis of a training set of data containing observations (or instances) whose
+category membership is known. Thus, we need to develop a model that classifies (categorise) each
+tumour (case) to either malignant or benign. Classification will be performed with two different
+methods, Logistic Regression and Decision Trees.
+
+# Feature selection
+
+It is important to use only significant predictors while building the prediction model. You do not
+need to use every feature at your disposal for creating an algorithm. You can assist the algorithm
+
+by feeding in only those features that are really important. Below there are some reasons for the
+feature selection:
+ It enables the machine learning algorithm to train faster.
+ It reduces the complexity of a model and makes it easier to interpret.
+ It improves the accuracy of a model if the right subset is chosen.
+ It reduces over-fitting.
+ 
+In particular, I used the stepwise (forward & backward) logistic regression on the data, since the
+dataset is small. This method is computationally very expensive, so it is not recommended for very
+large datasets.
+
+```{r}
+
+library(MASS)
+
+# Encode diagnosis to 0(B) 1(M)
+
+
+#med$diagnosis <- ifelse(med$diagnosis == 'B', 0, 1)
+med$diagnosis <- as.factor(med$diagnosis)
+
+# Create a logistic regression model
+
+glm <- glm(diagnosis ~ ., family=binomial(link='logit'), data = med)
+
+# Run the stepwise regression
+
+both <- stepAIC(glm, direction = "both") 
+
+```
+
+```{r}
+
+# Print the summary of the stepwise model
+
+summary(both)
+
+```
+
+# Select only important variables
+
+```{r}
+
+med <- med[, c("diagnosis","radius_mean", "texture_mean", "area_mean",
+"smoothness_mean", "concavity_mean", "symmetry_mean")]
+
+```
+
+
+After reviewing the stepwise selection, it was decided the following predictors to be used for all
+model building:
+ radius (mean of distances from centre to points on the perimeter)
+ texture (standard deviation of gray-scale values)
+ area
+ smoothness (local variation in radius lengths)
+ concave points (number of concave portions of the contour)
+ symmetry
+ 
+#Logistic Regression
+
+Logistic regression is a parametric statistical learning method, used for classification especially
+when the outcome is binary. Logistic regression models the probability that a new observation
+belongs to a particular category (or class). To fit the model, a method called maximum likelihood is
+used. Below there is an implementation of logistic regression.
+
+# Create a vector with the 70% of the dataset with respect to diagnosis variable
+
+```{r}
+
+set.seed(1)
+
+inTrain = createDataPartition(med$diagnosis, p = .7)[[1]]
+
+# Assign the 70% of observations to training data
+
+training <- med[inTrain,]
+
+# Assign the remaining 30 % of observations to testing data
+
+testing <- med[-inTrain,]
+
+# Build the model
+
+glm_model <- glm(diagnosis~., data = training, family = binomial)
+
+summary (glm_model)
+
+```
+
+By looking at the summary output of the logistic regression model we can see that almost all
+coefficients are positive, indicating that higher measures mean higher probability of a malignant
+tumour.
+An important step here is to evaluate the predicting ability of the model. Because the model’s
+predictions are probabilities, we must decide the threshold that will split the two possible
+outcomes. At first, I’ll try the default threshold of 0.5. Below there is a confusion matrix of with
+predictions using this threshold.
+
+```{r}
+
+options(scipen=999)
+
+prediction <- predict(glm_model, newdata= testing, type = "response")
+prediction <- ifelse(prediction > 0.5, "M", "B")
+
+# Check the accuracy of the prediction model by printing the confusion
+
+matrix
+
+print(confusionMatrix(as.factor(prediction), testing$diagnosis), digits=4)
+```
+
+The overall accuracy of the model is 93.53 % (7.47 % error rate). But in this specific case we must
+distinguish the different types of error. In other words, there are two types of error rate, type I
+and type II errors. In our case these are: type II error = 4.67% (sensitivity) and type I error = 9.52%
+(specificity). Type I error means that a benign tumour is predicted to be malignant and type II error
+when a malignant tumour is predicted to be benign. Type II error is more expensive, and we must
+find ways to eliminate it (even if it increases type I error). Below I increased the threshold to 0.8,
+which changed the prediction model.
+
+```{r}
+
+options(scipen=999)
+# Apply the prediction
+prediction <- predict(glm_model, newdata= testing, type = "response")
+prediction <- ifelse(prediction > 0.8, "M", "B")
+# Check the accuracy of the prediction model by printing the confusion
+matrix
+print(confusionMatrix(as.factor(prediction), testing$diagnosis), digits=4)
+
+```
+
+Although the overall accuracy of the model remains the same, now the type II error (sensitivity) is
+almost eliminated, but the type I error (specificity) is increased. In other words, we now have a
+model that perfectly predicts a malign tumour, but it also wrongly predicts some benign tumours
+as malignant (9.3%).
+
+# Decision Trees
+
+Decision trees consist of a series of split points, often referred to as nodes. In order to make a
+prediction using a decision tree, we start at the top of the tree at a single node known as the root
+node. The root node is a decision or split point, because it places a condition in terms of the value
+of one of the input features, and based on this decision we know whether to continue on with the
+left part of the tree or with the right part of the tree. We repeat this process of choosing to go left
+or right at each inner node that we encounter until we reach one of the leaf nodes. These are the
+nodes at the base of the tree, which give us a specific value of the output to use as our prediction.
+
+```{r}
+
+# Create a vector with the 70% of the dataset with respect to diagnosis variable
+
+set.seed(1)
+
+inTrain = createDataPartition(med$diagnosis, p = .7)[[1]]
+
+# Assign the 70% of observations to training data
+
+training <- med[inTrain,]
+
+# Assign the remaining 30 % of observations to testing data
+
+testing <- med[-inTrain,]
+
+# Set seed (in order all results to be fully reproducible) and apply a prediction
+
+#Model with all variables
+
+set.seed(2)
+
+model.all <- train(diagnosis ~ ., method="rpart", data = training)
+
+# Apply the prediction
+
+prediction <- predict(model.all, newdata= testing)
+
+#Check the accuracy of the prediction model by printing the confusion matrix
+
+print(confusionMatrix(prediction, testing$diagnosis), digits=4)
+
+```
+
+When performing the Decision Trees, as seen from the output, the overall prediction rate is
+91.76% (9.24% error rate), which for the specific domain, is relatively low. In particular, the type II
+error (specificity) is 6.35% and type I error (sensitivity) is 9.35%. The model’s predictive
+performance is lower than the previous one (logistic regression). Now let’s create a classification
+tree plot of the model.
+
+```{r}
+
+library(rpart.plot)
+# Plot the Classification Tree
+rpart.plot(model.all$finalModel, main = "Classification Tree of tumor type
+prediction")
+
+```
+
+From the plot above, we can assume that concave and texture are the most import important
+predictors for tumour type (splits on the classification trees).
+
+# Results
+
+Finally, after building various models using different algorithms, the logistic regression model is
+chosen based on its performance (details on the table below).
+
+In particular, especially after adjusting the threshold, we have been able to drastically re-due the
+type II error (wrongly predict malignant tumours as benign). This is really important in this specific
+problem. As expected, parametric methods, such as logistic regression, are performing better in
+this case, where we have a small dataset (569 observations). While our analysis is an interesting
+step it is based on a limited sample of cases. A larger sample of cases would probably lead us to a
+better classification model
