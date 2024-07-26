@@ -669,6 +669,9 @@ library(MASS)
 
 
 #med$diagnosis <- ifelse(med$diagnosis == 'B', 0, 1)
+
+# Got it! I had to convert to a factor to get the code working
+
 med$diagnosis <- as.factor(med$diagnosis)
 
 # Create a logistic regression model
