@@ -1,0 +1,134 @@
+---
+title: "Week 10: Dimensionality Reduction"
+output: html_notebook
+---
+
+Principal Component Analysis, or PCA, is a statistical method used to reduce the number of
+variables in a dataset. It does so by lumping highly correlated variables together. Naturally, this
+comes at the expense of accuracy. However, if you have 50 variables and realize that 40 of
+them are highly correlated, you will gladly trade a little accuracy for simplicity.
+How does PCA work?
+Say you have a dataset of two variables and want to simplify it. You will probably not see a
+pressing need to reduce such an already succinct dataset, but let us use this example for the
+sake of simplicity.
+The two variables are:
+1. Dow Jones Industrial Average, or DJIA, a stock market index that constitutes 30 of
+America’s biggest companies, such as Hewlett Packard and Boeing.
+2. S&P 500 index, a similar aggregate of 500 stocks of large American-listed
+companies. It contains many of the companies that the DJIA comprises.
+Not surprisingly, the DJIA and FTSE are highly correlated. Just look at how their daily readings
+move together. To be precise, the below is a plot of their daily % changes.
+
+How to perform PCA on R
+We are using R’s USArrests dataset, a dataset from 1973 showing, for each US state, the:
+1. rate per 100,000 residents of murder
+2. rate per 100,000 residents of rape
+3. rate per 100,000 residents of assault
+4. % of the population that is urban
+
+Now, we will simplify the data into two-variables data. This does not mean that we are
+eliminating two variables and keeping two; it means that we are replacing the four variables
+with two brand new ones called “principal components”.
+This time we will use R’s princomp function to perform PCA.
+Preamble: you will need the stats package.
+Step 1: Standardize the data. You may skip this step if you would rather use princomp’s inbuilt
+standardization tool*.
+Step 2: Run pca=princomp(USArrests, cor=TRUE) if your data needs
+standardizing / princomp(USArrests) if your data is already standardized.
+Step 3: Now that R has computed 4 new variables (“principal components”), you can choose the
+two (or one, or three) principal components with the highest variances.
+You can run summary(pca) to do this. The output will look like this:
+
+```{r}
+
+data("USArrests")
+
+pca=princomp(USArrests, cor=TRUE)
+
+summary(pca)
+
+biplot(pca)
+
+```
+
+```{r}
+library(pls)
+
+data("iris")
+require(pls)
+set.seed (1000)
+pcr_model <- pcr(Sepal.Length~., data = iris, scale = TRUE, validation
+= "CV")
+
+summary(pcr_model)
+```
+
+As you can see, two main results are printed, namely the validation error and the cumulative
+percentage of variance explained using n components.
+The cross-validation results are computed for each number of components used so that you
+can easily check the score with a particular number of components without trying each
+combination on your own.
+The pls package also provides a set of methods to plot the results of PCR. For example, you can
+plot the results of cross validation using the validationplot function.
+By default, the pcr function computes the root mean squared error and
+the validationplot function plots this statistic, however you can choose to plot the usual mean
+squared error or the R2 by setting the val.type argument equal to “MSEP” or “R2” respectively.
+
+```{r}
+
+# Plot the root mean squared error
+validationplot(pcr_model)
+
+```
+
+```{r}
+
+# Plot the cross validation MSE
+validationplot(pcr_model, val.type="MSEP")
+
+```
+
+```{r}
+
+# Plot the R2
+validationplot(pcr_model, val.type = "R2")
+
+```
+
+What you would like to see is a low cross validation error with a lower number of components
+than the number of variables in your dataset. If this is not the case or if the smallest cross
+validation error occurs with a number of components close to the number of variables in the
+original data, then no dimensionality reduction occurs. In the example above, it looks like 3
+components are enough to explain more than 90% of the variability in the data although the CV
+score is a little higher than with 4 or 5 components. Finally, note that 6 components explain all
+the variability as expected.
+
+You can plot the predicted vs measured values using the predplot function
+
+```{r}
+predplot(pcr_model)
+```
+
+while the regression coefficients can be plotted using the coefplot function
+
+```{r}
+coefplot(pcr_model)
+```
+
+Now you can try to use PCR on a traning-test set and evaluate its performance using, for
+example, using only 3 components.
+
+```{r}
+# Train-test split
+train <- iris[1:120,]
+y_test <- iris[120:150, 1]
+test <- iris[120:150, 2:5]
+pcr_model <- pcr(Sepal.Length~., data = train, scale = TRUE,
+validation = "CV")
+pcr_pred <- predict(pcr_model, test, ncomp = 3)
+mean((pcr_pred - y_test)^2)
+```
+
+With the iris dataset there is probably no need to use PCR, in fact, it may even be worse using
+it. However, I hope this toy example was useful to introduce this model.
+
