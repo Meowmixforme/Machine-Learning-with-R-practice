@@ -276,18 +276,18 @@ code for the two different alternatives.
 devtools::install_github("rstudio/tensorflow")
 
 # Install Python via reticulate
-reticulate::install_python()
+#reticulate::install_python()
 
 library(tensorflow)
-install_tensorflow(envname = "r-tensorflow")
+#install_tensorflow(envname = "r-tensorflow")
 
 library(magrittr)
 library(keras)
 
 model <- keras_model_sequential()
 n_units = 100
-tf_train <- read.csv("..PATH/BreastCancer.csv")
-tf_test <- read.csv("..PATH/BreastCancer.csv")
+tf_train <- read.csv("BreastCancer.csv")
+tf_test <- read.csv("BreastCancer.csv")
 X_train = as.matrix(tf_train[,2:10])
 X_test = as.matrix(tf_test[,2:10])
 y_train = as.matrix(tf_train[,11])
@@ -328,3 +328,23 @@ validation_split = 0.1
 
 ```
 
+It is interesting that the plots show the validation sample does better than the training
+sample. Therefore, there is definitely no overfitting of the model.
+
+Resources
+ https://srdas.github.io/DLBook/DeepLearningWithR.html
+ 
+Other useful links and resources
+https://www.datacamp.com/community/tutorials/neural-network-models-r
+https://www.analyticsvidhya.com/blog/2017/09/creating-visualizing-neural-network-
+in-r/
+
+https://rviews.rstudio.com/2020/07/20/shallow-neural-net-from-scratch-using-r-part-
+1/
+
+Explore the ANN example (Classification of IRIS data set): https://cran.r-
+project.org/web/packages/nnet/nnet.pdf
+
+https://medium.com/@brscntyz/neural-network-in-r-e275302b6e44
+Follow the H2O MNIST example from the booklet:
+http://docs.h2o.ai/h2o/latest-stable/h2o-docs/booklets/DeepLearningBooklet.pdf
