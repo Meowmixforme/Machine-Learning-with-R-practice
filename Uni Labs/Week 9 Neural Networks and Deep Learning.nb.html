@@ -1779,9 +1779,299 @@ head(BreastCancer)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>In this dataset, there are close to 700 samples of tissue taken in
+biopsies. For each biopsy, nine different characteristics are recorded
+such as cell thickness, cell size, cell shape. etc. The column names in
+the dataset are as follows:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5uYW1lcyhCcmVhc3RDYW5jZXIpXG5gYGAifQ== -->
+<pre class="r"><code>
+names(BreastCancer)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIklkXCIgICAgICAgICAgICAgIFwiQ2wudGhpY2tuZXNzXCIgICAgXCJDZWxsLnNpemVcIiAgICAgICBcIkNlbGwuc2hhcGVcIiAgICAgIFwiTWFyZy5hZGhlc2lvblwiICAgXCJFcGl0aC5jLnNpemVcIiAgICBcIkJhcmUubnVjbGVpXCIgICAgIFwiQmwuY3JvbWF0aW5cIiAgICBcbiBbOV0gXCJOb3JtYWwubnVjbGVvbGlcIiBcIk1pdG9zZXNcIiAgICAgICAgIFwiQ2xhc3NcIiAgICAgICAgICBcbiJ9 -->
+<pre><code> [1] &quot;Id&quot;              &quot;Cl.thickness&quot;    &quot;Cell.size&quot;       &quot;Cell.shape&quot;      &quot;Marg.adhesion&quot;   &quot;Epith.c.size&quot;    &quot;Bare.nuclei&quot;     &quot;Bl.cromatin&quot;    
+ [9] &quot;Normal.nucleoli&quot; &quot;Mitoses&quot;         &quot;Class&quot;          </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The last column in the dataset is “Class” which is either bening or
+malignant. The goal of the analysis is to construct a model that learns
+to decide whether the tumor is malignant or not.</p>
+<p>The first package in R that we will explore is the deepnet package.
+Details may be accessed at <a href="https://cran.r-project.org/web/packages/deepnet/index.html" class="uri">https://cran.r-project.org/web/packages/deepnet/index.html</a>.
+We apply the package to the cancer dataset as follows. First, we create
+the dependent variable, and also the feature set of independent
+variables.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG55ID0gYXMubWF0cml4KEJyZWFzdENhbmNlclssMTFdKVxueVt3aGljaCh5PT1cImJlbmlnblwiKV0gPSAwXG55W3doaWNoKHk9PVwibWFsaWduYW50XCIpXSA9IDFcbnkgPSBhcy5udW1lcmljKHkpXG54ID0gYXMubnVtZXJpYyhhcy5tYXRyaXgoQnJlYXN0Q2FuY2VyWywyOjEwXSkpXG54ID0gbWF0cml4KGFzLm51bWVyaWMoeCksbmNvbD05KVxuXG5gYGAifQ== -->
+<pre class="r"><code>
+y = as.matrix(BreastCancer[,11])
+y[which(y==&quot;benign&quot;)] = 0
+y[which(y==&quot;malignant&quot;)] = 1
+y = as.numeric(y)
+x = as.numeric(as.matrix(BreastCancer[,2:10]))
+x = matrix(as.numeric(x),ncol=9)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We then use the function nn.train from the deepnet package to model
+the neural network. As can be seen in the program code below, we have 5
+nodes in the single hidden layer.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5saWJyYXJ5KGRlZXBuZXQpXG5ubiA8LSBubi50cmFpbih4LCB5LCBoaWRkZW4gPSBjKDUpKVxueXkgPSBubi5wcmVkaWN0KG5uLCB4KVxucHJpbnQoaGVhZCh5eSkpXG5gYGAifQ== -->
+<pre class="r"><code>
+library(deepnet)
+nn &lt;- nn.train(x, y, hidden = c(5))
+yy = nn.predict(nn, x)
+print(head(yy))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgIFssMV1cblsxLF0gMC4yNjI2NDY4XG5bMixdIDAuNDI4OTQwOFxuWzMsXSAwLjI3OTQxMzlcbls0LF0gMC40MjY2OTg3XG5bNSxdIDAuMjgyMDAxMVxuWzYsXSAwLjQ2MjQ1NDNcbiJ9 -->
+<pre><code>          [,1]
+[1,] 0.2626468
+[2,] 0.4289408
+[3,] 0.2794139
+[4,] 0.4266987
+[5,] 0.2820011
+[6,] 0.4624543</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We take the output of the network and convert it into classes, such
+that class “0” is benign and class “1” is malignant. We then construct
+the “confusion matrix” to see how well the model does in-sample. The
+table function here creates the confusion matrix, which is a tabulation
+of how many observations that were benign and malignant were correctly
+classified. This is a handy way of assessing how successful a machine
+learning model is at classification.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG55aGF0ID0gbWF0cml4KDAsbGVuZ3RoKHl5KSwxKVxueWhhdFt3aGljaCh5eSA+IG1lYW4oeXkpKV0gPSAxXG55aGF0W3doaWNoKHl5IDw9IG1lYW4oeXkpKV0gPSAwXG5jbSA9IHRhYmxlKHkseWhhdClcbnByaW50KGNtKVxuYGBgIn0= -->
+<pre class="r"><code>
+yhat = matrix(0,length(yy),1)
+yhat[which(yy &gt; mean(yy))] = 1
+yhat[which(yy &lt;= mean(yy))] = 0
+cm = table(y,yhat)
+print(cm)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgeWhhdFxueSAgICAgMCAgIDFcbiAgMCA0MjUgIDE5XG4gIDEgICA0IDIzNVxuIn0= -->
+<pre><code>   yhat
+y     0   1
+  0 425  19
+  1   4 235</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We can see that the diagonal of the confusion matrix contains most of
+the entries, thereby suggesting that the neural net does a very good job
+of classification. The accuracy may be computed easily as the number of
+diagonal entries in the confusion matrix divided by the total count of
+values in the matrix.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5wcmludChzdW0oZGlhZyhjbSkpL3N1bShjbSkpXG5gYGAifQ== -->
+<pre class="r"><code>
+print(sum(diag(cm))/sum(cm))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuOTY2MzI1XG4ifQ== -->
+<pre><code>[1] 0.966325</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Now that we have seen the model work you can delve into the function
+nn.train in some more detail to examine the options it allows. The
+reference manual for the package is available at <a href="https://cran.r-project.org/web/packages/deepnet/deepnet.pdf" class="uri">https://cran.r-project.org/web/packages/deepnet/deepnet.pdf</a>.</p>
+<p>For comparison, we try the neuralnet package. The commands are mostly
+the same. The function in the package is also called neuralnet.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5saWJyYXJ5KG5ldXJhbG5ldClcblxuZGYgPSBkYXRhLmZyYW1lKGNiaW5kKHgseSkpXG5ubiA9IG5ldXJhbG5ldCh5flYxK1YyK1YzK1Y0K1Y1K1Y2K1Y3K1Y4K1Y5LGRhdGE9ZGYsaGlkZGVuID0gNSlcbnl5ID0gbm4kbmV0LnJlc3VsdFtbMV1dXG55aGF0ID0gbWF0cml4KDAsbGVuZ3RoKHkpLDEpXG55aGF0W3doaWNoKHl5ID4gbWVhbih5eSkpXSA9IDFcbnloYXRbd2hpY2goeXkgPD0gbWVhbih5eSkpXSA9IDBcbnByaW50KHRhYmxlKHkseWhhdCkpXG5gYGAifQ== -->
+<pre class="r"><code>
+library(neuralnet)
+
+df = data.frame(cbind(x,y))
+nn = neuralnet(y~V1+V2+V3+V4+V5+V6+V7+V8+V9,data=df,hidden = 5)
+yy = nn$net.result[[1]]
+yhat = matrix(0,length(y),1)
+yhat[which(yy &gt; mean(yy))] = 1
+yhat[which(yy &lt;= mean(yy))] = 0
+print(table(y,yhat))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgeWhhdFxueSAgICAgMCAgIDFcbiAgMCA0MzAgIDE0XG4gIDEgICAwIDIzOVxuIn0= -->
+<pre><code>   yhat
+y     0   1
+  0 430  14
+  1   0 239</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>This package also performs very well on this dataset. Details about
+the package and its various functions are available at:</p>
+<p><a href="https://cran.r-project.org/web/packages/neuralnet/index.html" class="uri">https://cran.r-project.org/web/packages/neuralnet/index.html</a></p>
+<p>This package has an interesting function that allows plotting the
+neural network. Use the function plot() and pass the output object to
+it, in this case nn.</p>
+<p>The good folks at h2o, see <a href="http://www.h2o.ai/" class="uri">http://www.h2o.ai/</a>, have developed a Java-based version
+of R, in which they also provide a deep learning network
+application.</p>
+<p>H2O is open source, in-memory, distributed, fast, and provides a
+scalable machine learning and predictive analytics platform for building
+machine learning models on big data. H2O’s core code is written in Java.
+Inside H2O, a Distributed Key/Value store is used to access and
+reference data, models, objects, etc., across all nodes and machines.
+The algorithms are implemented in a Map/Reduce framework and utilizes
+multi-threading. The data is read in parallel and is distributed across
+the cluster and stored in memory in a columnar format in a compressed
+way. Therefore, even on a single machine, the deep learning algorithm in
+H2O will exploit all cores of the CPU in parallel.</p>
+<p>Here we start up a server using all cores of the machine, and then
+use the H2O package’s deep learning toolkit to fit a model.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5saWJyYXJ5KGgybylcbmBgYCJ9 -->
+<pre class="r"><code>
+library(h2o)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gbGlicmFyeShoMm8pIDogdGhlcmUgaXMgbm8gcGFja2FnZSBjYWxsZWQg4oCYaDJv4oCZXG4ifQ== -->
+<pre><code>Error in library(h2o) : there is no package called ‘h2o’</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The h2o deep learning package does very well. The error rate may be
+seen from the confusion matrix to be very low. We also note that H2O may
+be used to run analyses other than deep learning in R as well, as many
+other functions are provided, using almost identical syntax to R. See
+the documentation at H2O for more details: <a href="https://docs.h2o.ai/h2o/latest-stable/index.html" class="uri">https://docs.h2o.ai/h2o/latest-stable/index.html</a></p>
+<p>As a second case, we use the MNIST dataset, replicating an example
+from the H2O deep learning manual. This character (numerical digits)
+recognition example is a classic one in machine learning. First read in
+the data.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShoMm8pXG5gYGAifQ== -->
+<pre class="r"><code>library(h2o)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gbGlicmFyeShoMm8pIDogdGhlcmUgaXMgbm8gcGFja2FnZSBjYWxsZWQg4oCYaDJv4oCZXG4ifQ== -->
+<pre><code>Error in library(h2o) : there is no package called ‘h2o’</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>As we see there are 70,000 observations in the dataset with each
+example containing all the 784 pixels in each image, defining the
+character. This suggests a very large input dataset. Now, we have a much
+larger parameter space that needs to be fit by the deep learning net. We
+use a three hidden layer model, with each hidden layer having 10
+nodes.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueSA8LSBcIkM3ODVcIlxueCA8LSBzZXRkaWZmKG5hbWVzKHRyYWluKSwgeSlcbnRyYWluWyx5XSA8LSBhcy5mYWN0b3IodHJhaW5bLHldKVxudGVzdFsseV0gPC0gYXMuZmFjdG9yKHRlc3RbLHldKVxuIyBUcmFpbiBhIERlZXAgTGVhcm5pbmcgbW9kZWwgYW5kIHZhbGlkYXRlIG9uIGEgdGVzdCBzZXRcbm1vZGVsIDwtIGgyby5kZWVwbGVhcm5pbmcoeCA9IHgsXG55ID0geSxcbnRyYWluaW5nX2ZyYW1lID0gdHJhaW4sXG52YWxpZGF0aW9uX2ZyYW1lID0gdGVzdCxcbmRpc3RyaWJ1dGlvbiA9IFwibXVsdGlub21pYWxcIixcbmFjdGl2YXRpb24gPSBcIlJlY3RpZmllcldpdGhEcm9wb3V0XCIsXG5oaWRkZW4gPSBjKDEwLDEwLDEwKSxcbmlucHV0X2Ryb3BvdXRfcmF0aW8gPSAwLjIsXG5sMSA9IDFlLTUsXG5lcG9jaHMgPSAyMClcbnByaW50KG1vZGVsKVxuYGBgIn0= -->
+<pre class="r"><code>y &lt;- &quot;C785&quot;
+x &lt;- setdiff(names(train), y)
+train[,y] &lt;- as.factor(train[,y])
+test[,y] &lt;- as.factor(test[,y])
+# Train a Deep Learning model and validate on a test set
+model &lt;- h2o.deeplearning(x = x,
+y = y,
+training_frame = train,
+validation_frame = test,
+distribution = &quot;multinomial&quot;,
+activation = &quot;RectifierWithDropout&quot;,
+hidden = c(10,10,10),
+input_dropout_ratio = 0.2,
+l1 = 1e-5,
+epochs = 20)
+print(model)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The mean error is much higher here, around a third. It looks like the
+highest error arises from the DLN mistaking the number “8” for the
+number “1”. It also seems to confuse the number “3” for the number “5”.
+However, it appears to do best in identifying the numbers “3” and “7”.
+We repeat the model with a deeper net with more nodes to see if accuracy
+increases.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueSA8LSBcIkM3ODVcIlxueCA8LSBzZXRkaWZmKG5hbWVzKHRyYWluKSwgeSlcbnRyYWluWyx5XSA8LSBhcy5mYWN0b3IodHJhaW5bLHldKVxudGVzdFsseV0gPC0gYXMuZmFjdG9yKHRlc3RbLHldKVxuIyBUcmFpbiBhIERlZXAgTGVhcm5pbmcgbW9kZWwgYW5kIHZhbGlkYXRlIG9uIGEgdGVzdCBzZXRcbm1vZGVsIDwtIGgyby5kZWVwbGVhcm5pbmcoeCA9IHgsXG55ID0geSxcbnRyYWluaW5nX2ZyYW1lID0gdHJhaW4sXG52YWxpZGF0aW9uX2ZyYW1lID0gdGVzdCxcbmRpc3RyaWJ1dGlvbiA9IFwibXVsdGlub21pYWxcIixcbmFjdGl2YXRpb24gPSBcIlJlY3RpZmllcldpdGhEcm9wb3V0XCIsXG5oaWRkZW4gPSBjKDUwLDUwLDUwLDUwLDUwKSxcbmlucHV0X2Ryb3BvdXRfcmF0aW8gPSAwLjIsXG5sMSA9IDFlLTUsXG5lcG9jaHMgPSAyMClcbnByaW50KG1vZGVsKVxuYGBgIn0= -->
+<pre class="r"><code>y &lt;- &quot;C785&quot;
+x &lt;- setdiff(names(train), y)
+train[,y] &lt;- as.factor(train[,y])
+test[,y] &lt;- as.factor(test[,y])
+# Train a Deep Learning model and validate on a test set
+model &lt;- h2o.deeplearning(x = x,
+y = y,
+training_frame = train,
+validation_frame = test,
+distribution = &quot;multinomial&quot;,
+activation = &quot;RectifierWithDropout&quot;,
+hidden = c(50,50,50,50,50),
+input_dropout_ratio = 0.2,
+l1 = 1e-5,
+epochs = 20)
+print(model)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>In fact, now the error rate is greatly reduced. It is useful to
+assess whether the improvement comes from more nodes in each layer or
+more hidden layers.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueSA8LSBcIkM3ODVcIlxueCA8LSBzZXRkaWZmKG5hbWVzKHRyYWluKSwgeSlcbnRyYWluWyx5XSA8LSBhcy5mYWN0b3IodHJhaW5bLHldKVxudGVzdFsseV0gPC0gYXMuZmFjdG9yKHRlc3RbLHldKVxuIyBUcmFpbiBhIERlZXAgTGVhcm5pbmcgbW9kZWwgYW5kIHZhbGlkYXRlIG9uIGEgdGVzdCBzZXRcbm1vZGVsIDwtIGgyby5kZWVwbGVhcm5pbmcoeCA9IHgsXG55ID0geSxcbnRyYWluaW5nX2ZyYW1lID0gdHJhaW4sXG52YWxpZGF0aW9uX2ZyYW1lID0gdGVzdCxcbmRpc3RyaWJ1dGlvbiA9IFwibXVsdGlub21pYWxcIixcbmFjdGl2YXRpb24gPSBcIlJlY3RpZmllcldpdGhEcm9wb3V0XCIsXG5oaWRkZW4gPSBjKDEwMCwxMDAsMTAwKSxcbmlucHV0X2Ryb3BvdXRfcmF0aW8gPSAwLjIsXG5sMSA9IDFlLTUsXG5lcG9jaHMgPSAyMClcbnByaW50KG1vZGVsKVxuYGBgIn0= -->
+<pre class="r"><code>y &lt;- &quot;C785&quot;
+x &lt;- setdiff(names(train), y)
+train[,y] &lt;- as.factor(train[,y])
+test[,y] &lt;- as.factor(test[,y])
+# Train a Deep Learning model and validate on a test set
+model &lt;- h2o.deeplearning(x = x,
+y = y,
+training_frame = train,
+validation_frame = test,
+distribution = &quot;multinomial&quot;,
+activation = &quot;RectifierWithDropout&quot;,
+hidden = c(100,100,100),
+input_dropout_ratio = 0.2,
+l1 = 1e-5,
+epochs = 20)
+print(model)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The error rate is now extremely low, so the number of nodes per
+hidden layer seems to matter more. However, we do need to note that this
+is more art than science, and we should make sure that we try various
+different DLNs before settling on the final one for our application.</p>
+<p>There are two packages available for the front end of TensorFlow. In
+this section we will use keras. In R the usage is slightly different,
+and the reader may prefer one versus the other. Technically, there is no
+difference. The main difference is in the way we write code for the two
+different alternatives.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJbnN0YWxsIHRoZSB0ZW5zb3JmbG93IFIgcGFja2FnZSBmcm9tIEdpdEh1YiAobmVlZCB0byBpbnN0YWxsIGRldnRvb2xzIGZpcnN0KVxuZGV2dG9vbHM6Omluc3RhbGxfZ2l0aHViKFwicnN0dWRpby90ZW5zb3JmbG93XCIpXG5gYGAifQ== -->
+<pre class="r"><code># Install the tensorflow R package from GitHub (need to install devtools first)
+devtools::install_github(&quot;rstudio/tensorflow&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiU2tpcHBpbmcgaW5zdGFsbCBvZiAndGVuc29yZmxvdycgZnJvbSBhIGdpdGh1YiByZW1vdGUsIHRoZSBTSEExIChiNjhhYTRhYykgaGFzIG5vdCBjaGFuZ2VkIHNpbmNlIGxhc3QgaW5zdGFsbC5cbiAgVXNlIGBmb3JjZSA9IFRSVUVgIHRvIGZvcmNlIGluc3RhbGxhdGlvblxuIn0= -->
+<pre><code>Skipping install of &#39;tensorflow&#39; from a github remote, the SHA1 (b68aa4ac) has not changed since last install.
+  Use `force = TRUE` to force installation</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJbnN0YWxsIFB5dGhvbiB2aWEgcmV0aWN1bGF0ZVxucmV0aWN1bGF0ZTo6aW5zdGFsbF9weXRob24oKVxuYGBgIn0= -->
+<pre class="r"><code># Install Python via reticulate
+reticulate::install_python()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gcHllbnZfYm9vdHN0cmFwX3dpbmRvd3MoKSA6IFxuICBQbGVhc2UgaW5zdGFsbCBnaXQgYW5kIGVuc3VyZSBpdCBpcyBvbiB5b3VyIFBBVEhcbiJ9 -->
+<pre><code>Error in pyenv_bootstrap_windows() : 
+  Please install git and ensure it is on your PATH</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIldlZWsgOTogTmV1cmFsIE5ldHdvcmtzIGFuZCBEZWVwIExlYXJuaW5nIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KDQoNCmBgYHtyfQ0KDQpsaWJyYXJ5KG1sYmVuY2gpDQoNCmRhdGEoIkJyZWFzdENhbmNlciIpDQoNCiMgQ2xlYW4gb2ZmIHJvd3Mgd2l0aCBtaXNzaW5nIGRhdGENCg0KQnJlYXN0Q2FuY2VyID0gQnJlYXN0Q2FuY2VyW3doaWNoKGNvbXBsZXRlLmNhc2VzKEJyZWFzdENhbmNlcik9PVRSVUUpLF0NCg0KaGVhZChCcmVhc3RDYW5jZXIpDQoNCmBgYA0KDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIldlZWsgOTogTmV1cmFsIE5ldHdvcmtzIGFuZCBEZWVwIExlYXJuaW5nIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KDQoNCmBgYHtyfQ0KDQpsaWJyYXJ5KG1sYmVuY2gpDQoNCmRhdGEoIkJyZWFzdENhbmNlciIpDQoNCiMgQ2xlYW4gb2ZmIHJvd3Mgd2l0aCBtaXNzaW5nIGRhdGENCg0KQnJlYXN0Q2FuY2VyID0gQnJlYXN0Q2FuY2VyW3doaWNoKGNvbXBsZXRlLmNhc2VzKEJyZWFzdENhbmNlcik9PVRSVUUpLF0NCg0KaGVhZChCcmVhc3RDYW5jZXIpDQoNCmBgYA0KDQoNCkluIHRoaXMgZGF0YXNldCwgdGhlcmUgYXJlIGNsb3NlIHRvIDcwMCBzYW1wbGVzIG9mIHRpc3N1ZSB0YWtlbiBpbiBiaW9wc2llcy4gRm9yIGVhY2gNCmJpb3BzeSwgbmluZSBkaWZmZXJlbnQgY2hhcmFjdGVyaXN0aWNzIGFyZSByZWNvcmRlZCBzdWNoIGFzIGNlbGwgdGhpY2tuZXNzLCBjZWxsIHNpemUsIGNlbGwNCnNoYXBlLiBldGMuIFRoZSBjb2x1bW4gbmFtZXMgaW4gdGhlIGRhdGFzZXQgYXJlIGFzIGZvbGxvd3M6DQoNCmBgYHtyfQ0KDQpuYW1lcyhCcmVhc3RDYW5jZXIpDQoNCmBgYA0KDQpUaGUgbGFzdCBjb2x1bW4gaW4gdGhlIGRhdGFzZXQgaXMg4oCcQ2xhc3PigJ0gd2hpY2ggaXMgZWl0aGVyIGJlbmluZyBvciBtYWxpZ25hbnQuIFRoZSBnb2FsIG9mDQp0aGUgYW5hbHlzaXMgaXMgdG8gY29uc3RydWN0IGEgbW9kZWwgdGhhdCBsZWFybnMgdG8gZGVjaWRlIHdoZXRoZXIgdGhlIHR1bW9yIGlzIG1hbGlnbmFudA0Kb3Igbm90Lg0KDQpUaGUgZmlyc3QgcGFja2FnZSBpbiBSIHRoYXQgd2Ugd2lsbCBleHBsb3JlIGlzIHRoZSBkZWVwbmV0IHBhY2thZ2UuIERldGFpbHMgbWF5IGJlDQphY2Nlc3NlZCBhdCBodHRwczovL2NyYW4uci1wcm9qZWN0Lm9yZy93ZWIvcGFja2FnZXMvZGVlcG5ldC9pbmRleC5odG1sLiBXZSBhcHBseSB0aGUNCnBhY2thZ2UgdG8gdGhlIGNhbmNlciBkYXRhc2V0IGFzIGZvbGxvd3MuIEZpcnN0LCB3ZSBjcmVhdGUgdGhlIGRlcGVuZGVudCB2YXJpYWJsZSwgYW5kDQphbHNvIHRoZSBmZWF0dXJlIHNldCBvZiBpbmRlcGVuZGVudCB2YXJpYWJsZXMuDQoNCmBgYHtyfQ0KDQp5ID0gYXMubWF0cml4KEJyZWFzdENhbmNlclssMTFdKQ0KeVt3aGljaCh5PT0iYmVuaWduIildID0gMA0KeVt3aGljaCh5PT0ibWFsaWduYW50IildID0gMQ0KeSA9IGFzLm51bWVyaWMoeSkNCnggPSBhcy5udW1lcmljKGFzLm1hdHJpeChCcmVhc3RDYW5jZXJbLDI6MTBdKSkNCnggPSBtYXRyaXgoYXMubnVtZXJpYyh4KSxuY29sPTkpDQoNCmBgYA0KDQpXZSB0aGVuIHVzZSB0aGUgZnVuY3Rpb24gbm4udHJhaW4gZnJvbSB0aGUgZGVlcG5ldCBwYWNrYWdlIHRvIG1vZGVsIHRoZSBuZXVyYWwNCm5ldHdvcmsuIEFzIGNhbiBiZSBzZWVuIGluIHRoZSBwcm9ncmFtIGNvZGUgYmVsb3csIHdlIGhhdmUgNSBub2RlcyBpbiB0aGUgc2luZ2xlDQpoaWRkZW4gbGF5ZXIuDQoNCmBgYHtyfQ0KDQpsaWJyYXJ5KGRlZXBuZXQpDQpubiA8LSBubi50cmFpbih4LCB5LCBoaWRkZW4gPSBjKDUpKQ0KeXkgPSBubi5wcmVkaWN0KG5uLCB4KQ0KcHJpbnQoaGVhZCh5eSkpDQoNCmBgYA0KDQpXZSB0YWtlIHRoZSBvdXRwdXQgb2YgdGhlIG5ldHdvcmsgYW5kIGNvbnZlcnQgaXQgaW50byBjbGFzc2VzLCBzdWNoIHRoYXQgY2xhc3Mg4oCcMOKAnSBpcw0KYmVuaWduIGFuZCBjbGFzcyDigJwx4oCdIGlzIG1hbGlnbmFudC4gV2UgdGhlbiBjb25zdHJ1Y3QgdGhlIOKAnGNvbmZ1c2lvbiBtYXRyaXjigJ0gdG8gc2VlIGhvdw0Kd2VsbCB0aGUgbW9kZWwgZG9lcyBpbi1zYW1wbGUuIFRoZSB0YWJsZSBmdW5jdGlvbiBoZXJlIGNyZWF0ZXMgdGhlIGNvbmZ1c2lvbiBtYXRyaXgsDQp3aGljaCBpcyBhIHRhYnVsYXRpb24gb2YgaG93IG1hbnkgb2JzZXJ2YXRpb25zIHRoYXQgd2VyZSBiZW5pZ24gYW5kIG1hbGlnbmFudCB3ZXJlDQpjb3JyZWN0bHkgY2xhc3NpZmllZC4gVGhpcyBpcyBhIGhhbmR5IHdheSBvZiBhc3Nlc3NpbmcgaG93IHN1Y2Nlc3NmdWwgYSBtYWNoaW5lDQpsZWFybmluZyBtb2RlbCBpcyBhdCBjbGFzc2lmaWNhdGlvbi4NCg0KYGBge3J9DQoNCnloYXQgPSBtYXRyaXgoMCxsZW5ndGgoeXkpLDEpDQp5aGF0W3doaWNoKHl5ID4gbWVhbih5eSkpXSA9IDENCnloYXRbd2hpY2goeXkgPD0gbWVhbih5eSkpXSA9IDANCmNtID0gdGFibGUoeSx5aGF0KQ0KcHJpbnQoY20pDQoNCmBgYA0KDQpXZSBjYW4gc2VlIHRoYXQgdGhlIGRpYWdvbmFsIG9mIHRoZSBjb25mdXNpb24gbWF0cml4IGNvbnRhaW5zIG1vc3Qgb2YgdGhlIGVudHJpZXMsDQp0aGVyZWJ5IHN1Z2dlc3RpbmcgdGhhdCB0aGUgbmV1cmFsIG5ldCBkb2VzIGEgdmVyeSBnb29kIGpvYiBvZiBjbGFzc2lmaWNhdGlvbi4gDQpUaGUgYWNjdXJhY3kgbWF5IGJlIGNvbXB1dGVkIGVhc2lseSBhcyB0aGUgbnVtYmVyIG9mIGRpYWdvbmFsIGVudHJpZXMgaW4gdGhlIGNvbmZ1c2lvbg0KbWF0cml4IGRpdmlkZWQgYnkgdGhlIHRvdGFsIGNvdW50IG9mIHZhbHVlcyBpbiB0aGUgbWF0cml4Lg0KDQpgYGB7cn0NCg0KcHJpbnQoc3VtKGRpYWcoY20pKS9zdW0oY20pKQ0KDQpgYGANCg0KTm93IHRoYXQgd2UgaGF2ZSBzZWVuIHRoZSBtb2RlbCB3b3JrIHlvdSBjYW4gZGVsdmUgaW50byB0aGUgZnVuY3Rpb24gbm4udHJhaW4gaW4gc29tZQ0KbW9yZSBkZXRhaWwgdG8gZXhhbWluZSB0aGUgb3B0aW9ucyBpdCBhbGxvd3MuIFRoZSByZWZlcmVuY2UgbWFudWFsIGZvciB0aGUgcGFja2FnZSBpcw0KYXZhaWxhYmxlIGF0IGh0dHBzOi8vY3Jhbi5yLXByb2plY3Qub3JnL3dlYi9wYWNrYWdlcy9kZWVwbmV0L2RlZXBuZXQucGRmLg0KDQpGb3IgY29tcGFyaXNvbiwgd2UgdHJ5IHRoZSBuZXVyYWxuZXQgcGFja2FnZS4gVGhlIGNvbW1hbmRzIGFyZSBtb3N0bHkgdGhlIHNhbWUuDQpUaGUgZnVuY3Rpb24gaW4gdGhlIHBhY2thZ2UgaXMgYWxzbyBjYWxsZWQgbmV1cmFsbmV0Lg0KDQpgYGB7cn0NCg0KbGlicmFyeShuZXVyYWxuZXQpDQoNCmRmID0gZGF0YS5mcmFtZShjYmluZCh4LHkpKQ0Kbm4gPSBuZXVyYWxuZXQoeX5WMStWMitWMytWNCtWNStWNitWNytWOCtWOSxkYXRhPWRmLGhpZGRlbiA9IDUpDQp5eSA9IG5uJG5ldC5yZXN1bHRbWzFdXQ0KeWhhdCA9IG1hdHJpeCgwLGxlbmd0aCh5KSwxKQ0KeWhhdFt3aGljaCh5eSA+IG1lYW4oeXkpKV0gPSAxDQp5aGF0W3doaWNoKHl5IDw9IG1lYW4oeXkpKV0gPSAwDQpwcmludCh0YWJsZSh5LHloYXQpKQ0KDQpgYGANCg0KVGhpcyBwYWNrYWdlIGFsc28gcGVyZm9ybXMgdmVyeSB3ZWxsIG9uIHRoaXMgZGF0YXNldC4gRGV0YWlscyBhYm91dCB0aGUgcGFja2FnZSBhbmQgaXRzDQp2YXJpb3VzIGZ1bmN0aW9ucyBhcmUgYXZhaWxhYmxlIGF0Og0KDQpodHRwczovL2NyYW4uci1wcm9qZWN0Lm9yZy93ZWIvcGFja2FnZXMvbmV1cmFsbmV0L2luZGV4Lmh0bWwNCg0KVGhpcyBwYWNrYWdlIGhhcyBhbiBpbnRlcmVzdGluZyBmdW5jdGlvbiB0aGF0IGFsbG93cyBwbG90dGluZyB0aGUgbmV1cmFsIG5ldHdvcmsuIFVzZSB0aGUNCmZ1bmN0aW9uIHBsb3QoKSBhbmQgcGFzcyB0aGUgb3V0cHV0IG9iamVjdCB0byBpdCwgaW4gdGhpcyBjYXNlIG5uLg0KDQpUaGUgZ29vZCBmb2xrcyBhdCBoMm8sIHNlZSBodHRwOi8vd3d3Lmgyby5haS8sIGhhdmUgZGV2ZWxvcGVkIGEgSmF2YS1iYXNlZCB2ZXJzaW9uIG9mDQpSLCBpbiB3aGljaCB0aGV5IGFsc28gcHJvdmlkZSBhIGRlZXAgbGVhcm5pbmcgbmV0d29yayBhcHBsaWNhdGlvbi4NCg0KSDJPIGlzIG9wZW4gc291cmNlLCBpbi1tZW1vcnksIGRpc3RyaWJ1dGVkLCBmYXN0LCBhbmQgcHJvdmlkZXMgYSBzY2FsYWJsZSBtYWNoaW5lDQpsZWFybmluZyBhbmQgcHJlZGljdGl2ZSBhbmFseXRpY3MgcGxhdGZvcm0gZm9yIGJ1aWxkaW5nIG1hY2hpbmUgbGVhcm5pbmcgbW9kZWxzIG9uIGJpZw0KZGF0YS4gSDJP4oCZcyBjb3JlIGNvZGUgaXMgd3JpdHRlbiBpbiBKYXZhLiBJbnNpZGUgSDJPLCBhIERpc3RyaWJ1dGVkIEtleS9WYWx1ZSBzdG9yZSBpcw0KdXNlZCB0byBhY2Nlc3MgYW5kIHJlZmVyZW5jZSBkYXRhLCBtb2RlbHMsIG9iamVjdHMsIGV0Yy4sIGFjcm9zcyBhbGwgbm9kZXMgYW5kDQptYWNoaW5lcy4gVGhlIGFsZ29yaXRobXMgYXJlIGltcGxlbWVudGVkIGluIGEgTWFwL1JlZHVjZSBmcmFtZXdvcmsgYW5kIHV0aWxpemVzDQptdWx0aS10aHJlYWRpbmcuIFRoZSBkYXRhIGlzIHJlYWQgaW4gcGFyYWxsZWwgYW5kIGlzIGRpc3RyaWJ1dGVkIGFjcm9zcyB0aGUgY2x1c3RlciBhbmQNCnN0b3JlZCBpbiBtZW1vcnkgaW4gYSBjb2x1bW5hciBmb3JtYXQgaW4gYSBjb21wcmVzc2VkIHdheS4gVGhlcmVmb3JlLCBldmVuIG9uIGENCnNpbmdsZSBtYWNoaW5lLCB0aGUgZGVlcCBsZWFybmluZyBhbGdvcml0aG0gaW4gSDJPIHdpbGwgZXhwbG9pdCBhbGwgY29yZXMgb2YgdGhlIENQVSBpbg0KcGFyYWxsZWwuDQoNCkhlcmUgd2Ugc3RhcnQgdXAgYSBzZXJ2ZXIgdXNpbmcgYWxsIGNvcmVzIG9mIHRoZSBtYWNoaW5lLCBhbmQgdGhlbiB1c2UgdGhlIEgyTw0KcGFja2FnZeKAmXMgZGVlcCBsZWFybmluZyB0b29sa2l0IHRvIGZpdCBhIG1vZGVsLg0KDQpgYGB7cn0NCg0KbGlicmFyeShoMm8pDQoNCmxvY2FsSDJPID0gaDJvLmluaXQoaXA9ImxvY2FsaG9zdCIsIHBvcnQgPSA1NDMyMSwNCnN0YXJ0SDJPID0gVFJVRSwgbnRocmVhZHM9LTEpDQp0cmFpbiA8LSBoMm8uaW1wb3J0RmlsZSgiQnJlYXN0Q2FuY2VyLmNzdiIpDQp0ZXN0IDwtIGgyby5pbXBvcnRGaWxlKCJCcmVhc3RDYW5jZXIuY3N2IikNCnkgPSBuYW1lcyh0cmFpbilbMTFdDQp4ID0gbmFtZXModHJhaW4pWzE6MTBdDQoNCnRyYWluWyx5XSA9IGFzLmZhY3Rvcih0cmFpblsseV0pDQp0ZXN0Wyx5XSA9IGFzLmZhY3Rvcih0cmFpblsseV0pDQptb2RlbCA9IGgyby5kZWVwbGVhcm5pbmcoeD14LA0KeT15LA0KdHJhaW5pbmdfZnJhbWU9dHJhaW4sDQp2YWxpZGF0aW9uX2ZyYW1lPXRlc3QsDQpkaXN0cmlidXRpb24gPSAibXVsdGlub21pYWwiLA0KYWN0aXZhdGlvbiA9ICJSZWN0aWZpZXJXaXRoRHJvcG91dCIsDQpoaWRkZW4gPSBjKDEwLDEwLDEwLDEwKSwNCmlucHV0X2Ryb3BvdXRfcmF0aW8gPSAwLjIsDQpsMSA9IDFlLTUsDQplcG9jaHMgPSA1MCkNCnByaW50KG1vZGVsKQ0KDQpgYGANCg0KVGhlIGgybyBkZWVwIGxlYXJuaW5nIHBhY2thZ2UgZG9lcyB2ZXJ5IHdlbGwuIFRoZSBlcnJvciByYXRlIG1heSBiZSBzZWVuIGZyb20gdGhlDQpjb25mdXNpb24gbWF0cml4IHRvIGJlIHZlcnkgbG93LiBXZSBhbHNvIG5vdGUgdGhhdCBIMk8gbWF5IGJlIHVzZWQgdG8gcnVuIGFuYWx5c2VzDQpvdGhlciB0aGFuIGRlZXAgbGVhcm5pbmcgaW4gUiBhcyB3ZWxsLCBhcyBtYW55IG90aGVyIGZ1bmN0aW9ucyBhcmUgcHJvdmlkZWQsIHVzaW5nDQphbG1vc3QgaWRlbnRpY2FsIHN5bnRheCB0byBSLiBTZWUgdGhlIGRvY3VtZW50YXRpb24gYXQgSDJPIGZvciBtb3JlDQpkZXRhaWxzOiBodHRwczovL2RvY3MuaDJvLmFpL2gyby9sYXRlc3Qtc3RhYmxlL2luZGV4Lmh0bWwNCg0KDQpBcyBhIHNlY29uZCBjYXNlLCB3ZSB1c2UgdGhlIE1OSVNUIGRhdGFzZXQsIHJlcGxpY2F0aW5nIGFuIGV4YW1wbGUgZnJvbSB0aGUgSDJPDQpkZWVwIGxlYXJuaW5nIG1hbnVhbC4gVGhpcyBjaGFyYWN0ZXIgKG51bWVyaWNhbCBkaWdpdHMpIHJlY29nbml0aW9uIGV4YW1wbGUgaXMgYSBjbGFzc2ljDQpvbmUgaW4gbWFjaGluZSBsZWFybmluZy4gRmlyc3QgcmVhZCBpbiB0aGUgZGF0YS4NCg0KYGBge3J9DQpsaWJyYXJ5KGgybykNCmxvY2FsSDJPID0gaDJvLmluaXQoaXA9ImxvY2FsaG9zdCIsIHBvcnQgPSA1NDMyMSwNCnN0YXJ0SDJPID0gVFJVRSkNCiMjIEltcG9ydCBNTklTVCBDU1YgYXMgSDJPDQp0cmFpbiA8LSBoMm8uaW1wb3J0RmlsZQ0KKCJodHRwczovL2gyby1wdWJsaWMtdGVzdC1kYXRhLnMzLmFtYXpvbmF3cy5jb20vYmlnZGF0YS9sYXB0b3AvbW5pc3QvDQp0cmFpbi5jc3YuZ3oiKQ0KdGVzdCA8LSBoMm8uaW1wb3J0RmlsZQ0KKCJodHRwczovL2gyby1wdWJsaWMtdGVzdC1kYXRhLnMzLmFtYXpvbmF3cy5jb20vYmlnZGF0YS9sYXB0b3AvbW5pc3QvDQp0ZXN0LmNzdi5neiIpDQpwcmludChkaW0odHJhaW4pKQ0KcHJpbnQoZGltKHRlc3QpKQ0KYGBgDQoNCkFzIHdlIHNlZSB0aGVyZSBhcmUgNzAsMDAwIG9ic2VydmF0aW9ucyBpbiB0aGUgZGF0YXNldCB3aXRoIGVhY2ggZXhhbXBsZSBjb250YWluaW5nDQphbGwgdGhlIDc4NCBwaXhlbHMgaW4gZWFjaCBpbWFnZSwgZGVmaW5pbmcgdGhlIGNoYXJhY3Rlci4gVGhpcyBzdWdnZXN0cyBhIHZlcnkgbGFyZ2UgaW5wdXQNCmRhdGFzZXQuIE5vdywgd2UgaGF2ZSBhIG11Y2ggbGFyZ2VyIHBhcmFtZXRlciBzcGFjZSB0aGF0IG5lZWRzIHRvIGJlIGZpdCBieSB0aGUgZGVlcA0KbGVhcm5pbmcgbmV0LiBXZSB1c2UgYSB0aHJlZSBoaWRkZW4gbGF5ZXIgbW9kZWwsIHdpdGggZWFjaCBoaWRkZW4gbGF5ZXIgaGF2aW5nIDEwDQpub2Rlcy4NCg0KYGBge3J9DQp5IDwtICJDNzg1Ig0KeCA8LSBzZXRkaWZmKG5hbWVzKHRyYWluKSwgeSkNCnRyYWluWyx5XSA8LSBhcy5mYWN0b3IodHJhaW5bLHldKQ0KdGVzdFsseV0gPC0gYXMuZmFjdG9yKHRlc3RbLHldKQ0KIyBUcmFpbiBhIERlZXAgTGVhcm5pbmcgbW9kZWwgYW5kIHZhbGlkYXRlIG9uIGEgdGVzdCBzZXQNCm1vZGVsIDwtIGgyby5kZWVwbGVhcm5pbmcoeCA9IHgsDQp5ID0geSwNCnRyYWluaW5nX2ZyYW1lID0gdHJhaW4sDQp2YWxpZGF0aW9uX2ZyYW1lID0gdGVzdCwNCmRpc3RyaWJ1dGlvbiA9ICJtdWx0aW5vbWlhbCIsDQphY3RpdmF0aW9uID0gIlJlY3RpZmllcldpdGhEcm9wb3V0IiwNCmhpZGRlbiA9IGMoMTAsMTAsMTApLA0KaW5wdXRfZHJvcG91dF9yYXRpbyA9IDAuMiwNCmwxID0gMWUtNSwNCmVwb2NocyA9IDIwKQ0KcHJpbnQobW9kZWwpDQpgYGANCg0KVGhlIG1lYW4gZXJyb3IgaXMgbXVjaCBoaWdoZXIgaGVyZSwgYXJvdW5kIGEgdGhpcmQuIEl0IGxvb2tzIGxpa2UgdGhlIGhpZ2hlc3QgZXJyb3IgYXJpc2VzDQpmcm9tIHRoZSBETE4gbWlzdGFraW5nIHRoZSBudW1iZXIg4oCcOOKAnSBmb3IgdGhlIG51bWJlciDigJwx4oCdLiBJdCBhbHNvIHNlZW1zIHRvIGNvbmZ1c2UgdGhlDQpudW1iZXIg4oCcM+KAnSBmb3IgdGhlIG51bWJlciDigJw14oCdLiBIb3dldmVyLCBpdCBhcHBlYXJzIHRvIGRvIGJlc3QgaW4gaWRlbnRpZnlpbmcgdGhlIG51bWJlcnMNCuKAnDPigJ0gYW5kIOKAnDfigJ0uDQpXZSByZXBlYXQgdGhlIG1vZGVsIHdpdGggYSBkZWVwZXIgbmV0IHdpdGggbW9yZSBub2RlcyB0byBzZWUgaWYgYWNjdXJhY3kgaW5jcmVhc2VzLg0KDQpgYGB7cn0NCnkgPC0gIkM3ODUiDQp4IDwtIHNldGRpZmYobmFtZXModHJhaW4pLCB5KQ0KdHJhaW5bLHldIDwtIGFzLmZhY3Rvcih0cmFpblsseV0pDQp0ZXN0Wyx5XSA8LSBhcy5mYWN0b3IodGVzdFsseV0pDQojIFRyYWluIGEgRGVlcCBMZWFybmluZyBtb2RlbCBhbmQgdmFsaWRhdGUgb24gYSB0ZXN0IHNldA0KbW9kZWwgPC0gaDJvLmRlZXBsZWFybmluZyh4ID0geCwNCnkgPSB5LA0KdHJhaW5pbmdfZnJhbWUgPSB0cmFpbiwNCnZhbGlkYXRpb25fZnJhbWUgPSB0ZXN0LA0KZGlzdHJpYnV0aW9uID0gIm11bHRpbm9taWFsIiwNCmFjdGl2YXRpb24gPSAiUmVjdGlmaWVyV2l0aERyb3BvdXQiLA0KaGlkZGVuID0gYyg1MCw1MCw1MCw1MCw1MCksDQppbnB1dF9kcm9wb3V0X3JhdGlvID0gMC4yLA0KbDEgPSAxZS01LA0KZXBvY2hzID0gMjApDQpwcmludChtb2RlbCkNCmBgYA0KDQpJbiBmYWN0LCBub3cgdGhlIGVycm9yIHJhdGUgaXMgZ3JlYXRseSByZWR1Y2VkLiBJdCBpcyB1c2VmdWwgdG8gYXNzZXNzIHdoZXRoZXIgdGhlDQppbXByb3ZlbWVudCBjb21lcyBmcm9tIG1vcmUgbm9kZXMgaW4gZWFjaCBsYXllciBvciBtb3JlIGhpZGRlbiBsYXllcnMuDQoNCmBgYHtyfQ0KeSA8LSAiQzc4NSINCnggPC0gc2V0ZGlmZihuYW1lcyh0cmFpbiksIHkpDQp0cmFpblsseV0gPC0gYXMuZmFjdG9yKHRyYWluWyx5XSkNCnRlc3RbLHldIDwtIGFzLmZhY3Rvcih0ZXN0Wyx5XSkNCiMgVHJhaW4gYSBEZWVwIExlYXJuaW5nIG1vZGVsIGFuZCB2YWxpZGF0ZSBvbiBhIHRlc3Qgc2V0DQptb2RlbCA8LSBoMm8uZGVlcGxlYXJuaW5nKHggPSB4LA0KeSA9IHksDQp0cmFpbmluZ19mcmFtZSA9IHRyYWluLA0KdmFsaWRhdGlvbl9mcmFtZSA9IHRlc3QsDQpkaXN0cmlidXRpb24gPSAibXVsdGlub21pYWwiLA0KYWN0aXZhdGlvbiA9ICJSZWN0aWZpZXJXaXRoRHJvcG91dCIsDQpoaWRkZW4gPSBjKDEwMCwxMDAsMTAwKSwNCmlucHV0X2Ryb3BvdXRfcmF0aW8gPSAwLjIsDQpsMSA9IDFlLTUsDQplcG9jaHMgPSAyMCkNCnByaW50KG1vZGVsKQ0KYGBgDQoNClRoZSBlcnJvciByYXRlIGlzIG5vdyBleHRyZW1lbHkgbG93LCBzbyB0aGUgbnVtYmVyIG9mIG5vZGVzIHBlciBoaWRkZW4gbGF5ZXIgc2VlbXMgdG8NCm1hdHRlciBtb3JlLiBIb3dldmVyLCB3ZSBkbyBuZWVkIHRvIG5vdGUgdGhhdCB0aGlzIGlzIG1vcmUgYXJ0IHRoYW4gc2NpZW5jZSwgYW5kIHdlDQpzaG91bGQgbWFrZSBzdXJlIHRoYXQgd2UgdHJ5IHZhcmlvdXMgZGlmZmVyZW50IERMTnMgYmVmb3JlIHNldHRsaW5nIG9uIHRoZSBmaW5hbCBvbmUgZm9yDQpvdXIgYXBwbGljYXRpb24uDQoNClRoZXJlIGFyZSB0d28gcGFja2FnZXMgYXZhaWxhYmxlIGZvciB0aGUgZnJvbnQgZW5kIG9mIFRlbnNvckZsb3cuIEluIHRoaXMgc2VjdGlvbiB3ZSB3aWxsDQp1c2Uga2VyYXMuIEluIFIgdGhlIHVzYWdlIGlzIHNsaWdodGx5IGRpZmZlcmVudCwgYW5kIHRoZSByZWFkZXIgbWF5IHByZWZlciBvbmUgdmVyc3VzIHRoZQ0Kb3RoZXIuIFRlY2huaWNhbGx5LCB0aGVyZSBpcyBubyBkaWZmZXJlbmNlLiBUaGUgbWFpbiBkaWZmZXJlbmNlIGlzIGluIHRoZSB3YXkgd2Ugd3JpdGUNCmNvZGUgZm9yIHRoZSB0d28gZGlmZmVyZW50IGFsdGVybmF0aXZlcy4NCg0KYGBge3J9DQojIEluc3RhbGwgdGhlIHRlbnNvcmZsb3cgUiBwYWNrYWdlIGZyb20gR2l0SHViIChuZWVkIHRvIGluc3RhbGwgZGV2dG9vbHMgZmlyc3QpDQpkZXZ0b29sczo6aW5zdGFsbF9naXRodWIoInJzdHVkaW8vdGVuc29yZmxvdyIpDQoNCiMgSW5zdGFsbCBQeXRob24gdmlhIHJldGljdWxhdGUNCnJldGljdWxhdGU6Omluc3RhbGxfcHl0aG9uKCkNCg0KbGlicmFyeSh0ZW5zb3JmbG93KQ0KaW5zdGFsbF90ZW5zb3JmbG93KGVudm5hbWUgPSAici10ZW5zb3JmbG93IikNCg0KbGlicmFyeShtYWdyaXR0cikNCmxpYnJhcnkoa2VyYXMpDQoNCm1vZGVsIDwtIGtlcmFzX21vZGVsX3NlcXVlbnRpYWwoKQ0Kbl91bml0cyA9IDEwMA0KdGZfdHJhaW4gPC0gcmVhZC5jc3YoIi4uUEFUSC9CcmVhc3RDYW5jZXIuY3N2IikNCnRmX3Rlc3QgPC0gcmVhZC5jc3YoIi4uUEFUSC9CcmVhc3RDYW5jZXIuY3N2IikNClhfdHJhaW4gPSBhcy5tYXRyaXgodGZfdHJhaW5bLDI6MTBdKQ0KWF90ZXN0ID0gYXMubWF0cml4KHRmX3Rlc3RbLDI6MTBdKQ0KeV90cmFpbiA9IGFzLm1hdHJpeCh0Zl90cmFpblssMTFdKQ0KeV90ZXN0ID0gYXMubWF0cml4KHRmX3Rlc3RbLDExXSkNCmlkeCA9IHdoaWNoKHlfdHJhaW49PSJiZW5pZ24iKTsgeV90cmFpbltpZHhdPTA7IHlfdHJhaW5bLWlkeF09MTsNCnlfdHJhaW49YXMuaW50ZWdlcih5X3RyYWluKQ0KaWR4ID0gd2hpY2goeV90ZXN0PT0iYmVuaWduIik7IHlfdGVzdFtpZHhdPTA7IHlfdGVzdFstaWR4XT0xOw0KDQojIE5leHQsIHdlIGRlZmluZSB0aGUgZGVlcCBsZWFybmluZyBtb2RlbC4NCg0Kbl91bml0cyA9IDEwMA0KbW9kZWwgJT4lDQpsYXllcl9kZW5zZSh1bml0cyA9IG5fdW5pdHMsDQphY3RpdmF0aW9uID0gJ3JlbHUnLA0KaW5wdXRfc2hhcGUgPSBkaW0oWF90cmFpbilbMl0pICU+JQ0KbGF5ZXJfZHJvcG91dChyYXRlID0gMC4yNSkgJT4lDQpsYXllcl9kZW5zZSh1bml0cyA9IG5fdW5pdHMsIGFjdGl2YXRpb24gPSAncmVsdScpICU+JQ0KbGF5ZXJfZHJvcG91dChyYXRlID0gMC4yNSkgJT4lDQpsYXllcl9kZW5zZSh1bml0cyA9IG5fdW5pdHMsIGFjdGl2YXRpb24gPSAncmVsdScpICU+JQ0KbGF5ZXJfZHJvcG91dChyYXRlID0gMC4yNSkgJT4lDQpsYXllcl9kZW5zZSh1bml0cyA9IDEwLCBhY3RpdmF0aW9uID0gJ3NvZnRtYXgnKQ0KDQojIE5vdywgY29tcGlsZSB0aGUgbW9kZWwuDQoNCm1vZGVsICU+JSBjb21waWxlKA0KbG9zcyA9ICdzcGFyc2VfY2F0ZWdvcmljYWxfY3Jvc3NlbnRyb3B5JywNCm9wdGltaXplciA9IG9wdGltaXplcl9ybXNwcm9wKCksDQptZXRyaWNzID0gYygnYWNjdXJhY3knKQ0KKQ0KDQojIEZpbmFsbHksIGZpdCB0aGUgbW9kZWwuIFdlIHdpbGwgcnVuIGp1c3QgNSBlcG9jaHMuDQoNCm1vZGVsICU+JSBmaXQoDQpYX3RyYWluLCB5X3RyYWluLA0KZXBvY2hzID0gNSwgYmF0Y2hfc2l6ZSA9IDMyLCB2ZXJib3NlID0gMSwNCnZhbGlkYXRpb25fc3BsaXQgPSAwLjENCikNCg0KYGBgDQoNCg==</div>
 
 
 
