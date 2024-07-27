@@ -1,0 +1,163 @@
+---
+title: "Week 8: Support Vector Machine"
+output: html_notebook
+---
+
+# Load packages
+
+```{r}
+
+library('caret')
+
+# load the data set:
+
+heart <- read.csv("heart_disease.csv", sep = ',', header = FALSE)
+
+```
+
+In the above line of code, we’re reading the dataset which is stored in a CSV format
+and that’s why we’ve used the read.csv function to read it from the specified path
+The ‘sep’ attribute indicates that the data is stored in a CSV or Comma Separated
+Version
+
+```{r}
+# Check the structure of our dataset
+
+str(heart)
+
+```
+
+Our next step is to split the data into training set and testing set, this is also called
+data splicing.
+We’ll be using the training set specifically for our model building and the testing set
+for evaluating the model:
+
+
+# Split data into test / train
+
+```{r}
+
+intrain <- createDataPartition(y = heart$V14, p= 0.7, list = FALSE)
+training <- heart[intrain,]
+testing <- heart[-intrain,]
+
+```
+
+The caret package provides a method createDataPartition() which is basically for partitioning
+our data into train and test set.
+
+We’ve passed 3 parameters to this createdatapartition() function:
+ 
+The “y” parameter takes the value of variable according to which data needs
+to be partitioned. In our case, target variable is at V14, so we are passing
+heart$V14
+
+The “p” parameter holds a decimal value in the range of 0-1. It’s to show the
+percentage of the split. We are using p=0.7. It means that data split should be
+done in 70:30 ratio. So, 70% of the data is used for training and the remaining
+30% is for testing the model.
+
+The “list” parameter is for whether to return a list or matrix. We are passing
+FALSE for not returning a list.
+
+
+Now this createDataPartition() method is returning a matrix “intrain”. This intrain matrix has
+our training data set and we’re storing this in the ‘training’ variable and the rest of the data,
+i.e. the remaining 30% of the data is stored in the testing variable.
+
+Next, for checking the dimensions of our training data frame and testing data frame, we can
+use these:
+
+```{r}
+
+dim(training)
+
+dim(testing)
+
+```
+
+Our next step is to clean the data, so if there are any missing values or inconsistent
+values, they have to be dealt with before we build the training model
+We’ll be using the anyNA() method, which checks for any null values:
+
+```{r}
+
+anyNA(heart)
+
+```
+
+on running this, we get the return values as false, which means that there are no
+missing values in our dataset.
+Next, we’re checking the summary of our data by using the summary() function
+
+```{r}
+
+summary(heart)
+
+```
+
+The output shows that the values of the various variables are not standardized.
+For example, the V14 variables, which is our target variable, it holds only 2 values,
+either 0 or 1.
+Instead, this should be a categorical variable. To convert these to categorical
+variables, we need to factorize them:
+
+# Change into categorical variables
+
+```{r}
+
+training[["V14"]] = factor(training[["V14"]])
+
+```
+
+Our next step is to train our model.
+
+Before we train our model, we’ll first implement the trainControl() method. This will
+control all the computational overheads so that we can use the train() function
+provided by the caret package. The training method will train our data on different
+algorithms.
+
+traincontrol() method:
+
+```{r}
+
+trctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+                       
+```
+
+The trainControl() method here, is taking 3 parameters.
+
+The “method” parameter defines the resampling method, in this demo we’ll be
+using the repeatedcv or the repeated cross-validation method.
+
+The next parameter is the “number”, this basically holds the number of
+resampling iterations.
+
+The “repeats ” parameter contains the sets to compute for our repeated cross-
+validation. We are using setting number =10 and repeats =3
+
+This trainControl() method returns a list. We are going to pass this on our train()
+method.
+
+```{r}
+
+svm_Linear <- train(V14 ~., data = training, method =
+"svmLinear",trControl=trctrl,preProcess = c("center", "scale"),tuneLength
+= 10)
+
+```
+
+The train() method should be passed with “method” parameter as “svmLinear”. We
+are passing our target variable V14. The “V14~.” denotes a formula for using all
+attributes in our classifier and V14 as the target variable. The “trControl” parameter
+should be passed with results from our trianControl() method. The “preProcess”
+parameter is for preprocessing our training data
+
+We are passing 2 values in our “pre-process” parameter “center” & “scale”.
+
+```{r}
+
+svm_Linear
+
+```
+
