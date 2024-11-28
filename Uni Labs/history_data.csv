@@ -1,16 +1,3 @@
-Name,Date time,Maximum Temperature,Minimum Temperature,Temperature,Wind Chill,Heat Index,Precipitation,Snow,Snow Depth,Wind Speed,Wind Gust,Visibility,Cloud Cover,Relative Humidity,Conditions
-"Middlesbrough, England, United Kingdom",01/05/2021,3.3,1.5,2.4,-4.1,,0.44,,,17.2,38,11.2,63.1,83.89,"Rain, Partially cloudy"
-"Middlesbrough, England, United Kingdom",01/06/2021,3,-1.1,1.1,-4.4,,0.68,,,11.1,35.8,9.8,53.1,90.87,"Rain, Partially cloudy"
-"Middlesbrough, England, United Kingdom",01/07/2021,1.6,-3.6,-0.8,-8.2,,0.4,,,7.9,,9,51.4,92.08,"Rain, Partially cloudy"
-"Middlesbrough, England, United Kingdom",01/08/2021,2.8,-1.2,1,-4.4,,20.29,,2,17.1,33.3,6.4,80.8,92.48,"Rain, Overcast"
-"Middlesbrough, England, United Kingdom",01/09/2021,2.6,-5.1,-1,-5.2,,0.96,,2,13.1,,14.2,22.7,88.98,Rain
-"Middlesbrough, England, United Kingdom",01/10/2021,5.7,2.4,4.4,-1.8,,1,,2,15.6,32.2,22.6,90.7,89.54,"Rain, Overcast"
-"Middlesbrough, England, United Kingdom",01/11/2021,8.8,5.3,7,0.2,,0,,,24.5,49.4,16,76.4,82.63,Overcast
-"Middlesbrough, England, United Kingdom",01/12/2021,5,-0.9,1.6,-5,,6.2,,,13.9,,12.1,33.8,83.48,"Rain, Partially cloudy"
-"Middlesbrough, England, United Kingdom",01/13/2021,1.8,-1.6,0.1,-5.1,,0,,,6.6,,10.9,72.2,89.1,Partially cloudy
-"Middlesbrough, England, United Kingdom",01/14/2021,1.1,0.2,0.8,-3.7,,12.03,,4,8.7,,5.1,85.9,95.96,"Rain, Overcast"
-"Middlesbrough, England, United Kingdom",01/15/2021,0.6,-5,-1.9,-8.1,,0.8,,3,9.2,,4,79.3,94.99,"Rain, Overcast"
-"Middlesbrough, England, United Kingdom",01/16/2021,6.3,-0.5,2.8,-5.8,,0,,,17.4,,4.6,86.3,91.58,Overcast
-"Middlesbrough, England, United Kingdom",01/17/2021,6,2.4,4.6,-1.5,,0,,,10.4,,6.2,73.9,81.47,Partially cloudy
-"Middlesbrough, England, United Kingdom",01/18/2021,7,4.1,5.4,-0.6,,0,,,16.5,,5.9,68.4,83.14,Partially cloudy
-"Middlesbrough, England, United Kingdom",01/19/2021,9,5.1,6.6,2.1,,0,,,15.4,,4,83.7,95.24,Overcast
+version https://git-lfs.github.com/spec/v1
+oid sha256:2d8ddbfc59117b601e0ed07361786ac6847409a02f29ffbb12952d2d02cf23a8
+size 1912
